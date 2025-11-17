@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase | Mental Wellness Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --pastel-blue: #e3f2fd;
+            --pastel-green: #e8f5e9;
+            --pastel-purple: #f3e5f5;
+            --pastel-teal: #e0f7fa;
+            --light-gray: #f5f7fa;
+            --accent-blue: #64b5f6;
+            --accent-green: #81c784;
+            --accent-purple: #ba68c8;
+            --text-dark: #37474f;
+            --text-light: #607d8b;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pastel-blue), var(--pastel-teal));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .journal-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .journal-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .suggestions-container {
+            padding: 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .suggestions-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .suggestions-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            border-radius: 3px;
+        }
+
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .suggestion-card {
+            background-color: var(--pastel-purple);
+            border-radius: 15px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(186, 104, 200, 0.3);
+            box-shadow: var(--shadow);
+        }
+
+        .suggestion-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            background-color: rgba(186, 104, 200, 0.15);
+        }
+
+        .suggestion-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 15px 18px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            line-height: 1.5;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: white;
+            border-bottom-left-radius: 4px;
+            color: var(--text-dark);
+            border: 1px solid #e0e0e0;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 15px 20px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--pastel-blue);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        input:focus {
+            background-color: white;
+            box-shadow: 0 0 0 2px var(--accent-blue);
+        }
+
+        button {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .breathing-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .breathing-container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .breathing-modal-content {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(100, 100, 200, 0.10);
+            padding: 48px 32px 36px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 320px;
+            min-height: 340px;
+            position: relative;
+            animation: breatheFadeIn 0.7s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        @keyframes breatheFadeIn {
+            from {
+                transform: translateY(40px) scale(0.98);
+                opacity: 0;
+            }
+
+            to {
+                transform: none;
+                opacity: 1;
+            }
+        }
+
+        .breathing-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 60% 40%, #b3e5fc 60%, #ba68c8 100%);
+            box-shadow: 0 0 40px 0 #ba68c880;
+            margin: 0 auto 32px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow 0.3s;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.5);
+            }
+        }
+
+        .breathing-text {
+            font-size: 2.1rem;
+            font-weight: 600;
+            color: #5e35b1;
+            margin-bottom: 12px;
+            text-align: center;
+            font-family: 'Segoe UI', 'Nunito', 'Quicksand', Arial, sans-serif;
+            letter-spacing: 0.5px;
+            min-height: 2.5em;
+            transition: color 0.4s;
+        }
+
+        .instructions {
+            font-size: 1.1rem;
+            color: #7b7b9d;
+            text-align: center;
+            margin-top: 8px;
+            font-family: 'Segoe UI', 'Nunito', Arial, sans-serif;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 2.2rem;
+            color: #5e35b1;
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 1002;
+            line-height: 1;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #ba68c8;
+            background: #e3f2fd;
+        }
+
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .message-group .timestamp {
+            margin-top: 4px;
+        }
+
+        .breathe-command {
+            font-weight: bold;
+            color: var(--accent-purple);
+        }
+
+        /* New Modals */
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-content h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--accent-purple);
+        }
+
+        .prompts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .prompt-option {
+            background: var(--pastel-purple);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(186, 104, 200, 0.3);
+        }
+
+        .prompt-option:hover {
+            background: rgba(186, 104, 200, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--pastel-blue);
+            color: var(--accent-blue);
+        }
+
+        .quote-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .quote-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .quote-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px 30px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .quote-text {
+            font-size: 22px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-style: italic;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .quote-text::before,
+        .quote-text::after {
+            content: '"';
+            font-size: 50px;
+            color: var(--accent-purple);
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        .quote-text::before {
+            top: -20px;
+            left: -15px;
+        }
+
+        .quote-text::after {
+            content: '"';
+            bottom: -40px;
+            right: -15px;
+        }
+
+        .quote-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quote-actions button {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .quote-actions button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .logo i {
+                font-size: 24px;
+                padding: 8px;
+            }
+
+            .suggestions-container {
+                padding: 15px;
+            }
+
+            .suggestions-grid {
+                gap: 12px;
+            }
+
+            .suggestion-card {
+                padding: 12px;
+            }
+
+            .journal-link {
+                top: 15px;
+                right: 15px;
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-container {
+                padding: 12px 15px;
+            }
+
+            input {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .suggestions-container {
+                padding: 12px;
+            }
+
+            .suggestions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .suggestion-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .suggestion-text {
+                font-size: 14px;
+            }
+
+            .chat-container {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .message {
+                padding: 12px 15px;
+            }
+
+            .suggestions-title {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .breathing-modal-content {
+                min-width: 0;
+                width: 95vw;
+                padding: 32px 8vw 24px 8vw;
+            }
+
+            .breathing-circle {
+                width: 90vw;
+                max-width: 220px;
+                height: 90vw;
+                max-height: 220px;
+            }
+
+            .breathing-text {
+                font-size: 1.3rem;
+            }
+        }
+        .suggestions-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 22px auto 0 auto;
+            box-shadow: 0 2px 8px 0 #a18cd133;
+            transition: background 0.2s, box-shadow 0.2s;
+            z-index: 20;
+            letter-spacing: 0.2px;
+            width: fit-content;
+            min-width: 0;
+            white-space: normal;
+        }
+        .suggestions-toggle:hover {
+            box-shadow: 0 4px 16px 0 #a18cd133;
+            filter: brightness(1.04);
+        }
+        @media (max-width: 480px) {
+            .suggestions-toggle {
+                font-size: 0.97rem;
+                padding: 0.35rem 0.7rem;
+                border-radius: 16px;
+            }
+        }
+        @media (max-width: 350px) {
+            .suggestions-toggle {
+                font-size: 0.92rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+        .suggestions-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+            padding: 20px;
+            transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s, visibility 0.3s;
+            overflow: hidden;
+            opacity: 1;
+            visibility: visible;
+            max-height: 500px;
+        }
+        .suggestions-container.suggestions-hidden {
+            opacity: 0;
+            visibility: hidden;
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        @media (max-width: 600px) {
+            .suggestions-container {
+                padding: 12px;
+                max-width: 98vw;
+            }
+            .suggestions-toggle {
+                font-size: 16px;
+                padding: 12px 16px;
+                border-radius: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <div>
+                    <h1>MindEase</h1>
+                    <div class="subtitle">Your mental wellness companion</div>
+                </div>
+            </div>
+            <a href="journal.html" class="journal-link">
+                <i class="fas fa-book"></i> Journal
+            </a>
+        </header>
+
+        <!-- Suggestions Toggle Button -->
+        <button class="suggestions-toggle" id="suggestionsToggle" aria-label="Show suggestions">💡 Suggestions</button>
+        <!-- Suggestions Section -->
+        <div class="suggestions-container suggestions-hidden" id="suggestionsContainer">
+            <div class="suggestions-title">How can I help you today?</div>
+            <div class="suggestions-grid">
+                <div class="suggestion-card" data-suggestion="How are you feeling today?">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <div class="suggestion-text">How are you feeling today?</div>
+                </div>
+                <div class="suggestion-card" data-suggestion="I need relaxation techniques">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="suggestion-text">I need relaxation techniques</div>
+                </div>
+                <div class="suggestion-card" data-suggestion="Help me manage stress">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                    </div>
+                    <div class="suggestion-text">Help me manage stress</div>
+                </div>
+                <div class="suggestion-card" data-suggestion="Generate journal prompts">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-feather"></i>
+                    </div>
+                    <div class="suggestion-text">Journaling prompts</div>
+                </div>
+                <div class="suggestion-card" data-suggestion="Show me a motivational quote">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="suggestion-text">Motivational quote</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message-group">
+                <div class="message bot-message">
+                    Hi there! 👋 I'm MindEase, your mental wellness companion. How can I support you today?
+                    <div class="timestamp">10:02 AM</div>
+                </div>
+                <div class="message bot-message">
+                    You can type <span class="breathe-command">/breathe</span> anytime to start a guided breathing
+                    exercise.
+                    <div class="timestamp">10:02 AM</div>
+                </div>
+            </div>
+
+            <div class="message-group">
+                <div class="message bot-message">
+                    Remember to take breaks and be kind to yourself. Mental wellness is a journey, not a destination. 🌈
+                    <div class="timestamp">10:03 AM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Type your message or /breathe...">
+            <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Breathing Exercise Modal -->
+    <!-- Breathing Exercise Modal -->
+    <div class="breathing-container" id="breathingContainer">
+        <div class="breathing-modal-content">
+            <button class="close-btn" id="closeBreathing" aria-label="Close">&times;</button>
+            <div class="breathing-circle"></div>
+            <div class="breathing-text" id="breathText">Breathe In</div>
+            <div class="instructions">
+                <p>Follow the circle as it expands and contracts</p>
+                <p>Breathe in for 4s, hold for 4s, breathe out for 4s</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Journal Prompts Modal -->
+    <div class="modal-container" id="journalModal">
+        <div class="modal-content">
+            <h3>Choose a Journal Prompt</h3>
+            <div class="prompts-container" id="promptsContainer">
+                <div class="prompt-option">What are three things you're grateful for today?</div>
+                <div class="prompt-option">Describe a challenge you faced and how you handled it</div>
+                <div class="prompt-option">What's something you'd like to let go of?</div>
+                <div class="prompt-option">Write about a moment that made you smile recently</div>
+            </div>
+            <button class="modal-close" id="closeJournalModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Motivational Quote Modal -->
+    <div class="quote-modal" id="quoteModal">
+        <div class="quote-content">
+            <div class="quote-text" id="quoteText">Every day may not be good, but there's something good in every day.
+            </div>
+            <div class="quote-actions">
+                <button id="saveQuoteBtn">
+                    <i class="fas fa-bookmark"></i> Save Quote
+                </button>
+                <button id="newQuoteBtn">
+                    <i class="fas fa-sync"></i> New Quote
+                </button>
+                <button id="closeQuoteBtn">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Add close modal logic for /breathe
+        const breathingContainer = document.getElementById('breathingContainer');
+        const closeBreathing = document.getElementById('closeBreathing');
+        if (closeBreathing && breathingContainer) {
+            closeBreathing.addEventListener('click', () => {
+                breathingContainer.classList.remove('active');
+            });
+            // Optional: close when clicking outside modal content
+            breathingContainer.addEventListener('click', (e) => {
+                if (e.target === breathingContainer) {
+                    breathingContainer.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

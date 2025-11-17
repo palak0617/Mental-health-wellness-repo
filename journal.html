@@ -1,0 +1,243 @@
+<!-- Updated to match the new UI -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MindEase | Journal History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Add the same root variables from index.html */
+    :root {
+      --pastel-blue: #e3f2fd;
+      --pastel-green: #e8f5e9;
+      --pastel-purple: #f3e5f5;
+      --pastel-teal: #e0f7fa;
+      --light-gray: #f5f7fa;
+      --accent-blue: #64b5f6;
+      --accent-green: #81c784;
+      --accent-purple: #ba68c8;
+      --text-dark: #37474f;
+      --text-light: #607d8b;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--pastel-blue), var(--pastel-teal));
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-dark);
+      padding: 20px;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 20px 0;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 18px;
+      padding: 10px 20px;
+      background: white;
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .journal-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+    }
+    
+    .journal-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--accent-purple);
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    .journal-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+      border-radius: 2px;
+    }
+    
+    .journal-entry {
+      border-left: 4px solid var(--accent-purple);
+      background: var(--pastel-purple);
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 0 15px 15px 0;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .journal-entry:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .journal-prompt {
+      font-weight: 600;
+      color: var(--accent-purple);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .journal-prompt i {
+      font-size: 18px;
+      margin-top: 3px;
+    }
+    
+    .journal-response {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin: 10px 0 0 0;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    .journal-timestamp {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-top: 15px;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    
+    .no-entries {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+      font-size: 18px;
+    }
+    
+    .no-entries i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--pastel-purple);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Chat
+  </a>
+  
+  <div class="journal-container">
+    <div class="journal-title">Journal History</div>
+    <div id="journalList" class="journal-list">
+      <!-- Entries will be loaded here -->
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = 'http://localhost:5000';
+    // Enhanced journal fetching with animations
+    async function fetchJournal() {
+      const list = document.getElementById('journalList');
+      list.innerHTML = `
+        <div class="no-entries">
+          <i class="fas fa-spinner fa-spin"></i>
+          <div>Loading your journal entries...</div>
+        </div>
+      `;
+      
+      try {
+        const res = await fetch(`${BASE_URL}/journal`);
+        const data = await res.json();
+        
+        if (!Array.isArray(data)) throw new Error('Invalid data');
+        
+        if (data.length === 0) {
+          list.innerHTML = `
+            <div class="no-entries">
+              <i class="fas fa-book-open"></i>
+              <div>No journal entries yet.</div>
+              <p>Start journaling in the chat to see your entries here!</p>
+            </div>
+          `;
+          return;
+        }
+        
+        list.innerHTML = '';
+        data.forEach((entry, index) => {
+          const entryDiv = document.createElement('div');
+          entryDiv.className = 'journal-entry';
+          entryDiv.style.opacity = '0';
+          entryDiv.style.transform = 'translateY(20px)';
+          entryDiv.style.animation = `fadeIn 0.5s ease-out ${index * 0.1}s forwards`;
+          
+          entryDiv.innerHTML = `
+            <div class="journal-prompt">
+              <i class="fas fa-question-circle"></i>
+              <div>${entry.prompt}</div>
+            </div>
+            <div class="journal-response">${entry.response}</div>
+            <div class="journal-timestamp">
+              <i class="far fa-clock"></i>
+              ${new Date(entry.timestamp).toLocaleString([], { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </div>
+          `;
+          
+          list.appendChild(entryDiv);
+        });
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `;
+        document.head.appendChild(style);
+        
+      } catch (err) {
+        list.innerHTML = `
+          <div class="no-entries" style="color:#e53935;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>Failed to load journal entries</div>
+            <p>Please try again later</p>
+          </div>
+        `;
+      }
+    }
+    
+    fetchJournal();
+  </script>
+</body>
+</html>
