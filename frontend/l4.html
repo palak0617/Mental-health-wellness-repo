@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>How It Works - AI Mental Wellness Companion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "text-light": "#0d0d1b",
+            "text-dark": "#e0e0e0",
+            "subtext-light": "#4c4c9a",
+            "subtext-dark": "#a8a8cd",
+            "border-light": "#cfcfe7",
+            "border-dark": "#33334a",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1a1a2e",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="relative flex min-h-screen w-full flex-col items-center overflow-x-hidden py-16 sm:py-24">
+<div class="layout-container flex w-full max-w-5xl grow flex-col px-4 sm:px-6 lg:px-8">
+<!-- SectionHeader -->
+<div class="flex flex-col items-center text-center mb-12 lg:mb-20">
+<h2 class="text-3xl font-bold tracking-tight text-text-light dark:text-text-dark sm:text-4xl">Start Your Journey in 3 Simple Steps</h2>
+<p class="mt-4 max-w-2xl text-lg text-subtext-light dark:text-subtext-dark">Follow this simple path to begin understanding and improving your mental wellness, one step at a time.</p>
+</div>
+<!-- Timeline -->
+<div class="relative w-full">
+<!-- Vertical Connector Line -->
+<div aria-hidden="true" class="absolute left-1/2 top-8 hidden h-[calc(100%-4rem)] w-1 -translate-x-1/2 bg-gradient-to-b from-[#D1C4E9] via-[#C5CAE9] to-[#B3E5FC] rounded-full md:block"></div>
+<div class="flex flex-col gap-12 md:gap-24">
+<!-- Step 1: Talk -->
+<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
+<div class="relative flex flex-col md:order-2">
+<div class="absolute left-0 -top-16 hidden items-center gap-4 md:flex">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#D1C4E9] to-[#C5CAE9] text-xl font-bold text-white shadow-lg">1</div>
+<h3 class="text-2xl font-semibold text-text-light dark:text-text-dark">Talk 💬</h3>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#D1C4E9] to-[#C5CAE9] text-lg font-bold text-white shadow-lg">1</div>
+<h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Talk 💬</h3>
+</div>
+<p class="mt-4 text-lg text-subtext-light dark:text-subtext-dark">Chat with the AI to express feelings and thoughts in a safe, non-judgmental space. It's here to listen anytime you need to talk.</p>
+</div>
+<div class="flex items-center justify-center rounded-lg bg-surface-light dark:bg-surface-dark p-8 shadow-sm md:order-1">
+<div class="flex h-56 w-full items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+<span class="material-symbols-outlined text-8xl text-primary/50">forum</span>
+</div>
+</div>
+</div>
+<!-- Step 2: Play -->
+<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
+<div class="relative flex flex-col">
+<div class="absolute right-0 -top-16 hidden items-center gap-4 md:flex">
+<h3 class="text-2xl font-semibold text-text-light dark:text-text-dark">Play 🧠</h3>
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#C5CAE9] to-[#B3E5FC] text-xl font-bold text-white shadow-lg">2</div>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#C5CAE9] to-[#B3E5FC] text-lg font-bold text-white shadow-lg">2</div>
+<h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Play 🧠</h3>
+</div>
+<p class="mt-4 text-lg text-subtext-light dark:text-subtext-dark">Engage in cognitive games and focus exercises to improve mental clarity and provide a healthy distraction when you need it most.</p>
+</div>
+<div class="flex items-center justify-center rounded-lg bg-surface-light dark:bg-surface-dark p-8 shadow-sm">
+<div class="flex h-56 w-full items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+<span class="material-symbols-outlined text-8xl text-primary/50">extension</span>
+</div>
+</div>
+</div>
+<!-- Step 3: Grow -->
+<div class="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
+<div class="relative flex flex-col md:order-2">
+<div class="absolute left-0 -top-16 hidden items-center gap-4 md:flex">
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#B3E5FC] to-[#A9E0FF] text-xl font-bold text-white shadow-lg">3</div>
+<h3 class="text-2xl font-semibold text-text-light dark:text-text-dark">Grow 🧘‍♂️</h3>
+</div>
+<div class="flex items-center gap-4 md:hidden">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#B3E5FC] to-[#A9E0FF] text-lg font-bold text-white shadow-lg">3</div>
+<h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Grow 🧘‍♂️</h3>
+</div>
+<p class="mt-4 text-lg text-subtext-light dark:text-subtext-dark">Track your progress with mood history charts and daily streaks to visualize your personal growth and celebrate your achievements.</p>
+</div>
+<div class="flex items-center justify-center rounded-lg bg-surface-light dark:bg-surface-dark p-8 shadow-sm md:order-1">
+<div class="flex h-56 w-full items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+<span class="material-symbols-outlined text-8xl text-primary/50">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

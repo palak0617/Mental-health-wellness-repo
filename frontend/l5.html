@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mindful Exercises</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1313ec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101022",
+            },
+            fontFamily: {
+              "display": ["Spline Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .glow-hover {
+            box-shadow: 0 0 0 0 rgba(19, 19, 236, 0);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .glow-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px 0 rgba(19, 19, 236, 0.3);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 flex flex-1 justify-center py-10 sm:py-16 md:py-20">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1 text-center">
+<h2 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-bold leading-tight tracking-tight px-4 pb-3 pt-5">Mindful Exercises</h2>
+<p class="text-slate-600 dark:text-slate-400 text-base md:text-lg font-normal leading-normal pb-8 pt-1 px-4 max-w-2xl mx-auto">Engage in fun, simple activities designed to enhance your focus, memory, and calm.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 p-4">
+<div class="glow-hover flex flex-col gap-4 p-6 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract image of flipping cards with soft purple and blue gradients" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDrXnaa1m8aeNUd7ZhT7jXRsr_v4OrK-CMLCR_ZorGMhzS9ahg92PELBNauvVLYKjBdF7lWh6E94tdzzpkW1OTV6zqtygHdxim2Nzz8qSsEYX1VD7SMpjew8IYQIK-8v8_60pGe945-CKFePopMFV8Yrn_gEUOPb9_Cm96zwx_2_v-u8mwv88404NdPi-t9Q5WZ6YOMEErqOSYxtx4b0lMN96F8K_daAHmEAXxLsOliWY3a0SSNtF6jMh_yfw6b_xrd-pR_uxrrV7M");'></div>
+<div class="flex flex-col gap-2 text-left">
+<p class="text-slate-900 dark:text-white text-lg font-medium leading-normal">Memory Match</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Boost your short-term memory and concentration.</p>
+</div>
+<a class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-medium text-primary dark:text-white transition-colors hover:bg-primary/20 dark:hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" href="#">
+                            Play Now
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="glow-hover flex flex-col gap-4 p-6 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract image of a fast-moving light trail in teal and pink colors" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjLxliFE6zkImTLFkCH0MjoMoorMNXx3OEF3GgUI9TZ-fiLfEUGtwHr_yXahGQtgs3yuKDdEsyppFd1yY7FRQuaQf49i9PlCwPsyee_XBpdv5w_Vy_1_xBE30K9FMBLpeYWF06j7vQUjHcLDd9kfxJCkr2sBFPN9-L7HOsfKtlFRZzylx4gOqVltMnC4UT_XAbxnr9zMWVNKNNRWuJfE-dNHSWpeJEr4tEWYBgd6eh0oI2eaN9-qTW7K6F8MQv2eaOfox-_jXm7Zs");'></div>
+<div class="flex flex-col gap-2 text-left">
+<p class="text-slate-900 dark:text-white text-lg font-medium leading-normal">Reaction Flow</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Sharpen your reflexes and improve your mental agility.</p>
+</div>
+<a class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-medium text-primary dark:text-white transition-colors hover:bg-primary/20 dark:hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" href="#">
+                            Play Now
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="glow-hover flex flex-col gap-4 p-6 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract image of connecting dots in a constellation pattern with a dark blue background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkekxHN8vGRrH5yEjKP6mYauhSRD7Xu38sQEdfLAsAQzIpr5z6-goJaUmLDNtoBRo-6olCviHKOB4MziNHntWo84TJdi4lYgZVrhqE7XoIMZjLh-3Zl_ehXzaED-i-Xf7KpYrEFJ6Dw6A-Jg4I2bEkmxXulBMWwDWJnucoI3usx0DZbSKqEHmQr5XnClhMi7UB6uTaPWrSy8YAuvOCd-GPLX7lN_7AVcgdhsPUFCwfoYwMO6s9Qat7omwTwTKAVmGxCStKAKczJFE");'></div>
+<div class="flex flex-col gap-2 text-left">
+<p class="text-slate-900 dark:text-white text-lg font-medium leading-normal">Focus Dots</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Train your attention and reduce distractions.</p>
+</div>
+<a class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-medium text-primary dark:text-white transition-colors hover:bg-primary/20 dark:hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" href="#">
+                            Play Now
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="glow-hover flex flex-col gap-4 p-6 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" data-alt="Abstract image of a soft, glowing bubble with pastel gradients" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBncfksB09fss9VCMy92rKOzMfcFPjquTf0wrYqMX-Sg0oRNIw4ANTy2rEW3c_RBQLKNs6AltV3Fglsdj71pwlgBZ302C1sqqPln1jYuO19-DUQJuFanxjAWl_YwzR2dl53njmyxAPs5WzHhtcuwoMkq_AyqVO-rSRsDlE9071ijQByhFRns3-1jvknbzjbhsct87GABOVZofO6n4O60ywt2e1tr30Q6efmmo5L0uZXLDvy0SNIYyxmsxVW5Q2X0BFfCEj0jFTgBAo");'></div>
+<div class="flex flex-col gap-2 text-left">
+<p class="text-slate-900 dark:text-white text-lg font-medium leading-normal">Breathing Bubble</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Find your calm with a guided breathing visualization.</p>
+</div>
+<a class="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-medium text-primary dark:text-white transition-colors hover:bg-primary/20 dark:hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" href="#">
+                            Try Now
+                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

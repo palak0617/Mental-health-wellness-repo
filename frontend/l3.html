@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MindWell AI - Coming Soon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FFAC81",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          animation: {
+            'gradient-pulse': 'gradient-pulse 6s ease-in-out infinite',
+            'slide-in-stagger-1': 'slide-in 1s ease-out 0s forwards',
+            'slide-in-stagger-2': 'slide-in 1s ease-out 0.15s forwards',
+            'slide-in-stagger-3': 'slide-in 1s ease-out 0.2s forwards',
+            'slide-in-stagger-4': 'slide-in 1s ease-out 0.25s forwards',
+            'slide-in-stagger-5': 'slide-in 1s ease-out 0.3s forwards',
+            'slide-in-stagger-6': 'slide-in 1s ease-out 0.35s forwards',
+          },
+          keyframes: {
+            'gradient-pulse': {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            'slide-in': {
+              '0%': { transform: 'translateX(50px) translateY(20px) rotateX(-10deg) rotateY(10deg)', opacity: '0' },
+              '100%': { transform: 'translateX(0) translateY(0) rotateX(0) rotateY(0)', opacity: '1' },
+            }
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      overflow-x: hidden;
+    }
+    .widget {
+        opacity: 0;
+        transform-style: preserve-3d;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#4A4A4A] dark:text-gray-300">
+<div class="relative flex min-h-screen w-full flex-col">
+<header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-6 py-3">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-6 text-[#FFAC81]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clipPath id="clip0_6_330">
+<rect fill="white" height="48" width="48"></rect>
+</clipPath>
+</defs>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight">MindWell AI</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">About Us</a>
+<a class="text-sm font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">Blog</a>
+</div>
+<div class="flex gap-2">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-primary text-white text-sm font-bold tracking-wide hover:opacity-90 transition-opacity">
+<span class="truncate">Sign Up</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white text-sm font-bold tracking-wide hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+<span class="truncate">Log In</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6 text-center lg:text-left">
+<h1 class="text-4xl md:text-5xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white">A New Space for Your Mind, Coming Soon.</h1>
+<p class="text-base md:text-lg font-normal leading-relaxed text-gray-600 dark:text-gray-400">Track your journey, connect with your AI companion, and build healthy habits in a fun, supportive way with our redesigned dashboard.</p>
+<label class="flex flex-col w-full max-w-md mx-auto lg:mx-0">
+<div class="flex w-full flex-1 items-stretch rounded-full h-14 bg-gray-100 dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary/50 transition-shadow">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-full text-gray-800 dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-6 text-base" placeholder="Enter your email address" value=""/>
+<div class="flex items-center justify-center pr-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-5 bg-primary text-white text-sm font-bold leading-normal tracking-wide hover:opacity-90 transition-opacity">
+<span class="truncate">Notify Me</span>
+</button>
+</div>
+</div>
+</label>
+</div>
+<div class="w-full bg-gradient-to-br from-[#E6E0F8] via-[#f0eaff] to-[#dcd6f1] dark:from-slate-800/50 dark:via-slate-800/80 dark:to-slate-900/50 rounded-lg p-4 md:p-6 shadow-xl shadow-[#E6E0F8]/50 dark:shadow-none animate-gradient-pulse [perspective:1000px] bg-[length:200%_200%]">
+<div class="grid grid-cols-2 gap-4">
+<div class="widget col-span-2 flex flex-col gap-2 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:rotate-x-2 hover:-rotate-y-1 animate-slide-in-stagger-1">
+<p class="text-slate-800 dark:text-white text-base font-medium leading-normal">Your Mood Journey</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight truncate">Feeling Good</p>
+<div class="flex gap-1 items-center">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal">This Week</p>
+<p class="text-green-600 dark:text-green-400 text-sm font-medium">+12%</p>
+</div>
+</div>
+<div class="flex flex-1 flex-col gap-4 pt-4">
+<svg fill="none" height="120" preserveAspectRatio="none" viewBox="-3 0 478 122" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 89.1417C18.1538 89.1417 18.1538 17.1741 36.3077 17.1741C54.4615 17.1741 54.4615 33.5385 72.6154 33.5385C90.7692 33.5385 90.7692 76.0886 108.923 76.0886C127.077 76.0886 127.077 26.9644 145.231 26.9644C163.385 26.9644 163.385 82.6301 181.538 82.6301C199.692 82.6301 199.692 49.9077 217.846 49.9077C236 49.9077 236 36.7904 254.154 36.7904C272.308 36.7904 272.308 99.006 290.462 99.006C308.615 99.006 308.615 121.848 326.769 121.848C344.923 121.848 344.923 0.819672 363.077 0.819672C381.231 0.819672 381.231 66.2627 399.385 66.2627C417.538 66.2627 417.538 105.541 435.692 105.541C453.846 105.541 453.846 20.426 472 20.426V121.848H0V89.1417Z" fill="url(#paint0_linear_chart)"></path>
+<path d="M0 89.1417C18.1538 89.1417 18.1538 17.1741 36.3077 17.1741C54.4615 17.1741 54.4615 33.5385 72.6154 33.5385C90.7692 33.5385 90.7692 76.0886 108.923 76.0886C127.077 76.0886 127.077 26.9644 145.231 26.9644C163.385 26.9644 163.385 82.6301 181.538 82.6301C199.692 82.6301 199.692 49.9077 217.846 49.9077C236 49.9077 236 36.7904 254.154 36.7904C272.308 36.7904 272.308 99.006 290.462 99.006C308.615 99.006 308.615 121.848 326.769 121.848C344.923 121.848 344.923 0.819672 363.077 0.819672C381.231 0.819672 381.231 66.2627 399.385 66.2627C417.538 66.2627 417.538 105.541 435.692 105.541C453.846 105.541 453.846 20.426 472 20.426" stroke="#FFAC81" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_chart" x1="236" x2="236" y1="0.819672" y2="121.848">
+<stop stop-color="#FFAC81" stop-opacity="0.3"></stop>
+<stop offset="1" stop-color="#FFAC81" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+</svg>
+</div>
+</div>
+<div class="widget col-span-1 flex flex-col gap-3 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:rotate-x-1 hover:rotate-y-2 animate-slide-in-stagger-2">
+<h3 class="text-slate-800 dark:text-white text-base font-medium leading-tight">Your AI Companion</h3>
+<div class="space-y-3">
+<div class="w-fit max-w-[80%] rounded-lg rounded-bl-none bg-gray-200 dark:bg-gray-700 p-2">
+<p class="text-sm text-gray-800 dark:text-gray-200">It's great to see you're feeling good today!</p>
+</div>
+<div class="w-fit max-w-[80%] ml-auto rounded-lg rounded-br-none bg-primary/80 p-2">
+<p class="text-sm text-white">Thanks! I had a really productive morning.</p>
+</div>
+<div class="w-fit max-w-[80%] rounded-lg rounded-bl-none bg-gray-200 dark:bg-gray-700 p-2">
+<p class="text-sm text-gray-800 dark:text-gray-200">That's wonderful to hear. Keep it up!</p>
+</div>
+</div>
+</div>
+<div class="widget col-span-1 flex flex-col gap-3 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:rotate-x-2 hover:-rotate-y-2 animate-slide-in-stagger-3">
+<h3 class="text-slate-800 dark:text-white text-base font-medium leading-tight">Daily Intentions</h3>
+<div class="space-y-2">
+<div class="flex items-center gap-3 p-2 bg-gray-100 dark:bg-gray-800/50 rounded cursor-pointer transition-all hover:bg-gray-200 dark:hover:bg-gray-700/80 hover:scale-105">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<p class="text-sm text-gray-700 dark:text-gray-300">Morning meditation</p>
+</div>
+<div class="flex items-center gap-3 p-2 bg-gray-100 dark:bg-gray-800/50 rounded cursor-pointer transition-all hover:bg-gray-200 dark:hover:bg-gray-700/80 hover:scale-105">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">radio_button_unchecked</span>
+<p class="text-sm text-gray-700 dark:text-gray-300">Go for a 20-min walk</p>
+</div>
+<div class="flex items-center gap-3 p-2 bg-gray-100 dark:bg-gray-800/50 rounded cursor-pointer transition-all hover:bg-gray-200 dark:hover:bg-gray-700/80 hover:scale-105">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">radio_button_unchecked</span>
+<p class="text-sm text-gray-700 dark:text-gray-300">Journal one entry</p>
+</div>
+</div>
+</div>
+<div class="widget col-span-1 flex flex-col gap-3 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:-rotate-x-1 hover:rotate-y-2 animate-slide-in-stagger-4">
+<h3 class="text-slate-800 dark:text-white text-base font-medium leading-tight">Achievements</h3>
+<div class="grid grid-cols-3 gap-3">
+<div class="aspect-square flex items-center justify-center bg-yellow-200 dark:bg-yellow-800/50 rounded-lg transition-transform duration-300 hover:scale-110 hover:-rotate-6"><span class="material-symbols-outlined text-3xl text-yellow-600 dark:text-yellow-400">wb_sunny</span></div>
+<div class="aspect-square flex items-center justify-center bg-blue-200 dark:bg-blue-800/50 rounded-lg transition-transform duration-300 hover:scale-110 hover:rotate-3"><span class="material-symbols-outlined text-3xl text-blue-600 dark:text-blue-400">self_improvement</span></div>
+<div class="aspect-square flex items-center justify-center bg-green-200 dark:bg-green-800/50 rounded-lg transition-transform duration-300 hover:scale-110 hover:rotate-6"><span class="material-symbols-outlined text-3xl text-green-600 dark:text-green-400">psychology</span></div>
+</div>
+</div>
+<div class="widget col-span-1 flex flex-col gap-3 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:rotate-x-2 hover:rotate-y-1 animate-slide-in-stagger-5">
+<h3 class="text-slate-800 dark:text-white text-base font-medium leading-tight">Mindful Moment</h3>
+<div class="flex-grow flex items-center justify-center">
+<div class="relative w-20 h-20 group">
+<div class="absolute inset-0 bg-sky-300 dark:bg-sky-600 rounded-full animate-ping opacity-50 group-hover:animate-none"></div>
+<div class="relative w-full h-full bg-sky-400 dark:bg-sky-500 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-125">
+<span class="material-symbols-outlined text-white text-3xl transition-transform duration-300 group-hover:rotate-180">air</span>
+</div>
+</div>
+</div>
+</div>
+<div class="widget col-span-2 flex flex-col gap-2 p-4 bg-white/70 dark:bg-background-dark/70 rounded-lg backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1 hover:-rotate-x-1 hover:rotate-y-1 animate-slide-in-stagger-6">
+<h3 class="text-slate-800 dark:text-white text-base font-medium leading-tight">Weekly Mood</h3>
+<div class="flex justify-between items-center text-center">
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">😊</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Mon</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">🙂</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Tue</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">😐</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Wed</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">🙂</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Thu</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">😊</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Fri</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">😄</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Sat</p>
+</div>
+<div class="flex flex-col items-center gap-1 transition-transform duration-300 hover:scale-125 hover:-translate-y-2">
+<span class="text-2xl">😊</span>
+<p class="text-xs font-bold text-gray-500 dark:text-gray-400">Sun</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

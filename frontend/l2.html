@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Features - Mental Wellness AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          animation: {
+            'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
+          },
+          keyframes: {
+            'fade-in-up': {
+              '0%': {
+                opacity: '0',
+                transform: 'translateY(20px)'
+              },
+              '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+              },
+            },
+          },
+        },
+      },
+    }
+  </script>
+<style type="text/tailwindcss">
+    @layer utilities {
+      .feature-card {
+        @apply relative transition-all duration-500 ease-in-out will-change-transform opacity-0;
+        transform-style: preserve-3d;
+        transform: perspective(1000px);
+      }
+      .feature-card:hover {
+        @apply shadow-2xl;
+        transform: perspective(1000px) translateY(-12px) rotateX(7deg) rotateY(0deg) scale(1.05);
+      }
+      .feature-card::before {
+        content: '';
+        @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500;
+        z-index: -1;
+      }
+      .feature-card:hover::before {
+        @apply opacity-100;
+      }
+      #card-1::before { @apply bg-gradient-to-br from-[#A8B5FF] to-[#E2DFFF] blur-xl; }
+      #card-2::before { @apply bg-gradient-to-br from-[#A0E7E5] to-[#E4F9F5] blur-xl; }
+      #card-3::before { @apply bg-gradient-to-br from-[#FFC0CB] to-[#FFE4E1] blur-xl; }
+      .card-content {
+        @apply transition-transform duration-500 ease-in-out;
+        transform: translateZ(20px);
+      }
+      .card-content .icon-container {
+        @apply transition-transform duration-500 ease-in-out;
+        transform: translateZ(50px);
+      }
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#343A40] dark:text-gray-200">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden p-4 sm:p-6 md:p-8">
+<div class="w-full max-w-6xl">
+<div class="flex flex-col gap-6 px-4 py-16 text-center">
+<h1 class="font-display text-4xl font-bold tracking-tight text-[#343A40] dark:text-white sm:text-5xl lg:text-6xl">
+          Tools for a Healthier Mind
+        </h1>
+<p class="font-display mx-auto max-w-2xl text-lg leading-8 text-[#6C757D] dark:text-gray-400">
+          Discover features designed to support you, every step of the way.
+        </p>
+</div>
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+<div class="feature-card animate-fade-in-up bg-gradient-to-br from-[#A8B5FF] to-[#E2DFFF] rounded-xl shadow-lg" id="card-1" style="animation-delay: 100ms;">
+<div class="card-content flex flex-col gap-4 p-8 text-center text-white">
+<div class="icon-container mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-white/20">
+<span class="material-symbols-outlined text-4xl">
+                forum
+              </span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="font-display text-xl font-bold">AI Chat Companion</h2>
+<p class="font-display text-base font-normal leading-relaxed opacity-90">Talk to a supportive AI trained for empathy and clarity.</p>
+</div>
+</div>
+</div>
+<div class="feature-card animate-fade-in-up bg-gradient-to-br from-[#A0E7E5] to-[#E4F9F5] rounded-xl shadow-lg" id="card-2" style="animation-delay: 200ms;">
+<div class="card-content flex flex-col gap-4 p-8 text-center text-[#343A40]">
+<div class="icon-container mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-black/5">
+<span class="material-symbols-outlined text-4xl">
+                extension
+              </span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="font-display text-xl font-bold">Mind Games</h2>
+<p class="font-display text-base font-normal leading-relaxed opacity-90">Play memory, attention, and focus games to boost mental strength.</p>
+</div>
+</div>
+</div>
+<div class="feature-card animate-fade-in-up bg-gradient-to-br from-[#FFC0CB] to-[#FFE4E1] rounded-xl shadow-lg" id="card-3" style="animation-delay: 300ms;">
+<div class="card-content flex flex-col gap-4 p-8 text-center text-white">
+<div class="icon-container mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-white/20">
+<span class="material-symbols-outlined text-4xl">
+                self_improvement
+              </span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="font-display text-xl font-bold">Mental Exercises</h2>
+<p class="font-display text-base font-normal leading-relaxed opacity-90">Do breathing exercises, mindfulness tasks, and grounding routines.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>
