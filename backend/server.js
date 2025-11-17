@@ -3,8 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const journalRoutes = require('./routes/journalRoutes');
-const geminiRoutes = require('./routes/geminiRoutes');
+const journalRoutes = require('./backend/routes/journalRoutes');
+const geminiRoutes = require('./backend/routes/geminiRoutes');
 
 const app = express();
 
