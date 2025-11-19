@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Mood Tracker - WellnessAI</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+            "charcoal": "#2C3E50",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glassmorphism {
+      background: rgba(30, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased">
+  <div class="relative w-full flex flex-col items-center overflow-hidden min-h-screen">
+    <!-- Background effects -->
+    <div class="absolute top-[-20%] left-[-15%] w-[50vw] h-[50vw] bg-lavender/30 dark:bg-lavender/20 rounded-full filter blur-[150px] opacity-60"></div>
+    <div class="absolute bottom-[-25%] right-[-15%] w-[45vw] h-[45vw] bg-peach/30 dark:bg-peach/20 rounded-full filter blur-[150px] opacity-50"></div>
+
+    <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <!-- Header -->
+      <header class="flex items-center justify-between whitespace-nowrap py-6">
+        <div class="flex items-center gap-4 text-charcoal dark:text-background-light">
+          <div class="size-8 text-primary dark:text-lavender">
+            <span class="material-symbols-outlined !text-4xl">neurology</span>
+          </div>
+          <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">WellnessAI</h2>
+        </div>
+        <div class="hidden md:flex flex-1 justify-center gap-9">
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="index.html">Home</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+          <a class="text-primary dark:text-lavender text-sm font-bold leading-normal" href="mood-tracker.html">Mood Tracker</a>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+            <span class="truncate">Log In</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="py-8">
+        <!-- Page Title -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-black text-charcoal dark:text-white mb-3">
+            Mood Tracker
+          </h1>
+          <p class="text-lg text-charcoal/80 dark:text-gray-300">
+            Track your emotional journey and discover patterns
+          </p>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div id="statsSection" class="mb-8 hidden">
+          <div class="glassmorphism rounded-2xl p-6 shadow-lg">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+              <h2 class="text-2xl font-bold text-charcoal dark:text-white">Your Statistics</h2>
+              <select id="timeframeSelect" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-background-dark text-charcoal dark:text-white">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+              </select>
+            </div>
+
+            <!-- Mood Counts -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+              <div class="text-center p-4 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                <div class="text-3xl mb-2">😄</div>
+                <div id="greatCount" class="text-2xl font-bold text-charcoal dark:text-white">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">Great</div>
+              </div>
+              <div class="text-center p-4 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+                <div class="text-3xl mb-2">🙂</div>
+                <div id="goodCount" class="text-2xl font-bold text-charcoal dark:text-white">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">Good</div>
+              </div>
+              <div class="text-center p-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl">
+                <div class="text-3xl mb-2">😐</div>
+                <div id="okayCount" class="text-2xl font-bold text-charcoal dark:text-white">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">Okay</div>
+              </div>
+              <div class="text-center p-4 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
+                <div class="text-3xl mb-2">😟</div>
+                <div id="badCount" class="text-2xl font-bold text-charcoal dark:text-white">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">Bad</div>
+              </div>
+              <div class="text-center p-4 bg-red-100 dark:bg-red-900/30 rounded-xl">
+                <div class="text-3xl mb-2">😢</div>
+                <div id="terribleCount" class="text-2xl font-bold text-charcoal dark:text-white">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-300">Terrible</div>
+              </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="bg-white dark:bg-background-dark/50 rounded-xl p-4 mb-4">
+              <canvas id="moodChart" height="80"></canvas>
+            </div>
+
+            <div class="text-center text-charcoal/70 dark:text-gray-400">
+              Total entries: <span id="totalCount" class="font-semibold">0</span> | 
+              Average intensity: <span id="avgIntensity" class="font-semibold">0</span>/10
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Mood Button -->
+        <div id="addMoodBtn" class="text-center mb-8">
+          <button onclick="showMoodForm()" class="bg-gradient-to-r from-lavender via-peach to-teal text-charcoal px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+            + Log Your Mood
+          </button>
+        </div>
+
+        <!-- Mood Entry Form -->
+        <div id="moodForm" class="glassmorphism rounded-2xl p-8 mb-8 hidden shadow-lg">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white mb-6">How are you feeling?</h2>
+          <form onsubmit="submitMood(event)">
+            <!-- Mood Selection -->
+            <div class="mb-6">
+              <label class="block text-charcoal dark:text-white font-semibold mb-3">Select your mood:</label>
+              <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <button type="button" onclick="selectMood('great')" class="mood-btn p-4 rounded-xl border-2 border-gray-300 hover:border-green-500 transition-all">
+                  <div class="text-4xl mb-2">😄</div>
+                  <div class="text-sm font-medium text-charcoal dark:text-white">Great</div>
+                </button>
+                <button type="button" onclick="selectMood('good')" class="mood-btn p-4 rounded-xl border-2 border-gray-300 hover:border-blue-500 transition-all">
+                  <div class="text-4xl mb-2">🙂</div>
+                  <div class="text-sm font-medium text-charcoal dark:text-white">Good</div>
+                </button>
+                <button type="button" onclick="selectMood('okay')" class="mood-btn p-4 rounded-xl border-2 border-gray-300 hover:border-yellow-500 transition-all">
+                  <div class="text-4xl mb-2">😐</div>
+                  <div class="text-sm font-medium text-charcoal dark:text-white">Okay</div>
+                </button>
+                <button type="button" onclick="selectMood('bad')" class="mood-btn p-4 rounded-xl border-2 border-gray-300 hover:border-orange-500 transition-all">
+                  <div class="text-4xl mb-2">😟</div>
+                  <div class="text-sm font-medium text-charcoal dark:text-white">Bad</div>
+                </button>
+                <button type="button" onclick="selectMood('terrible')" class="mood-btn p-4 rounded-xl border-2 border-gray-300 hover:border-red-500 transition-all">
+                  <div class="text-4xl mb-2">😢</div>
+                  <div class="text-sm font-medium text-charcoal dark:text-white">Terrible</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Intensity Slider -->
+            <div class="mb-6">
+              <label class="block text-charcoal dark:text-white font-semibold mb-3">
+                Intensity: <span id="intensityValue">5</span>/10
+              </label>
+              <input type="range" id="intensitySlider" min="1" max="10" value="5" oninput="updateIntensity(this.value)" class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer">
+            </div>
+
+            <!-- Activities -->
+            <div class="mb-6">
+              <label class="block text-charcoal dark:text-white font-semibold mb-3">Activities today:</label>
+              <div id="activitiesContainer" class="flex flex-wrap gap-2">
+                <!-- Activities will be dynamically added -->
+              </div>
+            </div>
+
+            <!-- Note -->
+            <div class="mb-6">
+              <label class="block text-charcoal dark:text-white font-semibold mb-3">Add a note (optional):</label>
+              <textarea id="moodNote" placeholder="What's on your mind?" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary resize-none bg-white dark:bg-background-dark text-charcoal dark:text-white" rows="4" maxlength="1000"></textarea>
+              <div class="text-right text-sm text-gray-500 mt-1"><span id="noteLength">0</span>/1000</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4">
+              <button type="submit" id="submitBtn" disabled class="flex-1 bg-gradient-to-r from-lavender via-peach to-teal text-charcoal py-3 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all">
+                Save Mood
+              </button>
+              <button type="button" onclick="hideMoodForm()" class="px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-charcoal dark:text-white rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Mood History -->
+        <div class="glassmorphism rounded-2xl p-8 shadow-lg">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white mb-6">Mood History</h2>
+          <div id="moodHistory" class="space-y-4">
+            <div class="text-center py-12 text-gray-500">
+              <p class="text-lg">No mood entries yet. Start tracking your mood today!</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API_URL = 'http://localhost:5000/api';
+    const USER_ID = '673a1234567890abcdef1234'; // Replace with actual user ID from authentication
+
+    let selectedMood = '';
+    let selectedActivities = [];
+    let moodChart = null;
+
+    const activities = ['Exercise', 'Work', 'Social', 'Sleep', 'Family', 'Hobbies', 'Meditation', 'Reading', 'Cooking', 'Gaming'];
+
+    const moodEmojis = {
+      great: '😄',
+      good: '🙂',
+      okay: '😐',
+      bad: '😟',
+      terrible: '😢'
+    };
+
+    const moodColors = {
+      great: '#10b981',
+      good: '#3b82f6',
+      okay: '#eab308',
+      bad: '#f97316',
+      terrible: '#ef4444'
+    };
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeActivities();
+      fetchMoods();
+      fetchStats();
+      
+      document.getElementById('timeframeSelect').addEventListener('change', fetchStats);
+      document.getElementById('moodNote').addEventListener('input', (e) => {
+        document.getElementById('noteLength').textContent = e.target.value.length;
+      });
+    });
+
+    function initializeActivities() {
+      const container = document.getElementById('activitiesContainer');
+      activities.forEach(activity => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'activity-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-200 dark:bg-gray-700 text-charcoal dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-all';
+        btn.textContent = activity;
+        btn.onclick = () => toggleActivity(activity, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleActivity(activity, btn) {
+      if (selectedActivities.includes(activity)) {
+        selectedActivities = selectedActivities.filter(a => a !== activity);
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'dark:bg-gray-700');
+      } else {
+        selectedActivities.push(activity);
+        btn.classList.add('bg-primary', 'text-white');
+        btn.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+      }
+    }
+
+    function selectMood(mood) {
+      selectedMood = mood;
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.classList.remove('bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'text-white', 'border-transparent', 'scale-105');
+      });
+      
+      const colors = {
+        great: 'bg-green-500',
+        good: 'bg-blue-500',
+        okay: 'bg-yellow-500',
+        bad: 'bg-orange-500',
+        terrible: 'bg-red-500'
+      };
+      
+      event.target.closest('.mood-btn').classList.add(colors[mood], 'text-white', 'border-transparent', 'scale-105');
+      document.getElementById('submitBtn').disabled = false;
+    }
+
+    function updateIntensity(value) {
+      document.getElementById('intensityValue').textContent = value;
+    }
+
+    function showMoodForm() {
+      document.getElementById('moodForm').classList.remove('hidden');
+      document.getElementById('addMoodBtn').classList.add('hidden');
+    }
+
+    function hideMoodForm() {
+      document.getElementById('moodForm').classList.add('hidden');
+      document.getElementById('addMoodBtn').classList.remove('hidden');
+      resetForm();
+    }
+
+    function resetForm() {
+      selectedMood = '';
+      selectedActivities = [];
+      document.getElementById('intensitySlider').value = 5;
+      document.getElementById('intensityValue').textContent = 5;
+      document.getElementById('moodNote').value = '';
+      document.getElementById('noteLength').textContent = 0;
+      document.getElementById('submitBtn').disabled = true;
+      
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.classList.remove('bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-orange-500', 'bg-red-500', 'text-white', 'border-transparent', 'scale-105');
+      });
+      
+      document.querySelectorAll('.activity-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'dark:bg-gray-700');
+      });
+    }
+
+    async function submitMood(event) {
+      event.preventDefault();
+      
+      try {
+        const data = {
+          userId: USER_ID,
+          mood: selectedMood,
+          intensity: parseInt(document.getElementById('intensitySlider').value),
+          note: document.getElementById('moodNote').value,
+          activities: selectedActivities
+        };
+
+        await axios.post(`${API_URL}/moods`, data);
+        
+        hideMoodForm();
+        fetchMoods();
+        fetchStats();
+        
+        alert('Mood logged successfully!');
+      } catch (error) {
+        console.error('Error submitting mood:', error);
+        alert('Failed to log mood. Please try again.');
+      }
+    }
+
+    async function fetchMoods() {
+      try {
+        const response = await axios.get(`${API_URL}/moods/${USER_ID}`);
+        displayMoodHistory(response.data);
+      } catch (error) {
+        console.error('Error fetching moods:', error);
+      }
+    }
+
+    async function fetchStats() {
+      try {
+        const timeframe = document.getElementById('timeframeSelect').value;
+        const response = await axios.get(`${API_URL}/moods/${USER_ID}/stats?timeframe=${timeframe}`);
+        displayStats(response.data);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    }
+
+    function displayStats(stats) {
+      if (stats.total === 0) {
+        document.getElementById('statsSection').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('statsSection').classList.remove('hidden');
+      document.getElementById('greatCount').textContent = stats.moodCounts.great;
+      document.getElementById('goodCount').textContent = stats.moodCounts.good;
+      document.getElementById('okayCount').textContent = stats.moodCounts.okay;
+      document.getElementById('badCount').textContent = stats.moodCounts.bad;
+      document.getElementById('terribleCount').textContent = stats.moodCounts.terrible;
+      document.getElementById('totalCount').textContent = stats.total;
+      document.getElementById('avgIntensity').textContent = stats.avgIntensity;
+
+      // Update chart
+      if (moodChart) {
+        moodChart.destroy();
+      }
+
+      const ctx = document.getElementById('moodChart').getContext('2d');
+      moodChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: stats.moodTrend.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+          datasets: [{
+            label: 'Mood Trend',
+            data: stats.moodTrend.map(d => d.avgMood),
+            borderColor: '#C8B6FF',
+            backgroundColor: 'rgba(200, 182, 255, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              min: 1,
+              max: 5,
+              ticks: {
+                stepSize: 1,
+                callback: function(value) {
+                  const labels = { 5: '😄', 4: '🙂', 3: '😐', 2: '😟', 1: '😢' };
+                  return labels[value] || '';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function displayMoodHistory(moods) {
+      const container = document.getElementById('moodHistory');
+      
+      if (moods.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-gray-500"><p class="text-lg">No mood entries yet. Start tracking your mood today!</p></div>';
+        return;
+      }
+
+      container.innerHTML = moods.map(mood => `
+        <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-md transition-shadow bg-white dark:bg-background-dark/30">
+          <div class="flex items-start justify-between">
+            <div class="flex items-start gap-4 flex-1">
+              <div class="text-4xl">${moodEmojis[mood.mood]}</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-bold text-charcoal dark:text-white capitalize">${mood.mood}</span>
+                  <span class="text-gray-400">•</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">
+                    ${new Date(mood.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                  <span class="text-gray-400">•</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Intensity: ${mood.intensity}/10</span>
+                </div>
+                ${mood.note ? `<p class="text-charcoal/80 dark:text-gray-300 mb-2">${mood.note}</p>` : ''}
+                ${mood.activities.length > 0 ? `
+                  <div class="flex flex-wrap gap-2">
+                    ${mood.activities.map(activity => `
+                      <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-charcoal dark:text-white rounded-full text-xs font-medium">${activity}</span>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            <button onclick="deleteMood('${mood._id}')" class="text-red-500 hover:text-red-700 transition-colors">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function deleteMood(id) {
+      if (!confirm('Are you sure you want to delete this mood entry?')) return;
+      
+      try {
+        await axios.delete(`${API_URL}/moods/${id}`);
+        fetchMoods();
+        fetchStats();
+      } catch (error) {
+        console.error('Error deleting mood:', error);
+        alert('Failed to delete mood. Please try again.');
+      }
+    }
+  </script>
+</body>
+</html>
