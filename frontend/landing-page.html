@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>WellnessAI - Your Personal AI Companion</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellnessAI - Your Personal AI Companion</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -44,17 +45,32 @@
                 '0%, 100%': { 'background-position': '0% 50%' },
                 '50%': { 'background-position': '100% 50%' },
             },
+            brainPulse: {
+              '0%, 100%': { opacity: '0.7', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.05)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            shootingStar: {
+              '0%': { transform: 'translateX(0) translateY(0) rotate(45deg)', opacity: '1' },
+              '100%': { transform: 'translateX(500px) translateY(500px) rotate(45deg)', opacity: '0' },
+            },
           },
           animation: {
             float: 'float 6s ease-in-out infinite',
             sparkle: 'sparkle 2.5s ease-in-out infinite',
             'gradient-wave': 'gradientWave 8s ease infinite',
+            'brain-pulse': 'brainPulse 4s ease-in-out infinite',
+            twinkle: 'twinkle 3s ease-in-out infinite',
+            'shooting-star': 'shootingStar 2s linear forwards',
           },
         },
       },
     }
   </script>
-<style>
+  <style>
     .glassmorphism {
       background: rgba(255, 255, 255, 0.5);
       backdrop-filter: blur(10px);
@@ -100,170 +116,532 @@
     .perspective {
         perspective: 1000px;
     }
+    
+    /* Brain Recovery Dashboard Styles */
+    .brain-dashboard {
+      background: linear-gradient(135deg, #f6f6f8 0%, #e8e8f0 100%);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 380px;
+      width: 100%;
+      font-family: 'Spline Sans', sans-serif;
+    }
+    .dark .brain-dashboard {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .brain-lobe-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #2C3E50;
+      margin-bottom: 0.5rem;
+    }
+    .dark .brain-lobe-title {
+      color: #f6f6f8;
+    }
+    
+    .recovery-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .recovery-percent {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #1313ec;
+    }
+    .dark .recovery-percent {
+      color: #C8B6FF;
+    }
+    
+    .recovery-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .dark .recovery-label {
+      color: #9ca3af;
+    }
+    
+    .month-timeline {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .dark .month-timeline {
+      border-bottom: 1px solid #374151;
+    }
+    
+    .month {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .dark .month {
+      color: #9ca3af;
+    }
+    
+    .active-month {
+      color: #1313ec;
+      font-weight: 700;
+    }
+    .dark .active-month {
+      color: #C8B6FF;
+    }
+    
+    .recovery-story {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .dark .recovery-story {
+      color: #9ca3af;
+    }
+    
+    .brain-regions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .brain-region {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 0.75rem;
+      text-align: center;
+    }
+    .dark .brain-region {
+      background: rgba(30, 30, 60, 0.5);
+    }
+    
+    .region-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #2C3E50;
+      margin-bottom: 0.5rem;
+    }
+    .dark .region-title {
+      color: #f6f6f8;
+    }
+    
+    .region-subtitle {
+      font-size: 0.75rem;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+    .dark .region-subtitle {
+      color: #9ca3af;
+    }
+    
+    .brand-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .dark .brand-footer {
+      border-top: 1px solid #374151;
+    }
+    
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1313ec;
+      margin-bottom: 0.25rem;
+    }
+    .dark .brand-name {
+      color: #C8B6FF;
+    }
+    
+    .brand-tagline {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .dark .brand-tagline {
+      color: #9ca3af;
+    }
+    
+    /* Stars container */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    .dark .stars-container {
+      opacity: 1;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, white, transparent);
+      border-radius: 50%;
+    }
+    
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      transform-origin: 0 0;
+    }
   </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased">
-<div class="relative w-full flex flex-col items-center overflow-hidden">
-<div class="absolute top-[-20%] left-[-15%] w-[50vw] h-[50vw] bg-lavender/30 dark:bg-lavender/20 rounded-full filter blur-[150px] opacity-60"></div>
-<div class="absolute bottom-[-25%] right-[-15%] w-[45vw] h-[45vw] bg-peach/30 dark:bg-peach/20 rounded-full filter blur-[150px] opacity-50"></div>
-<div class="absolute top-[10%] right-[5%] w-[30vw] h-[30vw] bg-teal/30 dark:bg-teal/20 rounded-full filter blur-[120px] opacity-40"></div>
-<span class="absolute top-[15%] left-[45%] text-2xl opacity-80 animate-sparkle">✨</span>
-<span class="absolute top-[80%] left-[10%] text-3xl opacity-70 animate-float" style="animation-delay: 1.5s;">💬</span>
-<span class="absolute top-[30%] right-[10%] text-2xl opacity-80 animate-float" style="animation-delay: 0.5s;">☺️</span>
-<span class="absolute bottom-[15%] right-[40%] text-3xl opacity-70 animate-sparkle" style="animation-delay: 1s;">🌱</span>
-<div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-<header class="flex items-center justify-between whitespace-nowrap py-6">
-<div class="flex items-center gap-4 text-charcoal dark:text-background-light">
-<div class="size-8 text-primary dark:text-lavender">
-<span class="material-symbols-outlined !text-4xl">neurology</span>
-</div>
-<h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">WellnessAI</h2>
-</div>
-<div class="hidden md:flex flex-1 justify-center gap-9">
-<a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
-<a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Features</a>
-<a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
-</div>
-<div class="flex items-center gap-4">
-<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-<span class="truncate">Log In</span>
-</button>
-</div>
-</header>
-<main class="relative py-20 md:py-32">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div class="flex flex-col gap-8 text-center lg:text-left">
-<div class="flex flex-col gap-4">
-<h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter text-charcoal dark:text-white">
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased transition-colors duration-300">
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <div class="relative w-full flex flex-col items-center overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute top-[-20%] left-[-15%] w-[50vw] h-[50vw] bg-lavender/30 dark:bg-lavender/20 rounded-full filter blur-[150px] opacity-60"></div>
+    <div class="absolute bottom-[-25%] right-[-15%] w-[45vw] h-[45vw] bg-peach/30 dark:bg-peach/20 rounded-full filter blur-[150px] opacity-50"></div>
+    <div class="absolute top-[10%] right-[5%] w-[30vw] h-[30vw] bg-teal/30 dark:bg-teal/20 rounded-full filter blur-[120px] opacity-40"></div>
+    
+    <!-- Floating Emojis -->
+    <span class="absolute top-[15%] left-[45%] text-2xl opacity-80 animate-sparkle">✨</span>
+    <span class="absolute top-[80%] left-[10%] text-3xl opacity-70 animate-float" style="animation-delay: 1.5s;">💬</span>
+    <span class="absolute top-[30%] right-[10%] text-2xl opacity-80 animate-float" style="animation-delay: 0.5s;">☺️</span>
+    <span class="absolute bottom-[15%] right-[40%] text-3xl opacity-70 animate-sparkle" style="animation-delay: 1s;">🌱</span>
+    
+    <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="flex items-center justify-between whitespace-nowrap py-6">
+        <div class="flex items-center gap-4 text-charcoal dark:text-background-light">
+          <div class="size-8 text-primary dark:text-lavender">
+            <span class="material-symbols-outlined !text-4xl">neurology</span>
+          </div>
+          <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">WellnessAI</h2>
+        </div>
+        
+        <div class="hidden md:flex flex-1 justify-center gap-9">
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <!-- Dark/Light Mode Toggle -->
+          <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+            <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+          </button>
+          
+          <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+            <span class="truncate">Log In</span>
+          </button>
+          
+          <a href="signup.html" class="flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold tracking-[0.015em] bg-gradient-to-r from-lavender via-peach to-teal text-charcoal shadow-md hover:shadow-lg transition-all hover:scale-105">
+            Sign Up
+          </a>
+        </div>
+      </header>
+      
+      <!-- Hero Section -->
+      <main class="relative py-20 md:py-32">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div class="flex flex-col gap-8 text-center lg:text-left">
+            <div class="flex flex-col gap-4">
+              <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter text-charcoal dark:text-white">
                 Your Personal AI Companion for <span class="gradient-text">Mental Wellness</span>
-</h1>
-<p class="text-lg md:text-xl font-normal text-charcoal/80 dark:text-gray-300">
+              </h1>
+              <p class="text-lg md:text-xl font-normal text-charcoal/80 dark:text-gray-300 max-w-xl mx-auto lg:mx-0">
                 Talk openly. Play mind games. Practice exercises. Heal at your own pace.
               </p>
-</div>
-<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-<button class="group relative flex items-center justify-center rounded-full h-12 px-8 bg-gradient-to-r from-lavender via-peach to-teal text-charcoal text-base font-bold tracking-[0.015em] shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
-<span class="truncate">Start Chatting</span>
-<span class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-</button>
-<button class="gradient-border-button flex items-center justify-center rounded-full h-12 px-8 text-charcoal dark:text-white text-base font-bold tracking-[0.015em] transform hover:-translate-y-1 hover:scale-105">
-<span class="truncate">Try Exercises</span>
-</button>
-</div>
-</div>
-<div class="relative flex justify-center items-center h-96 lg:h-full perspective">
-<div class="absolute z-10 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-teal/90 to-teal/70 dark:from-teal/70 dark:to-teal/50 rounded-full flex items-center justify-center shadow-2xl animate-float transition-transform duration-500 hover:scale-110 [transform:translateZ(40px)]">
-<div class="flex gap-1.5">
-<span class="w-3 h-3 bg-charcoal/50 rounded-full animate-pulse"></span>
-<span class="w-3 h-3 bg-charcoal/50 rounded-full animate-pulse" style="animation-delay: 0.2s;"></span>
-<span class="w-3 h-3 bg-charcoal/50 rounded-full animate-pulse" style="animation-delay: 0.4s;"></span>
-</div>
-</div>
-<div class="absolute w-full max-w-md h-auto p-6 glassmorphism rounded-xl shadow-lg transition-transform duration-500 [transform:rotateY(-5deg)_rotateX(5deg)_translateZ(-20px)] hover:[transform:rotateY(0deg)_rotateX(0deg)_translateZ(0px)]">
-<div class="flex flex-col gap-4">
-<div class="flex justify-start">
-<div class="bg-primary/20 dark:bg-primary/40 rounded-xl rounded-bl-sm p-3 max-w-[75%]">
-<p class="text-sm text-charcoal dark:text-gray-200">Hello! I'm here to listen. How are you feeling today?</p>
-</div>
-</div>
-<div class="flex justify-end">
-<div class="bg-background-light dark:bg-background-dark/80 rounded-xl rounded-br-sm p-3 max-w-[75%]">
-<p class="text-sm text-charcoal/80 dark:text-gray-300">I've been feeling a bit overwhelmed lately...</p>
-</div>
-</div>
-<div class="flex justify-start">
-<div class="bg-primary/20 dark:bg-primary/40 rounded-xl rounded-bl-sm p-3 max-w-[75%]">
-<p class="text-sm text-charcoal dark:text-gray-200">That's completely understandable. Let's talk about it.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-<section class="py-20 md:py-32">
-<div class="flex flex-col gap-12">
-<div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
-<div class="flex flex-col gap-4 max-w-3xl text-center lg:text-left mx-auto lg:mx-0">
-<h2 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white">How it Works</h2>
-<p class="text-base md:text-lg font-normal text-charcoal/80 dark:text-gray-300">
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <a href="index.html">
+                <button class="group relative flex items-center justify-center rounded-full h-12 px-8 bg-gradient-to-r from-lavender via-peach to-teal text-charcoal text-base font-bold tracking-[0.015em] shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+                  <span class="truncate">Start Chatting</span>
+                  <span class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                </button>
+              </a>
+              
+              <a href="l4.html">
+                <button class="gradient-border-button flex items-center justify-center rounded-full h-12 px-8 text-charcoal dark:text-white text-base font-bold tracking-[0.015em] transform hover:-translate-y-1 hover:scale-105">
+                  <span class="truncate">Try Exercises</span>
+                </button>
+              </a>
+            </div>
+          </div>
+          
+          <div class="relative flex justify-center items-center perspective">
+            <!-- Brain Recovery Dashboard -->
+            <div class="brain-dashboard">
+              <div class="brain-lobe-title">FRONTAL LOBE</div>
+              
+              <div class="recovery-stats">
+                <div>
+                  <div class="recovery-percent">40% Recovery</div>
+                  <div class="recovery-label">Per Month</div>
+                </div>
+              </div>
+              
+              <div class="month-timeline">
+                <div class="month">Jul</div>
+                <div class="month active-month">Aug</div>
+                <div class="month">Sep</div>
+                <div class="month">Oct</div>
+                <div class="month">Nov</div>
+              </div>
+              
+              <div class="recovery-story">
+                Reclaiming mental well-being success stories in recovery
+              </div>
+              
+              <div class="brain-regions">
+                <div class="brain-region">
+                  <div class="region-title">TEMPORAL LOBE</div>
+                </div>
+                <div class="brain-region">
+                  <div class="region-title">PARIETAL LOBE</div>
+                </div>
+                <div class="brain-region">
+                  <div class="region-title">OCCIPITAL LOBE</div>
+                </div>
+                <div class="brain-region">
+                  <div class="region-title">CEREBELLUM</div>
+                </div>
+              </div>
+              
+              <div class="brain-region">
+                <div class="region-title">EXPLORING MINDFULNESS A JOURNEY THROUGH LESSONS</div>
+              </div>
+              
+              <div class="brand-footer">
+                <div class="brand-name">Mental.me</div>
+                <div class="brand-tagline">Embracing the present mindfulness's vital role in Self-Care</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Features Section -->
+      <section class="py-20 md:py-32">
+        <div class="flex flex-col gap-12">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+            <div class="flex flex-col gap-4 max-w-3xl text-center lg:text-left mx-auto lg:mx-0">
+              <h2 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white">How it Works</h2>
+              <p class="text-base md:text-lg font-normal text-charcoal/80 dark:text-gray-300">
                 Discover a safe space designed for your well-being. Our features are crafted to support you on your mental wellness journey.
               </p>
-</div>
-<button class="flex-shrink-0 mx-auto lg:mx-0 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-primary text-background-light text-base font-bold tracking-[0.015em] hover:opacity-90 transition-opacity">
-<span class="truncate">Explore Features</span>
-</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6">
-<div class="text-primary dark:text-lavender">
-<span class="material-symbols-outlined !text-3xl">forum</span>
-</div>
-<div class="flex flex-col gap-1">
-<h3 class="text-xl font-bold text-charcoal dark:text-white">Open Conversations</h3>
-<p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Chat about anything on your mind in a non-judgmental, confidential space.</p>
-</div>
-</div>
-<div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6">
-<div class="text-primary dark:text-lavender">
-<span class="material-symbols-outlined !text-3xl">extension</span>
-</div>
-<div class="flex flex-col gap-1">
-<h3 class="text-xl font-bold text-charcoal dark:text-white">Mindful Games</h3>
-<p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Engage in fun, science-backed games designed to improve cognitive function.</p>
-</div>
-</div>
-<div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6">
-<div class="text-primary dark:text-lavender">
-<span class="material-symbols-outlined !text-3xl">self_improvement</span>
-</div>
-<div class="flex flex-col gap-1">
-<h3 class="text-xl font-bold text-charcoal dark:text-white">Guided Exercises</h3>
-<p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Follow structured exercises to practice mindfulness, breathing, and self-care.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="py-20 md:py-32">
-<div class="w-full bg-gradient-to-br from-lavender/80 via-peach/80 to-teal/80 dark:from-lavender/30 dark:via-peach/30 dark:to-teal/30 rounded-xl p-10 md:p-20">
-<div class="flex flex-col items-center justify-center gap-6 text-center">
-<h2 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white max-w-2xl">
+            </div>
+            
+            <button class="flex-shrink-0 mx-auto lg:mx-0 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-primary text-background-light text-base font-bold tracking-[0.015em] hover:opacity-90 transition-opacity">
+              <span class="truncate">Explore Features</span>
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6 hover:shadow-lg transition-all duration-300">
+              <div class="text-primary dark:text-lavender">
+                <span class="material-symbols-outlined !text-3xl">forum</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-xl font-bold text-charcoal dark:text-white">Open Conversations</h3>
+                <p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Chat about anything on your mind in a non-judgmental, confidential space.</p>
+              </div>
+            </div>
+            
+            <div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6 hover:shadow-lg transition-all duration-300">
+              <div class="text-primary dark:text-lavender">
+                <span class="material-symbols-outlined !text-3xl">extension</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-xl font-bold text-charcoal dark:text-white">Mindful Games</h3>
+                <p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Engage in fun, science-backed games designed to improve cognitive function.</p>
+              </div>
+            </div>
+            
+            <div class="flex flex-col flex-1 gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light/50 dark:bg-background-dark/50 p-6 hover:shadow-lg transition-all duration-300">
+              <div class="text-primary dark:text-lavender">
+                <span class="material-symbols-outlined !text-3xl">self_improvement</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-xl font-bold text-charcoal dark:text-white">Guided Exercises</h3>
+                <p class="text-base font-normal text-charcoal/70 dark:text-gray-400">Follow structured exercises to practice mindfulness, breathing, and self-care.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- CTA Section -->
+      <section class="py-20 md:py-32">
+        <div class="w-full bg-gradient-to-br from-lavender/80 via-peach/80 to-teal/80 dark:from-lavender/30 dark:via-peach/30 dark:to-teal/30 rounded-xl p-10 md:p-20">
+          <div class="flex flex-col items-center justify-center gap-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white max-w-2xl">
               Ready to begin your journey?
             </h2>
-<p class="text-base md:text-lg font-normal text-charcoal/80 dark:text-gray-200 max-w-xl">
+            <p class="text-base md:text-lg font-normal text-charcoal/80 dark:text-gray-200 max-w-xl">
               Take the first step towards a healthier mind today. It's free to start.
             </p>
-<div class="mt-4">
-<button class="flex items-center justify-center rounded-full h-12 px-8 bg-primary text-background-light text-base font-bold tracking-[0.015em] shadow-lg hover:shadow-xl hover:opacity-90 transition-all transform hover:-translate-y-0.5">
-<span class="truncate">Start for Free</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<footer class="flex flex-col gap-8 py-10 text-center">
-<div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Features</a>
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Contact</a>
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy Policy</a>
-<a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Terms of Service</a>
-</div>
-<div class="flex flex-wrap justify-center gap-6">
-<a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
-</a>
-<a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0-2a7 7 0 110 14 7 7 0 010-14zm6.406-2.34a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill-rule="evenodd"></path></svg>
-</a>
-<a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
-</a>
-</div>
-<p class="text-charcoal/60 dark:text-gray-500 text-sm font-normal leading-normal">© 2024 WellnessAI. All rights reserved.</p>
-</footer>
-</div>
-</div>
-</body></html>
+            <div class="mt-4">
+              <button class="flex items-center justify-center rounded-full h-12 px-8 bg-primary text-background-light text-base font-bold tracking-[0.015em] shadow-lg hover:shadow-xl hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+                <span class="truncate">Start for Free</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Footer -->
+      <footer class="flex flex-col gap-8 py-10 text-center">
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Features</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Contact</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy Policy</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Terms of Service</a>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-6">
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+          </a>
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0-2a7 7 0 110 14 7 7 0 010-14zm6.406-2.34a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill-rule="evenodd"></path></svg>
+          </a>
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+          </a>
+        </div>
+        
+        <p class="text-charcoal/60 dark:text-gray-500 text-sm font-normal leading-normal">© 2024 WellnessAI. All rights reserved.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('light-icon');
+    const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    
+    // Check for saved theme preference or default to light
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply the saved theme on page load
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.add('hidden');
+      darkIcon.classList.remove('hidden');
+      createStars();
+    } else {
+      document.documentElement.classList.remove('dark');
+      lightIcon.classList.remove('hidden');
+      darkIcon.classList.add('hidden');
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+        clearStars();
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+        createStars();
+      }
+    });
+    
+    // Create stars for dark mode
+    function createStars() {
+      // Clear any existing stars
+      clearStars();
+      
+      // Create twinkling stars
+      for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Random size between 1-3px
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation delay
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        // Add twinkle animation
+        star.classList.add('animate-twinkle');
+        
+        starsContainer.appendChild(star);
+      }
+      
+      // Create occasional shooting stars
+      setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance every interval
+          createShootingStar();
+        }
+      }, 3000);
+    }
+    
+    // Create a shooting star
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.classList.add('shooting-star');
+      
+      // Random starting position (top area)
+      shootingStar.style.left = `${Math.random() * 20}%`;
+      shootingStar.style.top = `${Math.random() * 30}%`;
+      
+      // Random animation duration
+      const duration = Math.random() * 1 + 1.5;
+      shootingStar.style.animationDuration = `${duration}s`;
+      
+      starsContainer.appendChild(shootingStar);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        if (shootingStar.parentNode) {
+          shootingStar.parentNode.removeChild(shootingStar);
+        }
+      }, duration * 1000);
+    }
+    
+    // Clear all stars
+    function clearStars() {
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
+  </script>
+</body>
+</html>

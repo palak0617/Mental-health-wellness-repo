@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellnessAI - Guided Breathing Exercise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1313ec;
+      --background-light: #f6f6f8;
+      --background-dark: #101022;
+      --lavender: #C8B6FF;
+      --peach: #FFD8B1;
+      --teal: #B4E4D8;
+      --charcoal: #2C3E50;
+    }
+    
+    * {
+      box-sizing: border-box;
+      font-family: 'Nunito', system-ui, Arial;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      background: var(--background-light);
+      color: var(--charcoal);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    body.dark {
+      background: var(--background-dark);
+      color: #f6f6f8;
+    }
+    
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark .glassmorphism {
+      background: rgba(30, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-3d:hover {
+      transform: translateY(-10px) rotateX(5deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .dark .card-3d {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .card-3d:hover {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .gradient-text {
+      background-image: linear-gradient(to right, var(--lavender), var(--peach), var(--teal));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .gradient-border-button {
+      position: relative;
+      background: var(--background-light);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      z-index: 1;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .gradient-border-button::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      z-index: -1;
+      margin: -2px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, var(--lavender), var(--peach), var(--teal));
+      background-size: 200% 200%;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .gradient-border-button:hover::before {
+      background-position: 100% 100%;
+      transform: scale(1.05);
+    }
+    
+    .dark .gradient-border-button {
+      background: var(--background-dark);
+    }
+    
+    /* Brain animation styles */
+    .brain-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 300px;
+    }
+    
+    .brain {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--lavender), var(--teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 -12px 30px rgba(0,0,0,0.06), 0 12px 30px rgba(0,0,0,0.08);
+      transform-origin: center center;
+      transition: transform 300ms ease;
+    }
+    
+    .eye {
+      width: 20px;
+      height: 20px;
+      background: #3b2b5a;
+      border-radius: 50%;
+      position: absolute;
+      top: 35%;
+    }
+    
+    .eye.left {
+      left: 25%;
+    }
+    
+    .eye.right {
+      right: 25%;
+    }
+    
+    .smile {
+      position: absolute;
+      bottom: 60px;
+      width: 70px;
+      height: 30px;
+      border-bottom: 6px solid #3b2b5a;
+      border-radius: 50%;
+    }
+    
+    .bubble {
+      position: absolute;
+      left: 20px;
+      top: 8px;
+      background: var(--background-light);
+      padding: 14px 16px;
+      border-radius: 14px;
+      max-width: 300px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transform-origin: 10% 0;
+      animation: popIn 700ms ease;
+    }
+    
+    .dark .bubble {
+      background: var(--background-dark);
+      color: #f6f6f8;
+    }
+    
+    .bubble:after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 28px;
+      border-width: 14px 12px 0 0;
+      border-style: solid;
+      border-color: var(--background-light) transparent transparent transparent;
+    }
+    
+    .dark .bubble:after {
+      border-color: var(--background-dark) transparent transparent transparent;
+    }
+    
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(-8px) scale(.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .bubble p {
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    
+    /* ECG Monitor Styles */
+    .monitor {
+      background: #001018;
+      padding: 30px;
+      border-radius: 12px;
+      color: #0ff;
+      border: 6px solid rgba(0,255,255,0.06);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .screen {
+      flex: 1;
+      height: 200px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #022428, #001018);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    canvas.ecg {
+      position: absolute;
+      inset: 0;
+    }
+    
+    .monitor .panel {
+      width: 180px;
+      padding: 8px;
+      margin-top: 30px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+      box-shadow: inset 0 4px 14px rgba(0,0,0,0.15);
+    }
+    
+    .meter {
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .meter > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00fff0, #7affb3);
+    }
+    
+    .timeline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .stage-tip {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    
+    /* Stars for dark mode */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    .dark .stars-container {
+      opacity: 1;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, white, transparent);
+      border-radius: 50%;
+    }
+    
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      transform-origin: 0 0;
+    }
+    
+    /* Animation classes */
+    .animate-twinkle {
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    
+    .animate-shooting-star {
+      animation: shootingStar 2s linear forwards;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    @keyframes shootingStar {
+      0% { transform: translateX(0) translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateX(500px) translateY(500px) rotate(45deg); opacity: 0; }
+    }
+
+    /* Improved Navbar Styles */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .dark .navbar {
+      background: rgba(16, 16, 34, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: var(--charcoal);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .dark .nav-link {
+      color: #f6f6f8;
+    }
+    
+    .nav-link:hover {
+      color: var(--primary);
+    }
+    
+    .dark .nav-link:hover {
+      color: var(--lavender);
+    }
+    
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: var(--background-light);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: var(--charcoal);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .dark .theme-toggle {
+      background: var(--background-dark);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f6f6f8;
+    }
+    
+    .theme-toggle:hover {
+      background: rgba(0, 0, 0, 0.05);
+      transform: scale(1.05);
+    }
+    
+    .dark .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .signup-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1.5rem;
+      border-radius: 9999px;
+      background: linear-gradient(to right, var(--lavender), var(--peach), var(--teal));
+      color: var(--charcoal);
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .nav-brand {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <!-- Fixed Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="text-primary dark:text-lavender">
+        <span class="material-symbols-outlined !text-3xl">neurology</span>
+      </div>
+      <span>WellnessAI</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="#" class="nav-link">Features</a>
+      <a href="#" class="nav-link">Pricing</a>
+      <a href="#" class="nav-link">About</a>
+    </div>
+    
+    <div class="nav-actions">
+      <button id="theme-toggle" class="theme-toggle">
+        <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+        <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+      </button>
+      <a href="signup.html" class="signup-btn">Sign Up</a>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-black mb-4 text-charcoal dark:text-white">
+        Guided <span class="gradient-text">Breathing Exercise</span>
+      </h1>
+      <p class="text-lg text-charcoal/80 dark:text-gray-300 max-w-2xl mx-auto">
+        Calm your mind and regulate your nervous system with this simple breathing technique. Follow the brain's guidance.
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <!-- Left Card - Brain Guide -->
+      <div class="glassmorphism card-3d rounded-2xl p-6">
+        <div class="brain-wrap">
+          <div class="bubble" id="bubble" aria-live="polite">
+            <p id="bubble-text"></p>
+          </div>
+          <div class="brain" id="brain">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="smile"></div>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold">Follow the Brain</h3>
+            <div class="flex gap-2">
+              <button class="gradient-border-button flex items-center justify-center rounded-full h-10 px-6 text-charcoal dark:text-white text-sm font-bold transform hover:-translate-y-1 hover:scale-105" id="startBtn">
+                Start
+              </button>
+              <button class="gradient-border-button flex items-center justify-center rounded-full h-10 px-6 text-charcoal dark:text-white text-sm font-bold transform hover:-translate-y-1 hover:scale-105" id="voiceBtn">
+                🔊 Voice
+              </button>
+            </div>
+          </div>
+          <p class="text-sm text-charcoal/70 dark:text-gray-400">
+            This exercise uses a 4s inhale → 6s hold → 4s exhale pattern. The brain will guide you and the monitor will visualize your breath.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4 mt-6">
+          <div class="glassmorphism rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary dark:text-lavender" id="phase">Ready</div>
+            <div class="text-xs mt-1 text-charcoal/70 dark:text-gray-400">current action</div>
+          </div>
+          <div class="glassmorphism rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-green-600 dark:text-teal"><span id="timer">0</span>s</div>
+            <div class="text-xs mt-1 text-charcoal/70 dark:text-gray-400">time left</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Card - ECG Monitor -->
+      <div class="glassmorphism card-3d rounded-2xl p-6">
+        <div class="monitor">
+          <div class="screen" id="screen">
+            <canvas class="ecg" id="ecg" width="800" height="200"></canvas>
+          </div>
+          <div class="panel">
+            <div class="text-sm font-bold mb-2">ECG Breath Monitor</div>
+            <div class="text-xs mb-2">Pulse line follows your inhale/hold/exhale</div>
+            <div class="meter mb-2">
+              <i id="meterFill"></i>
+            </div>
+            <div class="text-xs flex flex-col gap-2">
+              <div class="timeline">
+                <div class="stage-tip">Inhale 4s</div>
+                <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+              </div>
+              <div class="timeline">
+                <div class="stage-tip">Hold 6s</div>
+                <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+              </div>
+              <div class="timeline">
+                <div class="stage-tip">Exhale 4s</div>
+                <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <h3 class="text-xl font-bold mb-2">Visual Feedback</h3>
+          <p class="text-sm text-charcoal/70 dark:text-gray-400">
+            Watch the brain swell as you inhale and the ECG line respond. The gentle motion and colors help anchor your attention to the present moment.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tips Section -->
+    <div class="glassmorphism card-3d rounded-2xl p-6 max-w-4xl mx-auto mt-8">
+      <h3 class="text-xl font-bold mb-4">Breathing Exercise Tips</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+          <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">posture</span>
+          <h4 class="font-bold mb-1">Sit Straight</h4>
+          <p class="text-sm text-charcoal/70 dark:text-gray-400">Maintain good posture for optimal breathing</p>
+        </div>
+        <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+          <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">airwave</span>
+          <h4 class="font-bold mb-1">Breathe Through Nose</h4>
+          <p class="text-sm text-charcoal/70 dark:text-gray-400">Nasal breathing filters and warms the air</p>
+        </div>
+        <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+          <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">timer</span>
+          <h4 class="font-bold mb-1">Be Consistent</h4>
+          <p class="text-sm text-charcoal/70 dark:text-gray-400">Practice daily for best results</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="text-center py-8 text-charcoal/60 dark:text-gray-500 text-sm">
+    <p>Made with ❤️ — WellnessAI Breathing Exercise</p>
+    <p class="mt-2">Tip: Find a quiet space and eliminate distractions for best results</p>
+  </footer>
+
+  <script>
+    // Text for the brain bubble - broken into 3 turns
+    const messages = [
+      "Hey! I'm your friendly brainpal. Let's try a short breathing exercise together — it's a simple way to calm racing thoughts.",
+      "When you breathe slowly and deeply we lower stress signals, bring more oxygen to your body and tell your mind it's safe. I'll guide you: inhale, hold, and exhale with me.",
+      "Ready? Press Start or wait for my final invite — then follow my movement. We'll do 4s inhale → 6s hold → 4s exhale. Breathe gently!"
+    ];
+
+    const bubbleText = document.getElementById('bubble-text');
+    const bubble = document.getElementById('bubble');
+    const brain = document.getElementById('brain');
+    const startBtn = document.getElementById('startBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const phase = document.getElementById('phase');
+    const timer = document.getElementById('timer');
+    const meterFill = document.getElementById('meterFill');
+
+    let voiceOn = false;
+    let speechSynthesisUtterance;
+
+    // typing effect for bubble
+    function typeText(text, cb){
+      bubbleText.textContent = '';
+      let i=0;
+      const iv = setInterval(()=>{
+        bubbleText.textContent += text[i++]||'';
+        if(i>text.length){clearInterval(iv);setTimeout(cb,700)}
+      },16);
+    }
+
+    // sequence the 3 turns
+    function playIntro(cb){
+      let idx=0;
+      function next(){
+        if(idx>=messages.length){cb && cb();return}
+        bubble.style.display='block';
+        typeText(messages[idx],()=>{
+          if(voiceOn) speak(messages[idx]);
+          idx++;setTimeout(next,900);
+        })
+      }
+      next();
+    }
+
+    // speech helper
+    function speak(txt){
+      if(!('speechSynthesis' in window)) return;
+      if(speechSynthesis.speaking) speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.rate = 0.95; u.pitch = 1; u.lang='en-US';
+      speechSynthesis.speak(u);
+    }
+
+    voiceBtn.addEventListener('click',()=>{voiceOn=!voiceOn;voiceBtn.textContent = voiceOn? '🔊 Voice On':'🔊 Voice'; if(voiceOn && bubbleText.textContent) speak(bubbleText.textContent)});
+
+    // breathing parameters
+    const INHALE = 4; const HOLD = 6; const EXHALE = 4;
+    let cycleRunning=false;
+
+    // brain breathing animation
+    function setBrainPhase(phaseName, duration){
+      phase.textContent = phaseName;
+      let t = duration; timer.textContent = t;
+      const iv = setInterval(()=>{t--; if(t<0){clearInterval(iv)} else timer.textContent = t},1000);
+      if(phaseName === 'Inhale'){
+        brain.style.transform='scale(1.12)';
+      } else if(phaseName === 'Hold'){
+        brain.style.transform='scale(1.06)';
+      } else if(phaseName === 'Exhale'){
+        brain.style.transform='scale(0.94)';
+      } else {brain.style.transform='scale(1)'}
+    }
+
+    // ECG drawing
+    const canvas = document.getElementById('ecg');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.lineWidth = 3; ctx.lineJoin='round'; ctx.lineCap='round';
+
+    function clearScreen(){ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(0,20,20,0.16)';ctx.fillRect(0,0,W,H)}
+    function drawGrid(){ctx.strokeStyle='rgba(255,255,255,0.02)';ctx.lineWidth=1;for(let x=0;x<W;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}}
+
+    // we'll animate the line across the screen looping: for each cycle we draw from left to right
+    function runBreathCycle() {
+      if(cycleRunning) return;
+      cycleRunning = true;
+
+      const total = (INHALE + HOLD + EXHALE); // in seconds
+      let startTime = null;
+
+      meterFill.style.width = '0%';
+
+      function step(ts) {
+        if(!startTime) startTime = ts;
+        const elapsedMs = ts - startTime;
+        const elapsedSec = Math.floor(elapsedMs / 1000);
+        const progress = Math.min(elapsedMs / (total * 1000), 1);
+
+        // Update the timer to show remaining time
+        timer.textContent = total - elapsedSec;
+
+        // Update meter
+        meterFill.style.width = (progress * 100) + "%";
+
+        // Determine phase
+        let y;
+        if(elapsedSec < INHALE){ // inhale
+          const p = elapsedSec / INHALE;
+          y = H*0.7 - p*(H*0.35);
+          setBrainPhase('Inhale', INHALE - elapsedSec);
+        } else if(elapsedSec < INHALE + HOLD){ // hold
+          const q = (elapsedSec - INHALE)/HOLD;
+          y = H*0.35;
+          setBrainPhase('Hold', INHALE + HOLD - elapsedSec);
+        } else if(elapsedSec < INHALE + HOLD + EXHALE){ // exhale
+          const r = (elapsedSec - INHALE - HOLD)/EXHALE;
+          y = H*0.35 + r*(H*0.45);
+          setBrainPhase('Exhale', INHALE + HOLD + EXHALE - elapsedSec);
+        } else {
+          y = H*0.75;
+          setBrainPhase('Relax', 0);
+        }
+
+        // Draw ECG
+        clearScreen(); drawGrid();
+        ctx.strokeStyle='rgba(0,255,240,0.12)'; 
+        ctx.lineWidth=2; 
+        ctx.beginPath(); 
+        ctx.moveTo(0,H*0.75); 
+        ctx.lineTo(W,H*0.75); 
+        ctx.stroke();
+
+        ctx.strokeStyle='rgba(0,255,240,0.95)'; 
+        ctx.lineWidth=3; 
+        ctx.beginPath();
+        const steps = Math.floor(progress*W);
+        for(let i=0;i<=steps;i++){
+          const pct = i/W * total;
+          let yy;
+          if(pct <= INHALE) yy = H*0.75 - (pct/INHALE)*(H*0.35);
+          else if(pct <= INHALE+HOLD) yy = H*0.4;
+          else if(pct <= INHALE+HOLD+EXHALE) yy = H*0.4 + ((pct-INHALE-HOLD)/EXHALE)*(H*0.45);
+          else yy = H*0.75;
+          if(i===0) ctx.moveTo(i,yy); else ctx.lineTo(i,yy);
+        }
+        ctx.stroke();
+
+        if(elapsedSec < total){
+          requestAnimationFrame(step);
+        } else {
+          cycleRunning = false;
+          brain.style.transform = 'scale(1)';
+          phase.textContent = 'Done';
+          timer.textContent = '0';
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // Start button behavior
+    startBtn.addEventListener('click',()=>{runBreathCycle()});
+
+    // Auto play intro then enable start
+    bubble.style.display='none';
+    playIntro(()=>{
+      // final invite shown
+      bubble.style.display='block';
+      typeText('Shall we begin? Press Start when you are comfortable.');
+    });
+
+    // small accessibility: space starts
+    window.addEventListener('keydown',(e)=>{if(e.code==='Space'){e.preventDefault();runBreathCycle()}});
+
+    // initial render
+    clearScreen(); drawGrid();
+
+    // make it nicer on small screens
+    window.addEventListener('resize',()=>{
+      // optional: adapt canvas size to element
+      const rect = document.getElementById('screen').getBoundingClientRect();
+      canvas.width = Math.max(400, Math.floor(rect.width)); canvas.height = Math.floor(rect.height);
+    });
+    // trigger resize
+    setTimeout(()=>{window.dispatchEvent(new Event('resize'))},400);
+
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('light-icon');
+    const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    
+    // Check for saved theme preference or default to light
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply the saved theme on page load
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      lightIcon.classList.add('hidden');
+      darkIcon.classList.remove('hidden');
+      createStars();
+    } else {
+      document.body.classList.remove('dark');
+      lightIcon.classList.remove('hidden');
+      darkIcon.classList.add('hidden');
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+      if (document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+        clearStars();
+      } else {
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+        createStars();
+      }
+    });
+    
+    // Create stars for dark mode
+    function createStars() {
+      // Clear any existing stars
+      clearStars();
+      
+      // Create twinkling stars
+      for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Random size between 1-3px
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation delay
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        // Add twinkle animation
+        star.classList.add('animate-twinkle');
+        
+        starsContainer.appendChild(star);
+      }
+      
+      // Create occasional shooting stars
+      setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance every interval
+          createShootingStar();
+        }
+      }, 3000);
+    }
+    
+    // Create a shooting star
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.classList.add('shooting-star');
+      
+      // Random starting position (top area)
+      shootingStar.style.left = `${Math.random() * 20}%`;
+      shootingStar.style.top = `${Math.random() * 30}%`;
+      
+      // Random animation duration
+      const duration = Math.random() * 1 + 1.5;
+      shootingStar.style.animationDuration = `${duration}s`;
+      
+      starsContainer.appendChild(shootingStar);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        if (shootingStar.parentNode) {
+          shootingStar.parentNode.removeChild(shootingStar);
+        }
+      }, duration * 1000);
+    }
+    
+    // Clear all stars
+    function clearStars() {
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
+  </script>
+</body>
+</html>

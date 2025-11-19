@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellnessAI - Memory Card Game</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1313ec;
+    --background-light: #f6f6f8;
+    --background-dark: #101022;
+    --lavender: #C8B6FF;
+    --peach: #FFD8B1;
+    --teal: #B4E4D8;
+    --charcoal: #2C3E50;
+  }
+  
+  * {
+    box-sizing: border-box;
+    font-family: 'Nunito', system-ui, Arial;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: var(--background-light);
+    color: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 40px 20px;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  body.dark {
+    background: var(--background-dark);
+    color: #f6f6f8;
+  }
+  
+  .glassmorphism {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark .glassmorphism {
+    background: rgba(30, 30, 60, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  .dark .card-3d {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark .card-3d:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+  
+  .gradient-text {
+    background-image: linear-gradient(to right, var(--lavender), var(--peach), var(--teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .gradient-border-button {
+    position: relative;
+    background: var(--background-light);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    z-index: 1;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .gradient-border-button::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: -1;
+    margin: -2px;
+    border-radius: inherit;
+    background: linear-gradient(120deg, var(--lavender), var(--peach), var(--teal));
+    background-size: 200% 200%;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .gradient-border-button:hover::before {
+    background-position: 100% 100%;
+    transform: scale(1.05);
+  }
+  
+  .dark .gradient-border-button {
+    background: var(--background-dark);
+  }
+  
+  /* Game Card Styles */
+  .game-card {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+    color: #1e3a8a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    cursor: pointer;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.4s, box-shadow 0.4s, background 0.4s;
+    perspective: 1000px;
+  }
+  
+  .dark .game-card {
+    background: linear-gradient(145deg, #3730a3, #312e81);
+    color: #c7d2fe;
+  }
+  
+  .game-card:hover {
+    transform: translateY(-6px) rotateZ(2deg);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+  }
+  
+  .game-card.flipped {
+    background: linear-gradient(145deg, var(--lavender), var(--teal));
+    color: #4338ca;
+    transform: rotateY(180deg);
+  }
+  
+  .dark .game-card.flipped {
+    background: linear-gradient(145deg, var(--lavender), var(--teal));
+    color: #1e1b4b;
+  }
+  
+  /* Stars for dark mode */
+  .stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .dark .stars-container {
+    opacity: 1;
+  }
+  
+  .star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+  }
+  
+  .shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: linear-gradient(45deg, white, transparent);
+    border-radius: 50%;
+  }
+  
+  .shooting-star::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, white, transparent);
+    transform: rotate(45deg);
+    transform-origin: 0 0;
+  }
+  
+  /* Animation classes */
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  
+  .animate-shooting-star {
+    animation: shootingStar 2s linear forwards;
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  
+  @keyframes shootingStar {
+    0% { transform: translateX(0) translateY(0) rotate(45deg); opacity: 1; }
+    100% { transform: translateX(500px) translateY(500px) rotate(45deg); opacity: 0; }
+  }
+  
+  /* Improved Navbar Styles */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  
+  .dark .navbar {
+    background: rgba(16, 16, 34, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .nav-link {
+    color: var(--charcoal);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .dark .nav-link {
+    color: #f6f6f8;
+  }
+  
+  .nav-link:hover {
+    color: var(--primary);
+  }
+  
+  .dark .nav-link:hover {
+    color: var(--lavender);
+  }
+  
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--background-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .dark .theme-toggle {
+    background: var(--background-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f6f6f8;
+  }
+  
+  .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+  }
+  
+  .dark .theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .signup-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(to right, var(--lavender), var(--peach), var(--teal));
+    color: var(--charcoal);
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Game Container */
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .game-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .game-stats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 1rem;
+  }
+  
+  .stat-box {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 120px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .stat-box {
+    background: rgba(30, 30, 60, 0.5);
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+  
+  .stat-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+  
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .game-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .game-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reset-btn {
+    background: linear-gradient(45deg, #6366f1, #818cf8);
+    color: white;
+  }
+  
+  .reset-btn:hover {
+    background: linear-gradient(45deg, #4f46e5, #6366f1);
+    transform: translateY(-2px);
+  }
+  
+  .records-btn {
+    background: linear-gradient(45deg, #22c55e, #4ade80);
+    color: white;
+  }
+  
+  .records-btn:hover {
+    background: linear-gradient(45deg, #16a34a, #22c55e);
+    transform: translateY(-2px);
+  }
+  
+  /* Records Modal */
+  .records-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background: var(--background-light);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    z-index: 1000;
+    animation: fadeIn 0.4s ease-out;
+  }
+  
+  .dark .records-modal {
+    background: var(--background-dark);
+  }
+  
+  .records-modal h2 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .records-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+  }
+  
+  .record-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+  }
+  
+  .dark .record-item {
+    background: rgba(30, 30, 60, 0.5);
+  }
+  
+  .close-btn {
+    margin-top: 0.5rem;
+    background: linear-gradient(45deg, #ef4444, #f87171);
+    color: white;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 9999px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .close-btn:hover {
+    background: linear-gradient(45deg, #b91c1c, #ef4444);
+    transform: translateY(-2px);
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translate(-50%, -48%);}
+    to {opacity: 1; transform: translate(-50%, -50%);}
+  }
+  
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .nav-links {
+      display: none;
+    }
+    
+    .nav-brand {
+      font-size: 1.25rem;
+    }
+    
+    .game-board {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .game-card {
+      width: 80px;
+      height: 80px;
+      font-size: 28px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .game-board {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .game-card {
+      width: 70px;
+      height: 70px;
+      font-size: 24px;
+    }
+    
+    .game-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <!-- Fixed Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="text-primary dark:text-lavender">
+        <span class="material-symbols-outlined !text-3xl">neurology</span>
+      </div>
+      <span>WellnessAI</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="#" class="nav-link">Features</a>
+      <a href="#" class="nav-link">Pricing</a>
+      <a href="#" class="nav-link">About</a>
+    </div>
+    
+    <div class="nav-actions">
+      <button id="theme-toggle" class="theme-toggle">
+        <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+        <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+      </button>
+      <a href="signup.html" class="signup-btn">Sign Up</a>
+    </div>
+  </nav>
+  
+  <!-- Game Container -->
+  <div class="game-container">
+    <div class="game-header">
+      <h1 class="text-4xl md:text-5xl font-black mb-4 text-charcoal dark:text-white">
+        Memory <span class="gradient-text">Card Game</span>
+      </h1>
+      <p class="text-lg text-charcoal/80 dark:text-gray-300 max-w-2xl mx-auto">
+        Train your memory and focus with this fun matching game. Find all pairs to win!
+      </p>
+    </div>
+    
+    <div class="game-stats">
+      <div class="stat-box">
+        <div class="stat-value text-primary dark:text-lavender" id="points">0</div>
+        <div class="stat-label">Points</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-green-600 dark:text-teal" id="timer">0s</div>
+        <div class="stat-label">Time</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value text-purple-600 dark:text-lavender" id="moves">0</div>
+        <div class="stat-label">Moves</div>
+      </div>
+    </div>
+    
+    <div class="game-board" id="game"></div>
+    
+    <div class="game-actions">
+      <button class="game-btn reset-btn" id="reset">Restart Game</button>
+      <button class="game-btn records-btn" id="recordsBtn">Leaderboard</button>
+    </div>
+  </div>
+  
+  <!-- Records Modal -->
+  <div class="records-modal" id="recordsDisplay">
+    <h2 class="text-charcoal dark:text-white">Leaderboard</h2>
+    <div class="records-list" id="recordsList"></div>
+    <button class="close-btn" id="closeRecords">Close</button>
+  </div>
+
+<script>
+const game = document.getElementById('game');
+const resetBtn = document.getElementById('reset');
+const recordsBtn = document.getElementById('recordsBtn');
+const pointsEl = document.getElementById('points');
+const timerEl = document.getElementById('timer');
+const movesEl = document.getElementById('moves');
+const recordsDisplay = document.getElementById('recordsDisplay');
+const recordsList = document.getElementById('recordsList');
+const closeRecords = document.getElementById('closeRecords');
+
+let cardValues = ['🍎','🍌','🍇','🍓','🍒','🥝','🍍','🍑'];
+cardValues = [...cardValues, ...cardValues]; // duplicate for pairs
+
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+let points = 0;
+let time = 0;
+let moves = 0;
+let timerInterval = null;
+let matchedPairs = 0;
+
+// Simple shuffle function
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// Timer
+function startTimer() {
+  clearInterval(timerInterval);
+  time = 0;
+  timerEl.textContent = `${time}s`;
+  timerInterval = setInterval(() => {
+    time++;
+    timerEl.textContent = `${time}s`;
+  }, 1000);
+}
+
+// Reset board variables
+function resetBoard() {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
+  matchedPairs = 0;
+}
+
+// Flip card logic
+function flipCard() {
+  if (lockBoard || this === firstCard || this.classList.contains('flipped')) return;
+
+  this.textContent = this.dataset.value;
+  this.classList.add('flipped');
+
+  if (!firstCard) {
+    firstCard = this;
+  } else {
+    secondCard = this;
+    moves++;
+    movesEl.textContent = moves;
+    checkForMatch();
+  }
+}
+
+// Check for match
+function checkForMatch() {
+  if (firstCard.dataset.value === secondCard.dataset.value) {
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    points += 10;
+    pointsEl.textContent = points;
+    matchedPairs++;
+    if (matchedPairs === cardValues.length / 2) {
+      clearInterval(timerInterval);
+      saveRecord(points, time);
+      setTimeout(() => {
+        alert(`Congratulations! You finished the game.\nPoints: ${points}\nTime: ${time}s\nMoves: ${moves}`);
+      }, 200);
+    }
+    resetBoard();
+  } else {
+    lockBoard = true;
+    setTimeout(() => {
+      firstCard.textContent = '';
+      secondCard.textContent = '';
+      firstCard.classList.remove('flipped');
+      secondCard.classList.remove('flipped');
+      resetBoard();
+    }, 1000);
+  }
+}
+
+// Save record to localStorage
+async function saveRecord(points, time) {
+  const username = localStorage.getItem("loggedInUsername") || "Guest";
+
+  try {
+    await fetch("http://localhost:5000/game-records", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, points, time, moves }),
+    });
+  } catch (error) {
+    console.error("Error saving record:", error);
+  }
+}
+
+// Show leaderboard
+recordsBtn.addEventListener('click', async () => {
+  try {
+    const res = await fetch("http://localhost:5000/game-records");
+    const data = await res.json();
+
+    if (!data.success || data.records.length === 0) {
+      recordsList.innerHTML = "<p class='text-center py-4'>No records yet!</p>";
+    } else {
+      recordsList.innerHTML = "";
+      data.records.forEach((rec, index) => {
+        const recordItem = document.createElement('div');
+        recordItem.className = 'record-item';
+        recordItem.innerHTML = `
+          <div>
+            <strong>#${index + 1}: ${rec.username}</strong>
+          </div>
+          <div>
+            Points: ${rec.points} | Time: ${rec.time}s
+          </div>
+        `;
+        recordsList.appendChild(recordItem);
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    recordsList.innerHTML = "<p class='text-center py-4'>Failed to load leaderboard</p>";
+  }
+
+  recordsDisplay.style.display = "block";
+});
+
+// Close leaderboard
+closeRecords.addEventListener('click', () => {
+  recordsDisplay.style.display = 'none';
+});
+
+// Restart button
+resetBtn.addEventListener('click', createBoard);
+
+// Initialize game
+createBoard();
+
+// Create board with cards
+function createBoard() {
+  // Reset variables
+  clearInterval(timerInterval);
+  time = 0;
+  points = 0;
+  moves = 0;
+  pointsEl.textContent = points;
+  timerEl.textContent = `${time}s`;
+  movesEl.textContent = moves;
+  matchedPairs = 0;
+  firstCard = null;
+  secondCard = null;
+  lockBoard = true; // lock until shuffle finishes
+
+  // Clear board
+  game.innerHTML = '';
+
+  // Create cards
+  cardValues.forEach(value => {
+    const card = document.createElement('div');
+    card.classList.add('game-card');
+    card.dataset.value = value;
+    card.addEventListener('click', flipCard);
+    game.appendChild(card);
+  });
+
+  // Animate shuffle
+  animateShuffle();
+}
+
+// Animate shuffle with visible flip effect
+function animateShuffle() {
+  const cards = document.querySelectorAll('.game-card');
+  let shuffleCount = 20; // number of swaps
+  let i = 0;
+
+  const shuffleInterval = setInterval(() => {
+    // Pick two random cards
+    const a = Math.floor(Math.random() * cards.length);
+    const b = Math.floor(Math.random() * cards.length);
+
+    // Swap dataset values
+    [cards[a].dataset.value, cards[b].dataset.value] = [cards[b].dataset.value, cards[a].dataset.value];
+
+    // Show quick flip for visual effect
+    cards[a].textContent = cards[a].dataset.value;
+    cards[b].textContent = cards[b].dataset.value;
+
+    // Flip back after 100ms
+    setTimeout(() => {
+      cards[a].textContent = '';
+      cards[b].textContent = '';
+    }, 100);
+
+    i++;
+    if (i >= shuffleCount) {
+      clearInterval(shuffleInterval);
+      resetBoard();   // unlock board
+      startTimer();   // start timer
+    }
+  }, 150); // 150ms between swaps
+}
+
+// Dark/Light Mode Toggle
+const themeToggle = document.getElementById('theme-toggle');
+const lightIcon = document.getElementById('light-icon');
+const darkIcon = document.getElementById('dark-icon');
+const starsContainer = document.getElementById('stars-container');
+
+// Check for saved theme preference or default to light
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Apply the saved theme on page load
+if (currentTheme === 'dark') {
+  document.body.classList.add('dark');
+  lightIcon.classList.add('hidden');
+  darkIcon.classList.remove('hidden');
+  createStars();
+} else {
+  document.body.classList.remove('dark');
+  lightIcon.classList.remove('hidden');
+  darkIcon.classList.add('hidden');
+}
+
+// Toggle theme on button click
+themeToggle.addEventListener('click', () => {
+  if (document.body.classList.contains('dark')) {
+    document.body.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+    lightIcon.classList.remove('hidden');
+    darkIcon.classList.add('hidden');
+    clearStars();
+  } else {
+    document.body.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+    lightIcon.classList.add('hidden');
+    darkIcon.classList.remove('hidden');
+    createStars();
+  }
+});
+
+// Create stars for dark mode
+function createStars() {
+  // Clear any existing stars
+  clearStars();
+  
+  // Create twinkling stars
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    // Random size between 1-3px
+    const size = Math.random() * 2 + 1;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    
+    // Random position
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    
+    // Random animation delay
+    const delay = Math.random() * 5;
+    star.style.animationDelay = `${delay}s`;
+    
+    // Add twinkle animation
+    star.classList.add('animate-twinkle');
+    
+    starsContainer.appendChild(star);
+  }
+  
+  // Create occasional shooting stars
+  setInterval(() => {
+    if (Math.random() > 0.7) { // 30% chance every interval
+      createShootingStar();
+    }
+  }, 3000);
+}
+
+// Create a shooting star
+function createShootingStar() {
+  const shootingStar = document.createElement('div');
+  shootingStar.classList.add('shooting-star');
+  
+  // Random starting position (top area)
+  shootingStar.style.left = `${Math.random() * 20}%`;
+  shootingStar.style.top = `${Math.random() * 30}%`;
+  
+  // Random animation duration
+  const duration = Math.random() * 1 + 1.5;
+  shootingStar.style.animationDuration = `${duration}s`;
+  
+  starsContainer.appendChild(shootingStar);
+  
+  // Remove after animation completes
+  setTimeout(() => {
+    if (shootingStar.parentNode) {
+      shootingStar.parentNode.removeChild(shootingStar);
+    }
+  }, duration * 1000);
+}
+
+// Clear all stars
+function clearStars() {
+  while (starsContainer.firstChild) {
+    starsContainer.removeChild(starsContainer.firstChild);
+  }
+}
+</script>
+</body>
+</html>
