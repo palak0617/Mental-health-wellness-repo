@@ -7,6 +7,11 @@ const journalRoutes = require('./routes/journalRoutes');
 const geminiRoutes = require('./routes/geminiRoutes');
 const authRoutes = require('./routes/authRoutes');
 const gameRecordRoutes = require('./routes/gameRecordRoutes');
+const locationRoutes = require('./routes/locationRoutes');
+const moodRoutes = require('./routes/moodRoutes');
+console.log("✅ moodRoutes loaded:", typeof moodRoutes);
+
+
 
 const app = express();
 
@@ -19,6 +24,9 @@ app.use(journalRoutes);
 app.use(geminiRoutes);
 app.use("/auth", authRoutes);
 app.use(gameRecordRoutes);
+app.use("/", locationRoutes);
+app.use("/", moodRoutes);  
+
 
 // Base route
 app.get('/', (req, res) => res.send('MindEase backend running.'));
@@ -35,3 +43,9 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => {
     console.error("❌ MongoDB connection error:", err);
   });
+// console.log("journalRoutes:", typeof journalRoutes);
+// console.log("geminiRoutes:", typeof geminiRoutes);
+// console.log("authRoutes:", typeof authRoutes);
+// console.log("gameRecordRoutes:", typeof gameRecordRoutes);
+// console.log("locationRoutes:", typeof locationRoutes);
+

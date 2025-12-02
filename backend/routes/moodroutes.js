@@ -4,11 +4,12 @@ const router = express.Router();
 const Mood = require('../models/Mood');
 
 // Get all moods for a user
-router.get('/moods/:userId', async (req, res) => {
+router.get('/mood/:userId', async (req, res) => {
   try {
     const { limit = 30 } = req.query;
     const moods = await Mood.find({ userId: req.params.userId })
-      .sort({ date: -1 })
+      .sort({ timestamp: -1 })
+
       .limit(parseInt(limit));
     res.json(moods);
   } catch (error) {
@@ -17,7 +18,7 @@ router.get('/moods/:userId', async (req, res) => {
 });
 
 // Get mood statistics
-router.get('/moods/:userId/stats', async (req, res) => {
+router.get('/mood/:userId/stats', async (req, res) => {
   try {
     const { timeframe = '30' } = req.query;
     const daysAgo = new Date();
@@ -25,8 +26,8 @@ router.get('/moods/:userId/stats', async (req, res) => {
 
     const moods = await Mood.find({
       userId: req.params.userId,
-      date: { $gte: daysAgo }
-    }).sort({ date: -1 });
+      timestamp: { $gte: daysAgo }
+    }).sort({ timestamp: -1 });
 
     // Calculate mood counts
     const moodCounts = {
@@ -66,7 +67,7 @@ router.get('/moods/:userId/stats', async (req, res) => {
       nextDate.setDate(nextDate.getDate() + 1);
 
       const dayMoods = moods.filter(m => {
-        const moodDate = new Date(m.date);
+        const moodDate = new Date(m.timestamp);
         return moodDate >= date && moodDate < nextDate;
       });
 
@@ -96,7 +97,7 @@ router.get('/moods/:userId/stats', async (req, res) => {
 });
 
 // Create a new mood entry
-router.post('/moods', async (req, res) => {
+router.post('/mood', async (req, res) => {
   try {
     const mood = new Mood({
       userId: req.body.userId,
@@ -105,7 +106,7 @@ router.post('/moods', async (req, res) => {
       note: req.body.note,
       activities: req.body.activities || [],
       triggers: req.body.triggers || [],
-      date: req.body.date || new Date()
+      timestamp: req.body.timestamp || new Date()
     });
 
     const newMood = await mood.save();
@@ -116,7 +117,7 @@ router.post('/moods', async (req, res) => {
 });
 
 // Update a mood entry
-router.patch('/moods/:id', async (req, res) => {
+router.patch('/mood/:id', async (req, res) => {
   try {
     const mood = await Mood.findById(req.params.id);
     if (!mood) {
@@ -137,7 +138,7 @@ router.patch('/moods/:id', async (req, res) => {
 });
 
 // Delete a mood entry
-router.delete('/moods/:id', async (req, res) => {
+router.delete('/mood/:id', async (req, res) => {
   try {
     const mood = await Mood.findById(req.params.id);
     if (!mood) {
