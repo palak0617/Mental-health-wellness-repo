@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellnessAI - User Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <!-- Add html2canvas library for report generation -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+            "charcoal": "#2C3E50",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px",
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(-5px) rotate(-1deg)' },
+              '50%': { transform: 'translateY(5px) rotate(1deg)' },
+            },
+            sparkle: {
+              '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            gradientWave: {
+                '0%, 100%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+            },
+            brainPulse: {
+              '0%, 100%': { opacity: '0.7', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.05)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            shootingStar: {
+              '0%': { transform: 'translateX(0) translateY(0) rotate(45deg)', opacity: '1' },
+              '100%': { transform: 'translateX(500px) translateY(500px) rotate(45deg)', opacity: '0' },
+            },
+            bounceGently: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            cardFloat: {
+              '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+              '33%': { transform: 'translateY(-8px) rotate(1deg)' },
+              '66%': { transform: 'translateY(-5px) rotate(-1deg)' },
+            },
+            flipCard: {
+              '0%': { transform: 'rotateY(0deg)' },
+              '50%': { transform: 'rotateY(90deg)' },
+              '100%': { transform: 'rotateY(0deg)' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 0 0 rgba(200, 182, 255, 0.4)' },
+              '50%': { boxShadow: '0 0 20px 10px rgba(200, 182, 255, 0.2)' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            }
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            sparkle: 'sparkle 2.5s ease-in-out infinite',
+            'gradient-wave': 'gradientWave 8s ease infinite',
+            'brain-pulse': 'brainPulse 4s ease-in-out infinite',
+            twinkle: 'twinkle 3s ease-in-out infinite',
+            'shooting-star': 'shootingStar 2s linear forwards',
+            'bounce-gently': 'bounceGently 3s ease-in-out infinite',
+            'card-float': 'cardFloat 8s ease-in-out infinite',
+            'flip-card': 'flipCard 0.8s ease-in-out',
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+            'slide-in': 'slideIn 0.5s ease-out',
+            'fade-in': 'fadeIn 0.5s ease-out',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* ... (previous styles remain the same) ... */
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glassmorphism {
+      background: rgba(30, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .gradient-text {
+      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .gradient-border-button {
+      position: relative;
+      background: #f6f6f8;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      z-index: 1;
+      transition: all 0.3s ease-in-out;
+    }
+    .gradient-border-button::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      z-index: -1;
+      margin: -2px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, #C8B6FF, #FFD8B1, #B4E4D8);
+      background-size: 200% 200%;
+      transition: all 0.3s ease-in-out;
+    }
+    .gradient-border-button:hover::before {
+        background-position: 100% 100%;
+        transform: scale(1.05);
+    }
+    .dark .gradient-border-button {
+        background: #101022;
+    }
+    
+    .perspective {
+        perspective: 1000px;
+    }
+    
+    /* Stars container */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    .dark .stars-container {
+      opacity: 1;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, white, transparent);
+      border-radius: 50%;
+    }
+    
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      transform-origin: 0 0;
+    }
+    
+    /* 3D Card Styles */
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-3d::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+      backdrop-filter: blur(10px);
+      z-index: -1;
+    }
+    
+    .dark .card-3d::before {
+      background: linear-gradient(135deg, rgba(30, 30, 60, 0.7), rgba(30, 30, 60, 0.4));
+    }
+    
+    .card-3d:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .dark .card-3d {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .card-3d:hover {
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Floating Orb Animation */
+    .floating-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.3;
+      animation: float 8s ease-in-out infinite;
+      z-index: -1;
+    }
+    
+    /* Progress Bar Styles */
+    .progress-bar-3d {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(10px);
+    }
+    
+    .progress-fill-3d {
+      height: 100%;
+      border-radius: 6px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(5px);
+      transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .progress-fill-3d::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: gradientWave 2s ease infinite;
+    }
+    
+    /* Avatar 3D Effect */
+    .avatar-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      position: relative;
+    }
+    
+    .avatar-3d::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      background: linear-gradient(45deg, #C8B6FF, #FFD8B1, #B4E4D8);
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .avatar-3d:hover::after {
+      opacity: 0.5;
+    }
+    
+    .avatar-3d:hover {
+      transform: translateZ(20px);
+    }
+    
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark .navbar {
+      background: rgba(16, 16, 34, 0.7);
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Mood Picker 3D */
+    .mood-option-3d {
+      transform-style: preserve-3d;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .mood-option-3d:hover {
+      transform: translateY(-5px) translateZ(10px);
+    }
+    
+    .mood-option-3d.active {
+      transform: translateY(-8px) translateZ(15px);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    /* Goal Checkbox 3D */
+    .goal-checkbox-3d {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #C8B6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+    }
+    
+    .dark .goal-checkbox-3d {
+      background: rgba(30, 30, 60, 0.8);
+    }
+    
+    .goal-checkbox-3d:hover {
+      transform: translateZ(5px) scale(1.1);
+    }
+    
+    .goal-checkbox-3d.checked {
+      background: #C8B6FF;
+      transform: translateZ(10px);
+      box-shadow: 0 5px 15px rgba(200, 182, 255, 0.4);
+    }
+    
+    /* Report Modal Styles */
+    .report-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .report-modal.active {
+      display: flex;
+      animation: fade-in 0.3s ease-out;
+    }
+    
+    .report-content {
+      width: 90%;
+      max-width: 1200px;
+      height: 90vh;
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+      animation: slide-in 0.4s ease-out;
+    }
+    
+    .dark .report-content {
+      background: #101022;
+      color: white;
+    }
+    
+    .report-header {
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, #C8B6FF, #B4E4D8);
+      color: #2C3E50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .dark .report-header {
+      background: linear-gradient(135deg, #2C3E50, #1a1a2e);
+      color: white;
+    }
+    
+    .report-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+    
+    .report-footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+    
+    .dark .report-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Report specific styles for print/export */
+    .report-print {
+      background: white;
+      color: #2C3E50;
+      padding: 2rem;
+    }
+    
+    .report-print .gradient-text {
+      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    
+    .report-print .progress-bar-3d {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Report Stats Grid */
+    .report-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .report-stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .dark .report-stat-card {
+      background: rgba(30, 30, 60, 0.5);
+    }
+    
+    /* Report Timeline */
+    .report-timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .report-timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #C8B6FF, #B4E4D8);
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 0;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #C8B6FF;
+      border: 3px solid white;
+    }
+    
+    .dark .timeline-item::before {
+      border-color: #101022;
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased transition-colors duration-300">
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <!-- Background Orbs -->
+  <div class="floating-orb top-[-10%] left-[-5%] w-[60vw] h-[60vw] bg-lavender/30 dark:bg-lavender/20"></div>
+  <div class="floating-orb bottom-[-15%] right-[-10%] w-[50vw] h-[50vw] bg-peach/30 dark:bg-peach/20" style="animation-delay: 2s;"></div>
+  <div class="floating-orb top-[30%] right-[20%] w-[30vw] h-[30vw] bg-teal/30 dark:bg-teal/20" style="animation-delay: 4s;"></div>
+  
+  <!-- Fixed Navbar -->
+  <nav class="navbar sticky top-0 z-50 w-full py-4 px-6 lg:px-8 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4 text-charcoal dark:text-background-light">
+        <div class="size-8 text-primary dark:text-lavender">
+          <span class="material-symbols-outlined !text-4xl">neurology</span>
+        </div>
+        <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">WellnessAI</h2>
+      </div>
+      
+      <div class="hidden md:flex flex-1 justify-center gap-9">
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="index.html">Home</a>
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="#">Dashboard</a>
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="l4.html">Exercises</a>
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="#">Games</a>
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="#">Progress</a>
+        <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors hover:-translate-y-0.5" href="#" id="report-nav-link">Reports</a>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <!-- Dark/Light Mode Toggle -->
+        <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all hover:scale-105">
+          <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+          <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+        </button>
+        
+        <div class="relative group">
+          <button id="user-menu" class="flex items-center gap-3 rounded-full bg-gradient-to-r from-lavender/20 to-teal/20 px-4 py-2 hover:from-lavender/30 hover:to-teal/30 transition-all duration-300">
+            <div class="avatar-3d w-8 h-8 rounded-full bg-gradient-to-r from-lavender to-teal flex items-center justify-center text-white font-bold">
+              AJ
+            </div>
+            <span class="text-sm font-medium text-charcoal dark:text-white">Alex Johnson</span>
+            <span class="material-symbols-outlined text-sm">expand_more</span>
+          </button>
+          
+          <!-- User Dropdown -->
+          <div class="absolute right-0 top-full mt-2 w-48 glassmorphism rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <a href="#" class="flex items-center gap-3 px-4 py-2 hover:bg-lavender/10 dark:hover:bg-lavender/20 transition-colors">
+              <span class="material-symbols-outlined text-sm">person</span>
+              <span>Profile</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-2 hover:bg-teal/10 dark:hover:bg-teal/20 transition-colors">
+              <span class="material-symbols-outlined text-sm">settings</span>
+              <span>Settings</span>
+            </a>
+            <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+            <a href="index.html" class="flex items-center gap-3 px-4 py-2 hover:bg-red-500/10 dark:hover:bg-red-500/20 text-red-500 transition-colors">
+              <span class="material-symbols-outlined text-sm">logout</span>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Dashboard Content -->
+  <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Floating Emojis -->
+    <span class="absolute top-[10%] left-[5%] text-2xl opacity-80 animate-sparkle">✨</span>
+    <span class="absolute top-[20%] right-[10%] text-3xl opacity-70 animate-float" style="animation-delay: 1.5s;">💭</span>
+    <span class="absolute bottom-[15%] left-[15%] text-2xl opacity-80 animate-float" style="animation-delay: 0.5s;">🎯</span>
+    
+    <!-- Dashboard Header -->
+    <div class="mb-12">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="flex items-center gap-6">
+          <div class="avatar-3d size-24 rounded-full bg-gradient-to-r from-lavender via-peach to-teal flex items-center justify-center text-3xl font-black text-white">
+            AJ
+          </div>
+          <div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight text-charcoal dark:text-white">
+              Welcome back, <span class="gradient-text">Alex</span>!
+            </h1>
+            <p class="text-lg text-charcoal/70 dark:text-gray-300 mt-2">Here's your wellness overview for today</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <div class="glassmorphism rounded-2xl p-6 perspective">
+            <div class="flex flex-col items-center gap-4">
+              <p class="text-lg font-bold text-charcoal dark:text-white">Today's Mood</p>
+              <div class="flex gap-4">
+                <div class="mood-option-3d flex flex-col items-center p-3 rounded-xl bg-white/50 dark:bg-gray-800/50" data-mood="excellent">
+                  <div class="text-3xl mb-2">😄</div>
+                  <div class="text-sm font-medium">Great</div>
+                </div>
+                <div class="mood-option-3d flex flex-col items-center p-3 rounded-xl bg-white/50 dark:bg-gray-800/50" data-mood="good">
+                  <div class="text-3xl mb-2">😊</div>
+                  <div class="text-sm font-medium">Good</div>
+                </div>
+                <div class="mood-option-3d active flex flex-col items-center p-3 rounded-xl bg-gradient-to-r from-lavender/20 to-teal/20" data-mood="okay">
+                  <div class="text-3xl mb-2">😐</div>
+                  <div class="text-sm font-medium">Okay</div>
+                </div>
+                <div class="mood-option-3d flex flex-col items-center p-3 rounded-xl bg-white/50 dark:bg-gray-800/50" data-mood="poor">
+                  <div class="text-3xl mb-2">😔</div>
+                  <div class="text-sm font-medium">Poor</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Generate Report Button -->
+          <button id="generate-report-btn" class="gradient-border-button flex flex-col items-center justify-center p-6 rounded-2xl hover:-translate-y-1 transition-all duration-300 animate-pulse-glow">
+            <span class="material-symbols-outlined text-4xl mb-3">summarize</span>
+            <span class="font-bold text-lg">Generate Report</span>
+            <span class="text-sm text-charcoal/70 dark:text-gray-300 mt-1">View & Download</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Dashboard Grid (existing content remains the same) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <!-- ... (existing cards remain the same) ... -->
+      <!-- Mental Wellness Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.1s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Mental Wellness</h2>
+          <div class="size-12 rounded-xl bg-lavender/20 flex items-center justify-center text-lavender">
+            <span class="material-symbols-outlined text-2xl">psychology</span>
+          </div>
+        </div>
+        
+        <p class="text-charcoal/70 dark:text-gray-300 mb-6">Your current mental wellness score</p>
+        
+        <div class="relative mb-6">
+          <div class="progress-bar-3d">
+            <div class="progress-fill-3d bg-gradient-to-r from-lavender to-teal" style="width: 78%"></div>
+          </div>
+          <div class="flex justify-between mt-2 text-sm">
+            <span>0%</span>
+            <span class="font-bold text-lg gradient-text">78%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="glassmorphism rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold gradient-text">12</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-300">Sessions</div>
+          </div>
+          <div class="glassmorphism rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold gradient-text">5</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-300">Day Streak</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Daily Goals Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.2s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Daily Goals</h2>
+          <div class="size-12 rounded-xl bg-teal/20 flex items-center justify-center text-teal">
+            <span class="material-symbols-outlined text-2xl">flag</span>
+          </div>
+        </div>
+        
+        <p class="text-charcoal/70 dark:text-gray-300 mb-6">Complete your daily wellness goals</p>
+        
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="goal-checkbox-3d checked">
+              <span class="material-symbols-outlined text-white text-sm">check</span>
+            </div>
+            <span class="flex-1 text-charcoal dark:text-gray-300 line-through opacity-70">Morning meditation (10 min)</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="goal-checkbox-3d checked">
+              <span class="material-symbols-outlined text-white text-sm">check</span>
+            </div>
+            <span class="flex-1 text-charcoal dark:text-gray-300 line-through opacity-70">Breathing exercise</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="goal-checkbox-3d">
+              <span class="material-symbols-outlined text-white text-sm">check</span>
+            </div>
+            <span class="flex-1 text-charcoal dark:text-white font-medium">Memory game session</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="goal-checkbox-3d">
+              <span class="material-symbols-outlined text-white text-sm">check</span>
+            </div>
+            <span class="flex-1 text-charcoal dark:text-white font-medium">Evening reflection</span>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-charcoal/70 dark:text-gray-300">Progress</span>
+            <span class="font-bold gradient-text">2 of 4 completed</span>
+          </div>
+          <div class="progress-bar-3d">
+            <div class="progress-fill-3d bg-gradient-to-r from-peach to-lavender" style="width: 50%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activity Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Recent Activity</h2>
+          <div class="size-12 rounded-xl bg-peach/20 flex items-center justify-center text-peach">
+            <span class="material-symbols-outlined text-2xl">history</span>
+          </div>
+        </div>
+        
+        <div class="space-y-4 max-h-80 overflow-y-auto pr-2">
+          <div class="flex items-center gap-4 p-3 rounded-xl bg-white/30 dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+            <div class="size-10 rounded-lg bg-lavender/20 flex items-center justify-center text-lavender">
+              <span class="material-symbols-outlined">self_improvement</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-medium text-charcoal dark:text-white">Completed Breathing Exercise</div>
+              <div class="text-sm text-charcoal/70 dark:text-gray-300">10:30 AM • 15 minutes</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 p-3 rounded-xl bg-white/30 dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+            <div class="size-10 rounded-lg bg-teal/20 flex items-center justify-center text-teal">
+              <span class="material-symbols-outlined">extension</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-medium text-charcoal dark:text-white">Played Memory Card Game</div>
+              <div class="text-sm text-charcoal/70 dark:text-gray-300">Yesterday • Score: 85</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 p-3 rounded-xl bg-white/30 dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+            <div class="size-10 rounded-lg bg-peach/20 flex items-center justify-center text-peach">
+              <span class="material-symbols-outlined">menu_book</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-medium text-charcoal dark:text-white">Completed Mindfulness Lesson</div>
+              <div class="text-sm text-charcoal/70 dark:text-gray-300">2 days ago • 20 minutes</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 p-3 rounded-xl bg-white/30 dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors">
+            <div class="size-10 rounded-lg bg-lavender/20 flex items-center justify-center text-lavender">
+              <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <div class="flex-1">
+              <div class="font-medium text-charcoal dark:text-white">Mental Health Check-in</div>
+              <div class="text-sm text-charcoal/70 dark:text-gray-300">3 days ago • Score: 8/10</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Progress Overview Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.4s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Progress Overview</h2>
+          <div class="size-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-500">
+            <span class="material-symbols-outlined text-2xl">trending_up</span>
+          </div>
+        </div>
+        
+        <p class="text-charcoal/70 dark:text-gray-300 mb-6">Your wellness journey progress</p>
+        
+        <div class="space-y-5">
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="font-medium text-charcoal dark:text-white">Stress Management</span>
+              <span class="font-bold gradient-text">65%</span>
+            </div>
+            <div class="progress-bar-3d">
+              <div class="progress-fill-3d bg-gradient-to-r from-purple-500 to-pink-500" style="width: 65%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="font-medium text-charcoal dark:text-white">Focus & Concentration</span>
+              <span class="font-bold gradient-text">72%</span>
+            </div>
+            <div class="progress-bar-3d">
+              <div class="progress-fill-3d bg-gradient-to-r from-blue-500 to-cyan-500" style="width: 72%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="font-medium text-charcoal dark:text-white">Emotional Balance</span>
+              <span class="font-bold gradient-text">58%</span>
+            </div>
+            <div class="progress-bar-3d">
+              <div class="progress-fill-3d bg-gradient-to-r from-green-500 to-emerald-500" style="width: 58%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="font-medium text-charcoal dark:text-white">Sleep Quality</span>
+              <span class="font-bold gradient-text">81%</span>
+            </div>
+            <div class="progress-bar-3d">
+              <div class="progress-fill-3d bg-gradient-to-r from-amber-500 to-orange-500" style="width: 81%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Actions Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.5s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Quick Actions</h2>
+          <div class="size-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
+            <span class="material-symbols-outlined text-2xl">bolt</span>
+          </div>
+        </div>
+        
+        <p class="text-charcoal/70 dark:text-gray-300 mb-6">Jump back into your wellness routine</p>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <button class="gradient-border-button flex flex-col items-center justify-center p-4 rounded-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl mb-3">self_improvement</span>
+            <span class="font-medium">Breathing Exercise</span>
+          </button>
+          
+          <button class="gradient-border-button flex flex-col items-center justify-center p-4 rounded-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl mb-3">extension</span>
+            <span class="font-medium">Memory Game</span>
+          </button>
+          
+          <button class="gradient-border-button flex flex-col items-center justify-center p-4 rounded-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl mb-3">menu_book</span>
+            <span class="font-medium">Mindfulness</span>
+          </button>
+          
+          <button class="gradient-border-button flex flex-col items-center justify-center p-4 rounded-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="material-symbols-outlined text-3xl mb-3">psychology</span>
+            <span class="font-medium">Mental Check</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Weekly Insights Card -->
+      <div class="card-3d glassmorphism p-6 animate-card-float" style="animation-delay: 0.6s;">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-charcoal dark:text-white">Weekly Insights</h2>
+          <div class="size-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-500">
+            <span class="material-symbols-outlined text-2xl">insights</span>
+          </div>
+        </div>
+        
+        <p class="text-charcoal/70 dark:text-gray-300 mb-6">Your activity patterns this week</p>
+        
+        <div class="flex items-end justify-between h-40 mb-6">
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-lavender/50 to-lavender rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 40px;"></div>
+            <span class="text-sm mt-2">Mon</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-teal/50 to-teal rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 60px;"></div>
+            <span class="text-sm mt-2">Tue</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-peach/50 to-peach rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 30px;"></div>
+            <span class="text-sm mt-2">Wed</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-lavender/50 to-lavender rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 70px;"></div>
+            <span class="text-sm mt-2">Thu</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-teal/50 to-teal rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 50px;"></div>
+            <span class="text-sm mt-2">Fri</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-peach/50 to-peach rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 65px;"></div>
+            <span class="text-sm mt-2">Sat</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-10 bg-gradient-to-t from-lavender/50 to-lavender rounded-t-lg transition-all hover:translate-y-[-5px]" style="height: 45px;"></div>
+            <span class="text-sm mt-2">Sun</span>
+          </div>
+        </div>
+        
+        <div class="text-center glassmorphism rounded-xl p-4">
+          <p class="font-medium gradient-text">You've been most active on Thursdays</p>
+          <p class="text-sm text-charcoal/70 dark:text-gray-300 mt-1">Keep up the great work! 🎉</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Report Modal -->
+  <div id="report-modal" class="report-modal">
+    <div class="report-content">
+      <div class="report-header">
+        <div>
+          <h2 class="text-2xl font-bold">WellnessAI Personal Report</h2>
+          <p class="text-sm opacity-90" id="report-date">Generated on: Loading...</p>
+        </div>
+        <button id="close-report" class="material-symbols-outlined text-2xl hover:scale-110 transition-transform">close</button>
+      </div>
+      
+      <div class="report-body" id="report-content">
+        <!-- Report content will be generated here -->
+        <div class="text-center py-8">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-lavender mx-auto"></div>
+          <p class="mt-4">Generating your personalized wellness report...</p>
+        </div>
+      </div>
+      
+      <div class="report-footer">
+        <button id="print-report" class="gradient-border-button px-6 py-3 rounded-lg font-medium hover:-translate-y-0.5 transition-all">
+          <span class="material-symbols-outlined align-middle mr-2">print</span>
+          Print Report
+        </button>
+        <button id="download-pdf" class="bg-gradient-to-r from-lavender to-teal text-white px-6 py-3 rounded-lg font-medium hover:-translate-y-0.5 transition-all hover:shadow-lg">
+          <span class="material-symbols-outlined align-middle mr-2">download</span>
+          Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ... (previous JavaScript code remains the same until the new additions) ...
+    
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('light-icon');
+    const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    
+    // Check for saved theme preference or default to light
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply the saved theme on page load
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.add('hidden');
+      darkIcon.classList.remove('hidden');
+      createStars();
+    } else {
+      document.documentElement.classList.remove('dark');
+      lightIcon.classList.remove('hidden');
+      darkIcon.classList.add('hidden');
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+        clearStars();
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+        createStars();
+      }
+    });
+    
+    // Mood tracker functionality
+    const moodOptions = document.querySelectorAll('.mood-option-3d');
+    let currentMood = 'okay'; // Default mood
+    
+    moodOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        moodOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        currentMood = option.dataset.mood;
+        console.log(`Mood set to: ${currentMood}`);
+        
+        // Add a subtle animation feedback
+        option.style.transform = 'translateY(-8px) translateZ(15px) scale(1.05)';
+        setTimeout(() => {
+          option.style.transform = 'translateY(-8px) translateZ(15px)';
+        }, 300);
+      });
+    });
+    
+    // Goal completion functionality
+    const goalCheckboxes = document.querySelectorAll('.goal-checkbox-3d');
+    goalCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('click', () => {
+        const isChecked = checkbox.classList.contains('checked');
+        const goalText = checkbox.nextElementSibling;
+        
+        if (isChecked) {
+          checkbox.classList.remove('checked');
+          goalText.classList.remove('line-through', 'opacity-70');
+        } else {
+          checkbox.classList.add('checked');
+          goalText.classList.add('line-through', 'opacity-70');
+        }
+        
+        // Update progress bar
+        updateGoalProgress();
+        
+        // Animation feedback
+        checkbox.style.transform = 'translateZ(15px) scale(1.2)';
+        setTimeout(() => {
+          checkbox.style.transform = checkbox.classList.contains('checked') 
+            ? 'translateZ(10px)' 
+            : '';
+        }, 300);
+      });
+    });
+    
+    function updateGoalProgress() {
+      const totalGoals = document.querySelectorAll('.goal-checkbox-3d').length;
+      const completedGoals = document.querySelectorAll('.goal-checkbox-3d.checked').length;
+      const progress = (completedGoals / totalGoals) * 100;
+      
+      const progressBar = document.querySelector('.goal-checkbox-3d + .flex-1 + .mt-6 .progress-fill-3d');
+      const progressText = document.querySelector('.goal-checkbox-3d + .flex-1 + .mt-6 .gradient-text');
+      
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+      }
+      
+      if (progressText) {
+        progressText.textContent = `${completedGoals} of ${totalGoals} completed`;
+      }
+    }
+    
+    // Create stars for dark mode
+    function createStars() {
+      // Clear any existing stars
+      clearStars();
+      
+      // Create twinkling stars
+      for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Random size between 1-3px
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation delay
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        // Add twinkle animation
+        star.classList.add('animate-twinkle');
+        
+        starsContainer.appendChild(star);
+      }
+      
+      // Create occasional shooting stars
+      setInterval(() => {
+        if (Math.random() > 0.7) { // 30% chance every interval
+          createShootingStar();
+        }
+      }, 3000);
+    }
+    
+    // Create a shooting star
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.classList.add('shooting-star');
+      
+      // Random starting position (top area)
+      shootingStar.style.left = `${Math.random() * 20}%`;
+      shootingStar.style.top = `${Math.random() * 30}%`;
+      
+      // Random animation duration
+      const duration = Math.random() * 1 + 1.5;
+      shootingStar.style.animationDuration = `${duration}s`;
+      shootingStar.classList.add('animate-shooting-star');
+      
+      starsContainer.appendChild(shootingStar);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        if (shootingStar.parentNode) {
+          shootingStar.parentNode.removeChild(shootingStar);
+        }
+      }, duration * 1000);
+    }
+    
+    // Clear all stars
+    function clearStars() {
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
+    
+    // Add hover effect to progress bars
+    const progressBars = document.querySelectorAll('.progress-fill-3d');
+    progressBars.forEach(bar => {
+      bar.addEventListener('mouseenter', () => {
+        bar.style.transform = 'translateZ(10px)';
+      });
+      bar.addEventListener('mouseleave', () => {
+        bar.style.transform = 'translateZ(5px)';
+      });
+    });
+    
+    // Add click animation to quick action buttons
+    const quickActions = document.querySelectorAll('.gradient-border-button');
+    quickActions.forEach(button => {
+      button.addEventListener('click', () => {
+        button.style.transform = 'translateY(-2px) scale(0.98)';
+        setTimeout(() => {
+          button.style.transform = 'translateY(-1px)';
+        }, 200);
+      });
+    });
+    
+    // Report Generation Functionality
+    const generateReportBtn = document.getElementById('generate-report-btn');
+    const reportModal = document.getElementById('report-modal');
+    const closeReportBtn = document.getElementById('close-report');
+    const printReportBtn = document.getElementById('print-report');
+    const downloadPdfBtn = document.getElementById('download-pdf');
+    const reportContent = document.getElementById('report-content');
+    const reportDate = document.getElementById('report-date');
+    const reportNavLink = document.getElementById('report-nav-link');
+    
+    // Open report modal
+    generateReportBtn.addEventListener('click', generateAndShowReport);
+    reportNavLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      generateAndShowReport();
+    });
+    
+    // Close report modal
+    closeReportBtn.addEventListener('click', () => {
+      reportModal.classList.remove('active');
+    });
+    
+    // Close modal when clicking outside
+    reportModal.addEventListener('click', (e) => {
+      if (e.target === reportModal) {
+        reportModal.classList.remove('active');
+      }
+    });
+    
+    // Print report
+    printReportBtn.addEventListener('click', () => {
+      window.print();
+    });
+    
+    // Download PDF report
+    downloadPdfBtn.addEventListener('click', downloadReportAsPDF);
+    
+    function generateAndShowReport() {
+      // Update date
+      const now = new Date();
+      reportDate.textContent = `Generated on: ${now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`;
+      
+      // Show modal
+      reportModal.classList.add('active');
+      
+      // Generate report content
+      generateReportContent();
+    }
+    
+    function generateReportContent() {
+      // Collect data from dashboard
+      const mentalWellnessScore = 78;
+      const totalSessions = 12;
+      const dayStreak = 5;
+      const completedGoals = document.querySelectorAll('.goal-checkbox-3d.checked').length;
+      const totalGoals = document.querySelectorAll('.goal-checkbox-3d').length;
+      const goalProgress = Math.round((completedGoals / totalGoals) * 100);
+      
+      // Get mood
+      const moodEmoji = {
+        'excellent': '😄',
+        'good': '😊',
+        'okay': '😐',
+        'poor': '😔'
+      }[currentMood];
+      
+      const moodText = {
+        'excellent': 'Excellent',
+        'good': 'Good',
+        'okay': 'Okay',
+        'poor': 'Needs Attention'
+      }[currentMood];
+      
+      // Create report HTML
+      reportContent.innerHTML = `
+        <div class="report-print">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">WellnessAI Personal Report</h1>
+            <p class="text-lg opacity-80">Comprehensive Wellness Analysis for Alex Johnson</p>
+            <div class="flex items-center justify-center gap-4 mt-4">
+              <div class="size-16 rounded-full bg-gradient-to-r from-lavender via-peach to-teal flex items-center justify-center text-xl font-black text-white">
+                AJ
+              </div>
+              <div class="text-left">
+                <p class="font-bold">Alex Johnson</p>
+                <p class="text-sm opacity-70">Member since: March 2024</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Executive Summary -->
+          <div class="glassmorphism rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 gradient-text">Executive Summary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="mb-4">Your overall wellness score is <span class="font-bold gradient-text">${mentalWellnessScore}%</span>, indicating good progress in your mental wellness journey. You've maintained a <span class="font-bold">${dayStreak}-day streak</span> and completed <span class="font-bold">${totalSessions} sessions</span> this month.</p>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">${moodEmoji}</span>
+                  <div>
+                    <p class="font-bold">Current Mood: ${moodText}</p>
+                    <p class="text-sm opacity-70">Tracked daily for emotional awareness</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-gradient-to-br from-lavender/20 to-teal/20 rounded-xl p-4">
+                <h3 class="font-bold mb-2">Key Achievements</h3>
+                <ul class="space-y-2">
+                  <li class="flex items-center gap-2">✓ 5-day meditation streak achieved</li>
+                  <li class="flex items-center gap-2">✓ Memory game high score: 85</li>
+                  <li class="flex items-center gap-2">✓ Consistent weekly activity pattern</li>
+                  <li class="flex items-center gap-2">✓ Sleep quality improved by 15%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Detailed Metrics -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Wellness Metrics</h2>
+            <div class="report-stats-grid">
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Mental Wellness</h3>
+                <div class="progress-bar-3d mb-2">
+                  <div class="progress-fill-3d bg-gradient-to-r from-lavender to-teal" style="width: ${mentalWellnessScore}%"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span>Overall Score</span>
+                  <span class="font-bold">${mentalWellnessScore}%</span>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Goal Completion</h3>
+                <div class="progress-bar-3d mb-2">
+                  <div class="progress-fill-3d bg-gradient-to-r from-peach to-lavender" style="width: ${goalProgress}%"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span>Daily Goals</span>
+                  <span class="font-bold">${completedGoals}/${totalGoals} (${goalProgress}%)</span>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Consistency</h3>
+                <div class="text-center">
+                  <div class="text-3xl font-bold gradient-text mb-2">${dayStreak} days</div>
+                  <p class="text-sm opacity-70">Current streak</p>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Engagement</h3>
+                <div class="text-center">
+                  <div class="text-3xl font-bold gradient-text mb-2">${totalSessions}</div>
+                  <p class="text-sm opacity-70">Total sessions this month</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Breakdown -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Progress Breakdown</h2>
+            <div class="space-y-5">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Stress Management</span>
+                  <span class="font-bold gradient-text">65%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-purple-500 to-pink-500" style="width: 65%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Focus & Concentration</span>
+                  <span class="font-bold gradient-text">72%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-blue-500 to-cyan-500" style="width: 72%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Emotional Balance</span>
+                  <span class="font-bold gradient-text">58%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-green-500 to-emerald-500" style="width: 58%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Sleep Quality</span>
+                  <span class="font-bold gradient-text">81%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-amber-500 to-orange-500" style="width: 81%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Activity Timeline -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Recent Activity Timeline</h2>
+            <div class="report-timeline">
+              <div class="timeline-item">
+                <h4 class="font-bold">Completed Breathing Exercise</h4>
+                <p class="text-sm opacity-70">Today • 10:30 AM • 15 minutes</p>
+                <p class="mt-1">Deep breathing session focused on stress reduction</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Played Memory Card Game</h4>
+                <p class="text-sm opacity-70">Yesterday • Score: 85</p>
+                <p class="mt-1">Cognitive training session to improve memory retention</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Completed Mindfulness Lesson</h4>
+                <p class="text-sm opacity-70">2 days ago • 20 minutes</p>
+                <p class="mt-1">Guided meditation for emotional regulation</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Mental Health Check-in</h4>
+                <p class="text-sm opacity-70">3 days ago • Score: 8/10</p>
+                <p class="mt-1">Weekly assessment showing positive trend</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recommendations -->
+          <div class="glassmorphism rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4 gradient-text">Personalized Recommendations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="font-bold mb-3 text-lavender">Based on Your Progress</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-teal">check_circle</span>
+                    <div>
+                      <p class="font-medium">Continue daily meditation practice</p>
+                      <p class="text-sm opacity-70">Your consistency is showing positive results</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-peach">lightbulb</span>
+                    <div>
+                      <p class="font-medium">Try advanced breathing techniques</p>
+                      <p class="text-sm opacity-70">You're ready for 4-7-8 breathing exercises</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-lavender">trending_up</span>
+                    <div>
+                      <p class="font-medium">Focus on emotional balance exercises</p>
+                      <p class="text-sm opacity-70">This area shows the most room for improvement</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="font-bold mb-3 text-teal">Next Week's Goals</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-peach">target</span>
+                    <div>
+                      <p class="font-medium">Achieve 7-day meditation streak</p>
+                      <p class="text-sm opacity-70">Just 2 more days to go!</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-lavender">fitness_center</span>
+                    <div>
+                      <p class="font-medium">Complete 3 memory game sessions</p>
+                      <p class="text-sm opacity-70">Aim for a score above 90</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-teal">bedtime</span>
+                    <div>
+                      <p class="font-medium">Improve sleep quality to 85%</p>
+                      <p class="text-sm opacity-70">Try evening mindfulness exercises</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Weekly Activity Chart -->
+          <div class="mt-8">
+            <h3 class="text-xl font-bold mb-4">Weekly Activity Pattern</h3>
+            <div class="flex items-end justify-between h-32 mb-6 bg-gradient-to-b from-transparent to-lavender/10 rounded-lg p-4">
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 40px;"></div>
+                <span class="text-xs mt-2">Mon</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 60px;"></div>
+                <span class="text-xs mt-2">Tue</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 30px;"></div>
+                <span class="text-xs mt-2">Wed</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 70px;"></div>
+                <span class="text-xs mt-2">Thu</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 50px;"></div>
+                <span class="text-xs mt-2">Fri</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 65px;"></div>
+                <span class="text-xs mt-2">Sat</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 45px;"></div>
+                <span class="text-xs mt-2">Sun</span>
+              </div>
+            </div>
+            <p class="text-center text-sm opacity-70">Peak activity observed on Thursdays. Consider scheduling important wellness sessions on this day.</p>
+          </div>
+          
+          <!-- Footer Note -->
+          <div class="text-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm opacity-70">This report is generated based on your activity data in WellnessAI. For personalized guidance, consult with a wellness professional.</p>
+            <p class="text-xs opacity-50 mt-2">Report ID: WA-${Date.now().toString().slice(-8)} • Version 1.0</p>
+          </div>
+        </div>
+      `;
+    }
+    
+    async function downloadReportAsPDF() {
+      const downloadBtn = downloadPdfBtn;
+      const originalText = downloadBtn.innerHTML;
+      
+      try {
+        // Change button to loading state
+        downloadBtn.innerHTML = '<span class="material-symbols-outlined align-middle mr-2">pending</span>Generating PDF...';
+        downloadBtn.disabled = true;
+        
+        // Use html2canvas to capture the report
+        const reportElement = document.querySelector('.report-print');
+        
+        // Create a canvas from the report content
+        const canvas = await html2canvas(reportElement, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff'
+        });
+        
+        // Convert canvas to image data
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create a PDF using jsPDF (you would need to include jsPDF library)
+        // For now, we'll create a downloadable PNG image
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `WellnessAI_Report_${new Date().toISOString().slice(0, 10)}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show success message
+        downloadBtn.innerHTML = '<span class="material-symbols-outlined align-middle mr-2">check_circle</span>Download Complete!';
+        setTimeout(() => {
+          downloadBtn.innerHTML = originalText;
+          downloadBtn.disabled = false;
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        downloadBtn.innerHTML = '<span class="material-symbols-outlined align-middle mr-2">error</span>Failed to Generate';
+        setTimeout(() => {
+          downloadBtn.innerHTML = originalText;
+          downloadBtn.disabled = false;
+        }, 2000);
+        
+        // Fallback: Open print dialog
+        alert('PDF generation failed. Opening print dialog instead. You can save as PDF from there.');
+        window.print();
+      }
+    }
+    
+    // Add keyboard shortcut for report (Ctrl+R or Cmd+R)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        generateAndShowReport();
+      }
+    });
+  </script>
+</body>
+</html>
