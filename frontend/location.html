@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Free Wellness Map</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-background-light p-6">
+
+<h1 class="text-4xl font-black gradient-text">Wellness Near You</h1>
+
+<div class="flex gap-4 mt-6">
+
+<select id="category" class="p-2 rounded">
+  <option value="park">Parks</option>
+  <option value="gym">Gyms</option>
+  <option value="cafe">Cafés</option>
+  <option value="meditation">Meditation</option>
+</select>
+
+<select id="radius" class="p-2 rounded">
+  <option value="1000">1 km</option>
+  <option value="3000">3 km</option>
+  <option value="5000">5 km</option>
+</select>
+
+<button onclick="fetchPlaces()" class="btn">Search</button>
+
+</div>
+
+<div id="map" class="h-[400px] mt-6 rounded-lg"></div>
+
+<div id="list" class="mt-6 grid md:grid-cols-2 gap-4"></div>
+
+<script>
+
+const BASE = "http://localhost:5000";
+const userId = localStorage.getItem("userId");
+let map;
+
+navigator.geolocation.getCurrentPosition(pos => {
+
+  const { latitude, longitude } = pos.coords;
+
+  map = L.map("map").setView([latitude, longitude], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    .addTo(map);
+
+  window.center = [latitude, longitude];
+  L.marker(window.center).addTo(map).bindPopup("You are here").openPopup();
+});
+if (!window.center) {
+  alert("Location not ready yet. Allow location access.");
+  return;
+}
+
+async function fetchPlaces() {
+
+  const category = document.getElementById("category").value;
+  const radius = document.getElementById("radius").value;
+
+  const res = await fetch(`${BASE}/open-places?lat=${center[0]}&lng=${center[1]}&category=${category}&radius=${radius}`);
+  const places = await res.json();
+
+  console.log("API Response:", places);
+
+  if (!Array.isArray(places)) {
+    alert("Backend Error! Check terminal.");
+    return;
+  }
+
+  document.getElementById("list").innerHTML = "";
+
+  places.forEach(p => {
+
+    const { name, address, rating, lat, lng } = p;
+
+    L.marker([lat, lng]).addTo(map).bindPopup(name);
+
+    document.getElementById("list").innerHTML += `
+      <div class="bg-white rounded-lg p-4">
+        <h3 class="font-bold">${name}</h3>
+        <p>${address}</p>
+        <p>⭐ ${rating}</p>
+        <button onclick='saveFav(${JSON.stringify(p)})'>❤️ Save</button>
+      </div>
+    `;
+  });
+}
+
+
+
+async function saveFav(p) {
+
+  await fetch(`${BASE}/favorite`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, ...p })
+  });
+
+  alert("Saved!");
+}
+
+</script>
+
+<style>
+.btn {
+  background: linear-gradient(to right,#C8B6FF,#FFD8B1,#B4E4D8);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+}
+.gradient-text {
+  background: linear-gradient(to right,#C8B6FF,#FFD8B1,#B4E4D8);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+</style>
+
+</body>
+</html>

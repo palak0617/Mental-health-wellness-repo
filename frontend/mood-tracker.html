@@ -225,8 +225,15 @@
 
   <script>
     // Configuration
-    const API_URL = 'http://localhost:5000/api';
-    const USER_ID = '673a1234567890abcdef1234'; // Replace with actual user ID from authentication
+    const API_URL = 'http://localhost:5000';
+    const USER_ID = localStorage.getItem("userId");
+ // Replace with actual user ID from authentication
+    
+    // 🚨 BLOCK ACCESS IF NOT LOGGED IN
+   if (localStorage.getItem("loggedIn") !== "true") {
+     alert("Please login to access Mood Tracker");
+     window.location.href = "login.html";  // redirect to login
+    }
 
     let selectedMood = '';
     let selectedActivities = [];
@@ -273,6 +280,11 @@
         container.appendChild(btn);
       });
     }
+    function logout() {
+  localStorage.removeItem("loggedIn");
+  window.location.href = "login.html";
+}
+
 
     function toggleActivity(activity, btn) {
       if (selectedActivities.includes(activity)) {
@@ -350,7 +362,7 @@
           activities: selectedActivities
         };
 
-        await axios.post(`${API_URL}/moods`, data);
+        await axios.post(`${API_URL}/mood`, data);
         
         hideMoodForm();
         fetchMoods();
@@ -365,7 +377,7 @@
 
     async function fetchMoods() {
       try {
-        const response = await axios.get(`${API_URL}/moods/${USER_ID}`);
+        const response = await axios.get(`${API_URL}/mood/${USER_ID}`);
         displayMoodHistory(response.data);
       } catch (error) {
         console.error('Error fetching moods:', error);
@@ -375,7 +387,7 @@
     async function fetchStats() {
       try {
         const timeframe = document.getElementById('timeframeSelect').value;
-        const response = await axios.get(`${API_URL}/moods/${USER_ID}/stats?timeframe=${timeframe}`);
+        const response = await axios.get(`${API_URL}/mood/${USER_ID}/stats?timeframe=${timeframe}`);
         displayStats(response.data);
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -486,7 +498,7 @@
       if (!confirm('Are you sure you want to delete this mood entry?')) return;
       
       try {
-        await axios.delete(`${API_URL}/moods/${id}`);
+        await axios.delete(`${API_URL}/mood/${id}`);
         fetchMoods();
         fetchStats();
       } catch (error) {
