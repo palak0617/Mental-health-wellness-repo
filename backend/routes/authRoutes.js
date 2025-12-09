@@ -25,24 +25,40 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Login
+// Login Route (FIXED)
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check user
     const user = await User.findOne({ email });
-    if (!user) return res.json({ success: false, message: "User not found" });
+    if (!user)
+      return res.json({ success: false, message: "User not found" });
 
-    // Compare password
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.json({ success: false, message: "Incorrect password" });
+    if (!match)
+      return res.json({ success: false, message: "Incorrect password" });
 
-    res.json({ success: true, message: "Login successful", user });
+    // Generate Token
+    const jwt = require("jsonwebtoken");
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Return proper JSON shape for frontend
+    return res.json({
+      success: true,
+      message: "Login successful",
+      token,
+      user
+    });
 
   } catch (err) {
-    res.json({ success: false, message: "Login failed" });
+    console.error("LOGIN ERROR:", err);
+    return res.json({ success: false, message: "Login failed" });
   }
 });
+
 
 module.exports = router;

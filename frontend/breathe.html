@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellnessAI - Guided Breathing Exercise</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+            "charcoal": "#2C3E50",
+            "neon-blue": "#00f7ff",
+            "neon-green": "#7affb3",
+            "dark-blue": "#001018",
+            "dark-slate": "#022428",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px",
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(-2px) rotate(-1deg)' },
+              '50%': { transform: 'translateY(2px) rotate(1deg)' },
+            },
+            sparkle: {
+              '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            gradientWave: {
+                '0%, 100%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+            },
+            brainPulse: {
+              '0%, 100%': { opacity: '0.7', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.05)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            shootingStar: {
+              '0%': { transform: 'translateX(0) translateY(0) rotate(45deg)', opacity: '1' },
+              '100%': { transform: 'translateX(500px) translateY(500px) rotate(45deg)', opacity: '0' },
+            },
+            bounceGently: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(0, 247, 255, 0.5)' },
+              '50%': { boxShadow: '0 0 30px rgba(0, 247, 255, 0.8)' },
+            },
+            breathIn: {
+              '0%': { transform: 'scale(1)' },
+              '100%': { transform: 'scale(1.15)' },
+            },
+            breathOut: {
+              '0%': { transform: 'scale(1.15)' },
+              '100%': { transform: 'scale(1)' },
+            },
+            popIn: {
+              '0%': { opacity: '0', transform: 'translateY(-8px) scale(0.95)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            },
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            sparkle: 'sparkle 2.5s ease-in-out infinite',
+            'gradient-wave': 'gradientWave 8s ease infinite',
+            'brain-pulse': 'brainPulse 4s ease-in-out infinite',
+            twinkle: 'twinkle 3s ease-in-out infinite',
+            'shooting-star': 'shootingStar 2s linear forwards',
+            'bounce-gently': 'bounceGently 3s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+            'breath-in': 'breathIn 4s ease-in-out forwards',
+            'breath-out': 'breathOut 4s ease-in-out forwards',
+            'pop-in': 'popIn 0.7s ease-out',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    :root {
+      --primary: #1313ec;
+      --background-light: #f6f6f8;
+      --background-dark: #101022;
+      --lavender: #C8B6FF;
+      --peach: #FFD8B1;
+      --teal: #B4E4D8;
+      --charcoal: #2C3E50;
+      --neon-blue: #00f7ff;
+      --neon-green: #7affb3;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Spline Sans', sans-serif;
+    }
+    
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glassmorphism {
+      background: rgba(30, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .gradient-text {
+      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Enhanced Navbar Styles */
+    .navbar-container {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    
+    .dark .navbar-container {
+      background: rgba(16, 16, 34, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #C8B6FF, #FFD8B1);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+    
+    .mobile-menu.active {
+      max-height: 300px;
+      transition: max-height 0.5s ease-in;
+    }
+    
+    /* Brain animation styles - FIXED */
+    .brain-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 300px;
+      overflow: visible;
+    }
+    
+    .brain {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--lavender), var(--teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 -12px 30px rgba(0,0,0,0.06), 0 12px 30px rgba(0,0,0,0.08);
+      transform-origin: center center;
+      transition: transform 300ms ease;
+      z-index: 2;
+    }
+    
+    .eye {
+      width: 20px;
+      height: 20px;
+      background: #3b2b5a;
+      border-radius: 50%;
+      position: absolute;
+      top: 35%;
+    }
+    
+    .eye.left {
+      left: 25%;
+    }
+    
+    .eye.right {
+      right: 25%;
+    }
+    
+    .smile {
+      position: absolute;
+      bottom: 60px;
+      width: 70px;
+      height: 30px;
+      border-bottom: 6px solid #3b2b5a;
+      border-radius: 50%;
+    }
+    
+    .bubble {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      background: var(--background-light);
+      padding: 14px 16px;
+      border-radius: 14px;
+      max-width: 280px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      animation: popIn 700ms ease;
+      z-index: 10;
+    }
+    
+    .dark .bubble {
+      background: var(--background-dark);
+      color: #f6f6f8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .bubble:after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 14px 12px 0 0;
+      border-style: solid;
+      border-color: var(--background-light) transparent transparent transparent;
+    }
+    
+    .dark .bubble:after {
+      border-color: var(--background-dark) transparent transparent transparent;
+    }
+    
+    .bubble p {
+      font-size: 14px;
+      line-height: 1.35;
+      margin: 0;
+    }
+    
+    /* Enhanced ECG Monitor Styles */
+    .monitor {
+      background: #001018;
+      padding: 30px;
+      border-radius: 12px;
+      color: var(--neon-blue);
+      border: 6px solid rgba(0, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .monitor {
+      border-color: rgba(0, 247, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 247, 255, 0.1);
+    }
+    
+    .screen-container {
+      flex: 1;
+      position: relative;
+      height: 200px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #022428, #001018);
+      overflow: hidden;
+      border: 2px solid rgba(0, 247, 255, 0.1);
+    }
+    
+    canvas.ecg {
+      position: absolute;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    
+    .monitor-panel {
+      width: 100%;
+      padding: 16px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+      box-shadow: inset 0 4px 14px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0, 247, 255, 0.1);
+    }
+    
+    .meter {
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    
+    .meter > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+      transition: width 0.1s linear;
+    }
+    
+    .timeline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .stage-tip {
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 80px;
+    }
+    
+    /* Stars for dark mode */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    .dark .stars-container {
+      opacity: 1;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, white, transparent);
+      border-radius: 50%;
+    }
+    
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      transform-origin: 0 0;
+    }
+    
+    /* Breathing Animation Classes */
+    .breathing-in {
+      animation: breathIn 4s ease-in-out forwards;
+    }
+    
+    .breathing-hold {
+      animation: none;
+    }
+    
+    .breathing-out {
+      animation: breathOut 4s ease-in-out forwards;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .brain-wrap {
+        height: 250px;
+      }
+      
+      .brain {
+        width: 160px;
+        height: 160px;
+      }
+      
+      .bubble {
+        max-width: 220px;
+        top: 0;
+      }
+      
+      .monitor {
+        padding: 20px;
+      }
+      
+      .screen-container {
+        height: 150px;
+      }
+    }
+    
+    /* 3D Card Effect */
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-3d:hover {
+      transform: translateY(-10px) rotateX(2deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .dark .card-3d {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .card-3d:hover {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Gradient Border Button */
+    .gradient-border-button {
+      position: relative;
+      background: #f6f6f8;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      z-index: 1;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .gradient-border-button::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      z-index: -1;
+      margin: -2px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, #C8B6FF, #FFD8B1, #B4E4D8);
+      background-size: 200% 200%;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .gradient-border-button:hover::before {
+      background-position: 100% 100%;
+      transform: scale(1.05);
+    }
+    
+    .dark .gradient-border-button {
+      background: #101022;
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased transition-colors duration-300">
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <div class="relative w-full flex flex-col items-center overflow-hidden min-h-screen">
+    <!-- Background Elements -->
+    <div class="absolute top-[-20%] left-[-15%] w-[50vw] h-[50vw] bg-lavender/30 dark:bg-lavender/20 rounded-full filter blur-[150px] opacity-60"></div>
+    <div class="absolute bottom-[-25%] right-[-15%] w-[45vw] h-[45vw] bg-peach/30 dark:bg-peach/20 rounded-full filter blur-[150px] opacity-50"></div>
+    <div class="absolute top-[10%] right-[5%] w-[30vw] h-[30vw] bg-teal/30 dark:bg-teal/20 rounded-full filter blur-[120px] opacity-40"></div>
+    
+    <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Enhanced Header (Same as Homepage) -->
+      <header class="navbar-container py-4 sticky top-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="size-10 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl text-white">neurology</span>
+            </div>
+            <h2 class="text-2xl font-black tracking-tight text-charcoal dark:text-white">WellnessAI</h2>
+          </div>
+          
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex items-center gap-8">
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="index.html">Home</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#">Resources</a>
+          </nav>
+          
+          <div class="flex items-center gap-4">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden flex items-center justify-center rounded-lg h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300">
+              <span id="menu-icon" class="material-symbols-outlined">menu</span>
+              <span id="close-icon" class="material-symbols-outlined hidden">close</span>
+            </button>
+            
+            <!-- Dark/Light Mode Toggle -->
+            <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+              <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+            </button>
+            
+            <button class="hidden sm:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                <span class="truncate"><a href="login.html">Log In</a></span>
+            </button>
+            
+            <a href="signup.html" class="hidden sm:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold tracking-[0.015em] bg-gradient-to-r from-lavender via-peach to-teal text-charcoal shadow-md hover:shadow-lg transition-all hover:scale-105">
+              Sign Up
+            </a>
+            
+            <!-- Dashboard Button -->
+            <a href="userDashboard.html" class="hidden md:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold tracking-[0.015em] bg-gradient-to-r from-teal to-lavender text-background-light shadow-md hover:shadow-lg transition-all hover:scale-105">
+              <span class="material-symbols-outlined mr-2">dashboard</span>
+              Dashboard
+            </a>
+          </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden mt-4 bg-white dark:bg-background-dark/90 backdrop-blur-sm rounded-xl p-4 border border-gray-100 dark:border-gray-800">
+          <div class="flex flex-col gap-4">
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="index.html">Home</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="l5.html">Features</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">Pricing</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">Resources</a>
+            
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+              <button class="w-full flex items-center justify-center rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold hover:opacity-90 transition-opacity">
+                <a href="login.html" class="w-full text-center">Log In</a>
+            </button>
+            <a href="signup.html" class="w-full flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-gradient-to-r from-lavender via-peach to-teal text-charcoal shadow-md hover:shadow-lg transition-all">
+              Sign Up
+            </a>
+            <a href="userDashboard.html" class="w-full flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-gradient-to-r from-teal to-lavender text-background-light shadow-md hover:shadow-lg transition-all">
+              <span class="material-symbols-outlined mr-2">dashboard</span>
+              Dashboard
+            </a>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Main Content -->
+      <main class="py-8 md:py-12">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-black mb-4 text-charcoal dark:text-white">
+            Guided <span class="gradient-text">Breathing Exercise</span>
+          </h1>
+          <p class="text-lg text-charcoal/80 dark:text-gray-300 max-w-2xl mx-auto">
+            Calm your mind and regulate your nervous system with this simple breathing technique. Follow the brain's guidance.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <!-- Left Card - Brain Guide -->
+          <div class="glassmorphism card-3d rounded-2xl p-6">
+            <div class="brain-wrap">
+              <div class="bubble" id="bubble" aria-live="polite">
+            <p id="bubble-text"></p>
+          </div>
+          <div class="brain" id="brain">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="smile"></div>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-charcoal dark:text-white">Follow the Brain</h3>
+            <div class="flex gap-              2">
+                  <button class="gradient-border-button flex items-center justify-center rounded-full h-10 px-6 text-charcoal dark:text-white text-sm font-bold transform hover:-translate-y-1 hover:scale-105" id="startBtn">
+                    <span class="material-symbols-outlined mr-2 text-sm">play_arrow</span>
+                    Start
+                  </button>
+                  <button class="gradient-border-button flex items-center justify-center rounded-full h-10 px-6 text-charcoal dark:text-white text-sm font-bold transform hover:-translate-y-1 hover:scale-105" id="voiceBtn">
+                    <span class="material-symbols-outlined mr-2 text-sm" id="voiceIcon">volume_up</span>
+                    <span id="voiceText">Voice On</span>
+                  </button>
+                </div>
+              </div>
+              <p class="text-sm text-charcoal/70 dark:text-gray-400">
+                This exercise uses a 4s inhale → 6s hold → 4s exhale pattern. The brain will guide you and the monitor will visualize your breath.
+              </p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mt-6">
+              <div class="glassmorphism rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-primary dark:text-lavender" id="phase">Ready</div>
+                <div class="text-xs mt-1 text-charcoal/70 dark:text-gray-400">current action</div>
+              </div>
+              <div class="glassmorphism rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-green-600 dark:text-teal"><span id="timer">0</span>s</div>
+                <div class="text-xs mt-1 text-charcoal/70 dark:text-gray-400">time left</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Card - ECG Monitor -->
+          <div class="glassmorphism card-3d rounded-2xl p-6">
+            <div class="monitor">
+              <div class="screen-container" id="screen">
+                <canvas class="ecg" id="ecg"></canvas>
+              </div>
+              <div class="monitor-panel">
+                <div class="text-sm font-bold mb-2">ECG Breath Monitor</div>
+                <div class="text-xs mb-4">Pulse line follows your inhale/hold/exhale</div>
+                <div class="meter mb-2">
+                  <i id="meterFill"></i>
+                </div>
+                <div class="text-xs flex flex-col gap-2">
+                  <div class="timeline">
+                    <div class="stage-tip">Inhale 4s</div>
+                    <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+                  </div>
+                  <div class="timeline">
+                    <div class="stage-tip">Hold 6s</div>
+                    <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+                  </div>
+                  <div class="timeline">
+                    <div class="stage-tip">Exhale 4s</div>
+                    <div class="flex-1 rounded-full h-2 bg-gray-300 dark:bg-gray-700"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-6">
+              <h3 class="text-xl font-bold mb-2 text-charcoal dark:text-white">Visual Feedback</h3>
+              <p class="text-sm text-charcoal/70 dark:text-gray-400">
+                Watch the brain swell as you inhale and the ECG line respond. The gentle motion and colors help anchor your attention to the present moment.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="glassmorphism card-3d rounded-2xl p-6 max-w-4xl mx-auto mt-8">
+          <h3 class="text-xl font-bold mb-4 text-charcoal dark:text-white">Breathing Exercise Tips</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+              <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">posture</span>
+              <h4 class="font-bold mb-1 text-charcoal dark:text-white">Sit Straight</h4>
+              <p class="text-sm text-charcoal/70 dark:text-gray-400">Maintain good posture for optimal breathing</p>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+              <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">airwave</span>
+              <h4 class="font-bold mb-1 text-charcoal dark:text-white">Breathe Through Nose</h4>
+              <p class="text-sm text-charcoal/70 dark:text-gray-400">Nasal breathing filters and warms the air</p>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-white/50 dark:bg-gray-800/50">
+              <span class="material-symbols-outlined text-3xl text-primary dark:text-lavender mb-2">timer</span>
+              <h4 class="font-bold mb-1 text-charcoal dark:text-white">Be Consistent</h4>
+              <p class="text-sm text-charcoal/70 dark:text-gray-400">Practice daily for best results</p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="text-center py-8 text-charcoal/60 dark:text-gray-500 text-sm border-t border-gray-200 dark:border-gray-800 mt-8">
+        <p>Made with ❤️ — WellnessAI Breathing Exercise</p>
+        <p class="mt-2">Tip: Find a quiet space and eliminate distractions for best results</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Text for the brain bubble
+    const messages = [
+      "Hey! I'm your friendly brainpal. Let's try a short breathing exercise together — it's a simple way to calm racing thoughts.",
+      "When you breathe slowly and deeply we lower stress signals, bring more oxygen to your body and tell your mind it's safe. I'll guide you: inhale, hold, and exhale with me.",
+      "Ready? Press Start or wait for my final invite — then follow my movement. We'll do 4s inhale → 6s hold → 4s exhale. Breathe gently!"
+    ];
+
+    const bubbleText = document.getElementById('bubble-text');
+    const bubble = document.getElementById('bubble');
+    const brain = document.getElementById('brain');
+    const startBtn = document.getElementById('startBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const voiceIcon = document.getElementById('voiceIcon');
+    const voiceText = document.getElementById('voiceText');
+    const phase = document.getElementById('phase');
+    const timer = document.getElementById('timer');
+    const meterFill = document.getElementById('meterFill');
+
+    let voiceOn = true;
+    let speechSynthesisUtterance;
+    let isTyping = false;
+
+    // Typing effect for bubble
+    function typeText(text, cb) {
+      if (isTyping) return;
+      isTyping = true;
+      bubbleText.textContent = '';
+      let i = 0;
+      const iv = setInterval(() => {
+        bubbleText.textContent += text[i++] || '';
+        if (i > text.length) {
+          clearInterval(iv);
+          isTyping = false;
+          setTimeout(cb, 700);
+        }
+      }, 16);
+    }
+
+    // Sequence the 3 turns
+    function playIntro(cb) {
+      let idx = 0;
+      function next() {
+        if (idx >= messages.length) {
+          cb && cb();
+          return;
+        }
+        bubble.style.display = 'block';
+        typeText(messages[idx], () => {
+          if (voiceOn) speak(messages[idx]);
+          idx++;
+          setTimeout(next, 1200);
+        });
+      }
+      next();
+    }
+
+    // Speech helper
+    function speak(txt) {
+      if (!('speechSynthesis' in window)) return;
+      if (speechSynthesis.speaking) speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.rate = 0.95;
+      u.pitch = 1;
+      u.lang = 'en-US';
+      u.volume = 0.8;
+      speechSynthesis.speak(u);
+    }
+
+    voiceBtn.addEventListener('click', () => {
+      voiceOn = !voiceOn;
+      if (voiceOn) {
+        voiceIcon.textContent = 'volume_up';
+        voiceText.textContent = 'Voice On';
+        if (bubbleText.textContent) speak(bubbleText.textContent);
+      } else {
+        voiceIcon.textContent = 'volume_off';
+        voiceText.textContent = 'Voice Off';
+        speechSynthesis.cancel();
+      }
+    });
+
+    // Breathing parameters
+    const INHALE = 4;
+    const HOLD = 6;
+    const EXHALE = 4;
+    let cycleRunning = false;
+    let currentCycle = null;
+
+    // Brain breathing animation
+    function setBrainPhase(phaseName, duration) {
+      phase.textContent = phaseName;
+      let t = duration;
+      timer.textContent = t;
+      
+      if (window.timerInterval) clearInterval(window.timerInterval);
+      
+      window.timerInterval = setInterval(() => {
+        t--;
+        if (t < 0) {
+          clearInterval(window.timerInterval);
+        } else {
+          timer.textContent = t;
+        }
+      }, 1000);
+      
+      brain.classList.remove('breathing-in', 'breathing-hold', 'breathing-out');
+      
+      if (phaseName === 'Inhale') {
+        brain.classList.add('breathing-in');
+      } else if (phaseName === 'Hold') {
+        brain.classList.add('breathing-hold');
+        brain.style.transform = 'scale(1.15)';
+      } else if (phaseName === 'Exhale') {
+        brain.classList.add('breathing-out');
+      } else {
+        brain.style.transform = 'scale(1)';
+      }
+    }
+
+    // ECG drawing
+    const canvas = document.getElementById('ecg');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width, H = canvas.height;
+    
+    function resizeCanvas() {
+      const container = document.getElementById('screen');
+      W = container.clientWidth;
+      H = container.clientHeight;
+      canvas.width = W;
+      canvas.height = H;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    function clearScreen() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#001018';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(0, 247, 255, 0.05)';
+      ctx.lineWidth = 1;
+      
+      for (let x = 0; x < W; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+      }
+      
+      for (let y = 0; y < H; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+    }
+
+    function runBreathCycle() {
+      if (cycleRunning) return;
+      cycleRunning = true;
+      
+      startBtn.innerHTML = '<span class="material-symbols-outlined mr-2 text-sm">pause</span>Pause';
+
+      const total = (INHALE + HOLD + EXHALE);
+      let startTime = null;
+      let paused = false;
+      let pauseStart = 0;
+      let accumulatedPauseTime = 0;
+
+      meterFill.style.width = '0%';
+
+      function step(ts) {
+        if (paused) {
+          requestAnimationFrame(step);
+          return;
+        }
+
+        if (!startTime) startTime = ts;
+        
+        const adjustedTs = ts - accumulatedPauseTime;
+        const elapsedMs = adjustedTs - startTime;
+        const elapsedSec = Math.floor(elapsedMs / 1000);
+        const progress = Math.min(elapsedMs / (total * 1000), 1);
+
+        const remaining = total - elapsedSec;
+        timer.textContent = remaining > 0 ? remaining : 0;
+
+        meterFill.style.width = (progress * 100) + "%";
+
+        if (elapsedSec < INHALE) {
+          setBrainPhase('Inhale', INHALE - elapsedSec);
+          if (voiceOn && elapsedSec === 0) speak("Inhale slowly for 4 seconds");
+        } else if (elapsedSec < INHALE + HOLD) {
+          setBrainPhase('Hold', INHALE + HOLD - elapsedSec);
+          if (voiceOn && elapsedSec === INHALE) speak("Hold your breath for 6 seconds");
+        } else if (elapsedSec < INHALE + HOLD + EXHALE) {
+          setBrainPhase('Exhale', INHALE + HOLD + EXHALE - elapsedSec);
+          if (voiceOn && elapsedSec === INHALE + HOLD) speak("Exhale slowly for 4 seconds");
+        } else {
+          setBrainPhase('Complete', 0);
+          if (voiceOn) speak("Great job! You've completed one breathing cycle.");
+        }
+
+        clearScreen();
+        drawGrid();
+        
+        ctx.strokeStyle = 'rgba(0, 255, 240, 0.1)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, H * 0.5);
+        ctx.lineTo(W, H * 0.5);
+        ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(0, 247, 255, 0.95)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        const steps = Math.floor(progress * W);
+        for (let i = 0; i <= steps; i++) {
+          const pct = i / W * total;
+          let yy;
+          if (pct <= INHALE) {
+            yy = H * 0.5 - (pct / INHALE) * (H * 0.3);
+          } else if (pct <= INHALE + HOLD) {
+            yy = H * 0.2;
+          } else if (pct <= INHALE + HOLD + EXHALE) {
+            yy = H * 0.2 + ((pct - INHALE - HOLD) / EXHALE) * (H * 0.3);
+          } else {
+            yy = H * 0.5;
+          }
+          
+          if (i % 20 === 0 && pct < total) {
+            yy += Math.sin(i * 0.1) * 5;
+          }
+          
+          if (i === 0) ctx.moveTo(i, yy);
+          else ctx.lineTo(i, yy);
+        }
+        ctx.stroke();
+
+        if (elapsedSec < total) {
+          currentCycle = requestAnimationFrame(step);
+        } else {
+          cycleRunning = false;
+          brain.style.transform = 'scale(1)';
+          brain.classList.remove('breathing-in', 'breathing-hold', 'breathing-out');
+          phase.textContent = 'Complete';
+          timer.textContent = '0';
+          startBtn.innerHTML = '<span class="material-symbols-outlined mr-2 text-sm">play_arrow</span>Start Again';
+          
+          setTimeout(() => {
+            meterFill.style.width = '0%';
+            clearScreen();
+            drawGrid();
+          }, 3000);
+        }
+      }
+
+      currentCycle = requestAnimationFrame(step);
+
+      startBtn.onclick = function() {
+        if (paused) {
+          accumulatedPauseTime += performance.now() - pauseStart;
+          paused = false;
+          startBtn.innerHTML = '<span class="material-symbols-outlined mr-2 text-sm">pause</span>Pause';
+          currentCycle = requestAnimationFrame(step);
+        } else {
+          paused = true;
+          pauseStart = performance.now();
+          startBtn.innerHTML = '<span class="material-symbols-outlined mr-2 text-sm">play_arrow</span>Resume';
+          speechSynthesis.cancel();
+        }
+      };
+    }
+
+    // Auto play intro
+    bubble.style.display = 'none';
+    playIntro(() => {
+      bubble.style.display = 'block';
+      typeText('Shall we begin? Press Start when you are comfortable.');
+    });
+
+    // Start button event listener
+    startBtn.addEventListener('click', function() {
+      if (!cycleRunning) {
+        runBreathCycle();
+      }
+    });
+
+    // Space key to start
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (!cycleRunning) runBreathCycle();
+      }
+    });
+
+    // Initial render
+    clearScreen();
+    drawGrid();
+
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('light-icon');
+    const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.add('hidden');
+      darkIcon.classList.remove('hidden');
+      createStars();
+    } else {
+      document.documentElement.classList.remove('dark');
+      lightIcon.classList.remove('hidden');
+      darkIcon.classList.add('hidden');
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+        clearStars();
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+        createStars();
+      }
+    });
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    });
+    
+    function createStars() {
+      clearStars();
+      
+      for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        star.classList.add('animate-twinkle');
+        
+        starsContainer.appendChild(star);
+      }
+      
+      setInterval(() => {
+        if (Math.random() > 0.7) {
+          createShootingStar();
+        }
+      }, 3000);
+    }
+    
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.classList.add('shooting-star');
+      
+      shootingStar.style.left = `${Math.random() * 20}%`;
+      shootingStar.style.top = `${Math.random() * 30}%`;
+      
+      const duration = Math.random() * 1 + 1.5;
+      shootingStar.style.animationDuration = `${duration}s`;
+      
+      starsContainer.appendChild(shootingStar);
+      
+      setTimeout(() => {
+        if (shootingStar.parentNode) {
+          shootingStar.parentNode.removeChild(shootingStar);
+        }
+      }, duration * 1000);
+    }
+    
+    function clearStars() {
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -23,14 +23,16 @@ app.use(express.json());
 app.use("/api/journal", journalRoutes);
 app.use("/api/gemini", geminiRoutes);
 app.use("/auth", authRoutes);
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
 app.use(gameRecordRoutes);
 app.use("/", locationRoutes);
 app.use("/", moodRoutes);  
-=======
+// =======
 app.use("/api", gameRecordRoutes);
+app.use("/api/game-records", require("./routes/gameRecordRoutes"));
 
->>>>>>> Stashed changes
+
+// >>>>>>> Stashed changes
 
 
 // Base route

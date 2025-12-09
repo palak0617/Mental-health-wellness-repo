@@ -1,33 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const GameRecord = require("../models/GameRecord");
+const auth = require("../middleware/auth");
 
-// Save new record
-router.post("/game-records", async (req, res) => {
+// Save game record
+router.post("/", auth, async (req, res) => {
   try {
-    const { username, points, time, moves } = req.body;
+    const { points, time, moves } = req.body;
 
-    const record = new GameRecord({ username, points, time, moves });
-    await record.save();
+    const newRecord = new GameRecord({
+      userId: req.user.id,   // taken from JWT token
+      points,
+      time,
+      moves
+    });
 
-    res.json({ success: true, message: "Record saved!" });
-  } catch (error) {
-    console.error("Save record error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    await newRecord.save();
+
+    res.json({ success: true, message: "Record saved", record: newRecord });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error", error: err });
   }
 });
 
 // Get leaderboard
-router.get("/game-records", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const records = await GameRecord.find()
-      .sort({ points: -1, time: 1 }) // best scores first
-      .limit(50);
+      .populate("userId", "username")
+      .sort({ points: -1, time: 1 });
 
     res.json({ success: true, records });
-  } catch (error) {
-    console.error("Fetch records error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+  } catch (err) {
+    res.status(500).json({ success: false });
   }
 });
 
