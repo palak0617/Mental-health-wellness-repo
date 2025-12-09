@@ -639,8 +639,9 @@ function startTimer() {
 function resetBoard() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
-  matchedPairs = 0;
+  // ❌ DO NOT reset matchedPairs here
 }
+
 
 // Flip card logic
 function flipCard() {
@@ -690,22 +691,27 @@ function checkForMatch() {
 // Save record to localStorage
 async function saveRecord(points, time) {
   const username = localStorage.getItem("loggedInUsername") || "Guest";
+  console.log("Saving record →", { username, points, time, moves });
 
   try {
-    await fetch("http://localhost:5000/game-records", {
+    const res = await fetch("http://localhost:5000/api/game-records", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, points, time, moves }),
     });
+    const data = await res.json();
+    console.log("Save response:", data);
   } catch (error) {
     console.error("Error saving record:", error);
   }
 }
 
+
+
 // Show leaderboard
 recordsBtn.addEventListener('click', async () => {
   try {
-    const res = await fetch("http://localhost:5000/game-records");
+    const res = await fetch("http://localhost:5000/api/game-records");
     const data = await res.json();
 
     if (!data.success || data.records.length === 0) {

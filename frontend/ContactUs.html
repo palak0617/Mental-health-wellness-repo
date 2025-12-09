@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mental Health Helpline</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary: #1a7f75;
+        --primary-dark: #14645c;
+        --secondary: #e5f4f2;
+        --accent: #4e9ea7;
+        --dark: #0c2b33;
+        --light: #ffffff;
+        --gray: #555;
+        --light-gray: #f8f9fa;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Poppins", sans-serif;
+        background: var(--light);
+        color: var(--dark);
+        line-height: 1.6;
+    }
+
+    /* SECTION 1 — FULLSCREEN HEADER */
+    .header-section {
+        height: 100vh;
+        min-height: 700px;
+        background: 
+            linear-gradient(rgba(12, 43, 51, 0.7), rgba(12, 43, 51, 0.5)),
+            url("https://images.unsplash.com/photo-1591453089816-0fbb971b454c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80") center/cover no-repeat fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        color: var(--light);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(transparent, var(--light));
+    }
+
+    .header-content {
+        max-width: 900px;
+        z-index: 1;
+        animation: fadeIn 1.5s ease-out;
+    }
+
+    .header-section h1 {
+        font-size: 4.5rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-section p {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto 30px;
+        line-height: 1.8;
+    }
+
+    .cta-button {
+        background: var(--primary);
+        color: white;
+        padding: 18px 40px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(26, 127, 117, 0.3);
+    }
+
+    .cta-button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(26, 127, 117, 0.4);
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        color: var(--light);
+        font-size: 1.5rem;
+        animation: bounce 2s infinite;
+    }
+
+    /* SECTION 2 — FORM + CONTACT CARDS */
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--dark);
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        color: var(--gray);
+        max-width: 700px;
+        margin: 0 auto 50px;
+        font-size: 1.1rem;
+    }
+
+    .main-grid {
+        width: 90%;
+        max-width: 1200px;
+        margin: 80px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+    }
+
+    .form-container {
+        background: var(--light);
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .form-container:hover {
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .form-container h2 {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+
+    .form-container p {
+        color: var(--gray);
+        margin-bottom: 30px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary);
+    }
+
+    .form-container input {
+        width: 100%;
+        padding: 16px 16px 16px 45px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+        transition: var(--transition);
+        font-family: "Poppins", sans-serif;
+    }
+
+    .form-container input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 117, 0.1);
+    }
+
+    .form-container button {
+        background: var(--primary);
+        color: white;
+        padding: 16px 35px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 600;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .form-container button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(26, 127, 117, 0.3);
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .card {
+        background: var(--light);
+        padding: 30px 25px;
+        border-radius: var(--radius);
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        border-top: 5px solid var(--primary);
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--primary);
+        background: var(--secondary);
+        width: 70px;
+        height: 70px;
+        line-height: 70px;
+        border-radius: 50%;
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+        color: var(--dark);
+        font-size: 1.3rem;
+    }
+
+    .card p {
+        color: var(--gray);
+    }
+
+    /* SECTION 3 — SELF HELP INSTRUCTIONS */
+    .instructions-section {
+        width: 90%;
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 60px 0;
+        background: var(--light-gray);
+        border-radius: var(--radius);
+    }
+
+    .instructions-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        padding: 0 40px;
+    }
+
+    .inst-card {
+        background: var(--light);
+        padding: 35px 30px;
+        border-radius: var(--radius);
+        text-align: left;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        border-top: 5px solid transparent;
+    }
+
+    .inst-card:hover {
+        transform: translateY(-5px);
+        border-top-color: var(--primary);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .inst-card h3 {
+        color: var(--dark);
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .inst-card ul {
+        padding-left: 20px;
+    }
+
+    .inst-card li {
+        margin: 15px 0;
+        color: var(--gray);
+        line-height: 1.5;
+        position: relative;
+        padding-left: 10px;
+    }
+
+    .inst-card li::before {
+        content: "•";
+        color: var(--primary);
+        font-weight: bold;
+        position: absolute;
+        left: -15px;
+    }
+
+    /* SECTION 4 — MAP */
+    .map-section {
+        width: 90%;
+        max-width: 1200px;
+        margin: 80px auto;
+        text-align: center;
+    }
+
+    .map-container {
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    iframe {
+        width: 100%;
+        height: 400px;
+        border: none;
+        display: block;
+    }
+
+    /* FOOTER */
+    footer {
+        background: var(--dark);
+        color: #ddd;
+        padding: 70px 20px 30px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+        margin-top: 80px;
+    }
+
+    footer div {
+        max-width: 100%;
+    }
+
+    footer h4 {
+        margin-bottom: 20px;
+        color: var(--light);
+        font-size: 1.3rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    footer h4::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--primary);
+    }
+
+    footer p {
+        line-height: 1.8;
+        color: #bbb;
+    }
+
+    footer a {
+        color: #bbb;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 10px;
+        transition: var(--transition);
+    }
+
+    footer a:hover {
+        color: var(--light);
+        transform: translateX(5px);
+    }
+
+    .footer-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--light);
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .copyright {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding-top: 30px;
+        margin-top: 30px;
+        border-top: 1px solid #333;
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+        40% { transform: translateX(-50%) translateY(-10px); }
+        60% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media(max-width: 1100px) {
+        .instructions-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+    }
+
+    @media(max-width: 900px){
+        .main-grid {
+            grid-template-columns: 1fr;
+            gap: 50px;
+        }
+        
+        .cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        footer {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px 30px;
+        }
+        
+        .header-section h1 {
+            font-size: 3.5rem;
+        }
+    }
+
+    @media(max-width: 768px){
+        .instructions-grid {
+            grid-template-columns: 1fr;
+            padding: 0 20px;
+        }
+        
+        .cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .header-section h1 {
+            font-size: 2.8rem;
+        }
+        
+        .header-section p {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media(max-width: 600px){
+        footer {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-container, .inst-card {
+            padding: 25px 20px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .header-section h1 {
+            font-size: 2.2rem;
+        }
+        
+        .cta-button {
+            padding: 15px 30px;
+            font-size: 1rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- SECTION 1 - FULLSCREEN HEADER -->
+<div class="header-section">
+    <div class="header-content">
+        <h1>Need Help?</h1>
+        <p>You are not alone. Reach out to us anytime — we are here to support your mental health journey with care, empathy, and understanding. Our team of professionals is available 24/7 to provide the help you need.</p>
+        <button class="cta-button">Speak to Someone Now</button>
+    </div>
+    <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</div>
+
+<!-- SECTION 2 - FORM & CONTACT CARDS -->
+<div class="main-grid">
+
+    <!-- FORM -->
+    <div class="form-container">
+        <h2>Get Support</h2>
+        <p>Fill in your details and our team will reach out to you shortly.</p>
+
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Your Name" />
+        </div>
+        
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Your Email" />
+        </div>
+        
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="text" placeholder="Phone Number" />
+        </div>
+
+        <button>Submit Request</button>
+    </div>
+
+    <!-- CONTACT CARDS -->
+    <div class="cards">
+        <div class="card">
+            <i class="fas fa-phone-alt"></i>
+            <h3>Call Us</h3>
+            <p>+91 98765 43210</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Available 24/7</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-envelope"></i>
+            <h3>Email Us</h3>
+            <p>support@mindwellcare.com</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Response within 2 hours</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Visit Us</h3>
+            <p>Sector 62, Noida, India</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Mon-Sat: 9AM-7PM</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-globe"></i>
+            <h3>Online Chat</h3>
+            <p>www.mindwellcare.com</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Live chat available</p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 3 — SELF-HELP INSTRUCTIONS -->
+<div class="instructions-section">
+    <h2 class="section-title">What To Do in an Emergency</h2>
+    <p class="section-subtitle">
+        These simple grounding steps can help you stabilize during mental health distress.
+        They are not a replacement for professional help.
+    </p>
+
+    <div class="instructions-grid">
+        <div class="inst-card">
+            <h3><i class="fas fa-wind"></i> Anxiety Attack</h3>
+            <ul>
+                <li>Take slow, deep breaths — inhale for 4 seconds, exhale for 6.</li>
+                <li>Place your hand on your chest and remind yourself: "I am safe."</li>
+                <li>Drink a glass of cold water to help your body reset.</li>
+                <li>Look around and name 5 things you can see (grounding technique).</li>
+                <li>Focus on your senses - touch something textured, listen to calming sounds.</li>
+            </ul>
+        </div>
+
+        <div class="inst-card">
+            <h3><i class="fas fa-heartbeat"></i> Panic Attack</h3>
+            <ul>
+                <li>Sit down and relax your shoulders, uncross your legs and arms.</li>
+                <li>Breathe using the 4-7-8 method (inhale 4, hold 7, exhale 8).</li>
+                <li>Hold something cold (a metal object or cold bottle).</li>
+                <li>Focus on one comforting phrase like "This will pass" or "I am okay."</li>
+                <li>Use progressive muscle relaxation, tensing and releasing each muscle group.</li>
+            </ul>
+        </div>
+
+        <div class="inst-card">
+            <h3><i class="fas fa-cloud"></i> Depression Episode</h3>
+            <ul>
+                <li>Move to a well-lit room or step outside for fresh air and sunlight.</li>
+                <li>Drink water or eat something small to regulate your energy.</li>
+                <li>Reach out to someone you trust — text or call a friend or family member.</li>
+                <li>Try the "3-minute activity rule": do one small task like making your bed.</li>
+                <li>Practice self-compassion - speak to yourself as you would to a dear friend.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 4 — MAP -->
+<div class="map-section">
+    <h2 class="section-title">Find Our Center</h2>
+    <p class="section-subtitle">Visit our mental health support center in Noida. We offer in-person consultations and support groups.</p>
+    
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3506.22307492735!2d77.36237041508022!3d28.502982582471678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce6c5f14eea2d%3A0x7147c8efc1d2ab04!2sSector%2062%2C%20Noida%2C%20Uttar%20Pradesh%2C%20India!5e0!3m2!1sen!2sus!4v1682800000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div>
+        <span class="footer-logo">MindWell Care</span>
+        <p>Your mental wellness matters. We provide support, guidance and resources for a healthier mind and happier life.</p>
+        <div style="margin-top: 20px;">
+            <a href="#"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+            <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+    </div>
+
+    <div>
+        <h4>Quick Links</h4>
+        <a href="#">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Services</a>
+        <a href="#">Helpline</a>
+        <a href="#">Resources</a>
+    </div>
+
+    <div>
+        <h4>Resources</h4>
+        <a href="#">Self-Help Tools</a>
+        <a href="#">Articles & Blogs</a>
+        <a href="#">Therapies</a>
+        <a href="#">Support Groups</a>
+        <a href="#">Emergency Contacts</a>
+    </div>
+
+    <div>
+        <h4>Contact</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Sector 62, Noida, India</p>
+        <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+        <p><i class="fas fa-envelope"></i> support@mindwellcare.com</p>
+        <p><i class="fas fa-clock"></i> 24/7 Helpline Available</p>
+    </div>
+    
+    <div class="copyright">
+        &copy; 2023 MindWell Care. All rights reserved. | Privacy Policy | Terms of Service
+    </div>
+</footer>
+
+<script>
+    // Smooth scrolling for the CTA button and scroll indicator
+    document.querySelector('.cta-button').addEventListener('click', function() {
+        document.querySelector('.form-container').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    });
+    
+    document.querySelector('.scroll-indicator').addEventListener('click', function() {
+        document.querySelector('.main-grid').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    });
+    
+    // Form submission simulation
+    document.querySelector('.form-container button').addEventListener('click', function() {
+        const inputs = document.querySelectorAll('.form-container input');
+        let allFilled = true;
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                allFilled = false;
+                input.style.borderColor = '#ff6b6b';
+            } else {
+                input.style.borderColor = '#e1e5e9';
+            }
+        });
+        
+        if (allFilled) {
+            this.textContent = 'Submitted!';
+            this.style.background = '#28a745';
+            setTimeout(() => {
+                this.textContent = 'Submit Request';
+                this.style.background = '';
+                inputs.forEach(input => input.value = '');
+            }, 2000);
+        } else {
+            this.textContent = 'Please fill all fields';
+            this.style.background = '#ff6b6b';
+            setTimeout(() => {
+                this.textContent = 'Submit Request';
+                this.style.background = '';
+            }, 2000);
+        }
+    });
+    
+    // Add hover effect to cards on page load for visual feedback
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.card, .inst-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s ease';
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

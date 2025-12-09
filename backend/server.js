@@ -20,12 +20,17 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Routes
-app.use(journalRoutes);
-app.use(geminiRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/gemini", geminiRoutes);
 app.use("/auth", authRoutes);
+<<<<<<< Updated upstream
 app.use(gameRecordRoutes);
 app.use("/", locationRoutes);
 app.use("/", moodRoutes);  
+=======
+app.use("/api", gameRecordRoutes);
+
+>>>>>>> Stashed changes
 
 
 // Base route

@@ -2,12 +2,12 @@ const express = require("express");
 const router = express.Router();
 const GameRecord = require("../models/GameRecord");
 
-// Save a new record
+// Save new record
 router.post("/game-records", async (req, res) => {
   try {
-    const { username, points, time } = req.body;
+    const { username, points, time, moves } = req.body;
 
-    const record = new GameRecord({ username, points, time });
+    const record = new GameRecord({ username, points, time, moves });
     await record.save();
 
     res.json({ success: true, message: "Record saved!" });
@@ -17,12 +17,12 @@ router.post("/game-records", async (req, res) => {
   }
 });
 
-// Get all records sorted for leaderboard
+// Get leaderboard
 router.get("/game-records", async (req, res) => {
   try {
     const records = await GameRecord.find()
-      .sort({ points: -1, time: 1 }) // highest points first, lowest time first
-      .limit(50); // limit leaderboard
+      .sort({ points: -1, time: 1 }) // best scores first
+      .limit(50);
 
     res.json({ success: true, records });
   } catch (error) {
