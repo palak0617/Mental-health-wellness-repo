@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mindful Exercises | WellnessAI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                        "lavender": "#C8B6FF",
+                        "peach": "#FFD8B1",
+                        "teal": "#B4E4D8",
+                        "charcoal": "#2C3E50",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px",
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(-5px) rotate(-1deg)' },
+                            '50%': { transform: 'translateY(5px) rotate(1deg)' },
+                        },
+                        sparkle: {
+                            '0%, 100%': { opacity: '0.3', transform: 'scale(0.8)' },
+                            '50%': { opacity: '1', transform: 'scale(1.2)' },
+                        },
+                        diceRoll: {
+                            '0%': { transform: 'rotateX(0) rotateY(0) rotateZ(0)' },
+                            '25%': { transform: 'rotateX(90deg) rotateY(45deg) rotateZ(45deg)' },
+                            '50%': { transform: 'rotateX(180deg) rotateY(90deg) rotateZ(90deg)' },
+                            '75%': { transform: 'rotateX(270deg) rotateY(135deg) rotateZ(135deg)' },
+                            '100%': { transform: 'rotateX(360deg) rotateY(360deg) rotateZ(360deg)' },
+                        },
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(200, 182, 255, 0.3)' },
+                            '50%': { boxShadow: '0 0 25px rgba(200, 182, 255, 0.6)' },
+                        },
+                        wave: {
+                            '0%': { transform: 'translateX(0) translateY(0) rotate(0deg)' },
+                            '100%': { transform: 'translateX(30px) translateY(30px) rotate(360deg)' },
+                        }
+                    },
+                    animation: {
+                        float: 'float 6s ease-in-out infinite',
+                        sparkle: 'sparkle 3s ease-in-out infinite',
+                        'dice-roll': 'diceRoll 2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'bounce-soft': 'bounceSoft 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'wave': 'wave 20s linear infinite',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glassmorphism {
+            background: rgba(30, 30, 60, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 3D Dice Cube Styles */
+        .dice-scene {
+            perspective: 1200px;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+        }
+        
+        .dice-cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: rotateX(15deg) rotateY(15deg);
+        }
+        
+        .dice-cube:hover {
+            transform: rotateX(25deg) rotateY(25deg) scale(1.1);
+        }
+        
+        .dice-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            backface-visibility: visible;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.3),
+                0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Dice face positions */
+        .face-front  { transform: translateZ(70px); }
+        .face-back   { transform: rotateY(180deg) translateZ(70px); }
+        .face-right  { transform: rotateY(90deg) translateZ(70px); }
+        .face-left   { transform: rotateY(-90deg) translateZ(70px); }
+        .face-top    { transform: rotateX(90deg) translateZ(70px); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(70px); }
+        
+        /* Dice dot styles */
+        .dice-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Dice face patterns */
+        .face-1 .dice-dot:nth-child(1) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        
+        .face-2 .dice-dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-2 .dice-dot:nth-child(2) { bottom: 25%; right: 25%; }
+        
+        .face-3 .dice-dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-3 .dice-dot:nth-child(2) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .face-3 .dice-dot:nth-child(3) { bottom: 25%; right: 25%; }
+        
+        .face-4 .dice-dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-4 .dice-dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-4 .dice-dot:nth-child(3) { bottom: 25%; left: 25%; }
+        .face-4 .dice-dot:nth-child(4) { bottom: 25%; right: 25%; }
+        
+        .face-5 .dice-dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-5 .dice-dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-5 .dice-dot:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .face-5 .dice-dot:nth-child(4) { bottom: 25%; left: 25%; }
+        .face-5 .dice-dot:nth-child(5) { bottom: 25%; right: 25%; }
+        
+        .face-6 .dice-dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-6 .dice-dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-6 .dice-dot:nth-child(3) { top: 50%; left: 25%; transform: translateY(-50%); }
+        .face-6 .dice-dot:nth-child(4) { top: 50%; right: 25%; transform: translateY(-50%); }
+        .face-6 .dice-dot:nth-child(5) { bottom: 25%; left: 25%; }
+        .face-6 .dice-dot:nth-child(6) { bottom: 25%; right: 25%; }
+        
+        /* Dice colors */
+        .dice-memory { background: linear-gradient(135deg, #C8B6FF, #9D4EDD); }
+        .dice-wellness { background: linear-gradient(135deg, #B4E4D8, #38B2AC); }
+        .dice-mood { background: linear-gradient(135deg, #FFD8B1, #F97316); }
+        .dice-focus { background: linear-gradient(135deg, #A78BFA, #7C3AED); }
+        .dice-breathing { background: linear-gradient(135deg, #93C5FD, #3B82F6); }
+        .dice-new { background: linear-gradient(135deg, #FDE68A, #F59E0B); }
+        
+        /* Mini card container */
+        .mini-card {
+            width: 180px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .mini-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .mini-card-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: -20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .mini-card-content {
+            background: rgba(30, 30, 60, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Shimmer effect */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            transition: transform 0.6s;
+        }
+        
+        .shimmer:hover::after {
+            transform: rotate(30deg) translate(100%, 100%);
+        }
+        
+        /* Stars container */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .dark .stars-container {
+            opacity: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased transition-colors duration-300">
+    <!-- Stars Container -->
+    <div id="stars-container" class="stars-container"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particle top-1/4 left-1/4 w-2 h-2 bg-lavender/30 animate-sparkle" style="animation-delay: 0.5s;"></div>
+    <div class="particle top-1/3 right-1/4 w-3 h-3 bg-peach/30 animate-sparkle" style="animation-delay: 1s;"></div>
+    <div class="particle bottom-1/3 left-1/3 w-1 h-1 bg-teal/30 animate-sparkle" style="animation-delay: 1.5s;"></div>
+    <div class="particle bottom-1/4 right-1/3 w-2 h-2 bg-lavender/30 animate-sparkle" style="animation-delay: 2s;"></div>
+    
+    <!-- Background Elements -->
+    <div class="fixed top-[-10%] left-[-10%] w-[30vw] h-[30vw] bg-lavender/10 dark:bg-lavender/5 rounded-full filter blur-[80px] opacity-50 animate-wave"></div>
+    <div class="fixed bottom-[-15%] right-[-10%] w-[35vw] h-[35vw] bg-teal/10 dark:bg-teal/5 rounded-full filter blur-[100px] opacity-40 animate-wave" style="animation-delay: -10s;"></div>
+    
+    <div class="relative w-full flex flex-col items-center overflow-hidden min-h-screen">
+        <div class="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <header class="py-4 sticky top-0 z-40 backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <a href="landing-page.html" class="flex items-center gap-3">
+                        <div class="size-8 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">neurology</span>
+                        </div>
+                        <h2 class="text-xl font-black tracking-tight text-charcoal dark:text-white">WellnessAI</h2>
+                    </a>
+                    
+                    <div class="flex items-center gap-3">
+                        <button id="theme-toggle" class="flex items-center justify-center rounded-full h-8 w-8 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <span id="light-icon" class="material-symbols-outlined text-sm">light_mode</span>
+                            <span id="dark-icon" class="material-symbols-outlined text-sm hidden">dark_mode</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content -->
+            <main class="relative py-8 md:py-12">
+                <!-- Title Section -->
+                <div class="text-center mb-8 animate-slide-down">
+                    <h1 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white mb-3">
+                        Mindful <span class="bg-gradient-to-r from-lavender via-peach to-teal bg-clip-text text-transparent">Dice Cubes</span>
+                    </h1>
+                    <p class="text-charcoal/70 dark:text-gray-300 max-w-md mx-auto">
+                        Roll the dice to discover mindfulness exercises. Each cube contains a unique activity.
+                    </p>
+                </div>
+                
+                <!-- Dice Cubes Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-12">
+                    <!-- Dice 1: Memory Match -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'memory')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-memory shimmer">
+                                <div class="dice-face face-front face-1">
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-2 dice-memory">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-3 dice-memory">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-4 dice-memory">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-5 dice-memory">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-6 dice-memory">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">Memory</h3>
+                                <span class="material-symbols-outlined text-xs text-lavender">memory</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Match cards to boost memory
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-lavender/20 text-lavender rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dice 2: Wellness Near You -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'wellness')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-wellness shimmer">
+                                <div class="dice-face face-front face-2 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-3 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-4 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-5 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-6 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-1 dice-wellness">
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">Wellness</h3>
+                                <span class="material-symbols-outlined text-xs text-teal">location_on</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Find nearby wellness spots
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-teal/20 text-teal rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dice 3: Mood Tracker -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'mood')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-mood shimmer">
+                                <div class="dice-face face-front face-3 dice-mood">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-4 dice-mood">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-5 dice-mood">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-6 dice-mood">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-1 dice-mood">
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-2 dice-mood">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">Mood</h3>
+                                <span class="material-symbols-outlined text-xs text-peach">sentiment_calm</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Track emotional patterns
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-peach/20 text-peach rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dice 4: Focus Dots -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'focus')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-focus shimmer">
+                                <div class="dice-face face-front face-4 dice-focus">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-5 dice-focus">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-6 dice-focus">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-1 dice-focus">
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-2 dice-focus">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-3 dice-focus">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">Focus</h3>
+                                <span class="material-symbols-outlined text-xs text-purple-500">target</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Improve concentration
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-purple-500/20 text-purple-500 rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dice 5: Breathing Bubble -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'breathing')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-breathing shimmer">
+                                <div class="dice-face face-front face-5 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-6 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-1 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-2 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-3 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-4 dice-breathing">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">Breathing</h3>
+                                <span class="material-symbols-outlined text-xs text-blue-500">bubble_chart</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Guided breathing exercise
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-blue-500/20 text-blue-500 rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Dice 6: New Exercise -->
+                    <div class="mini-card group cursor-pointer" onclick="rollDice(this, 'new')">
+                        <div class="dice-scene">
+                            <div class="dice-cube dice-new shimmer">
+                                <div class="dice-face face-front face-6 dice-new">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-back face-1 dice-new">
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-right face-2 dice-new">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-left face-3 dice-new">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-top face-4 dice-new">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                                <div class="dice-face face-bottom face-5 dice-new">
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                    <div class="dice-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-card-content mt-4 group-hover:shadow-lg transition-shadow">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-bold text-charcoal dark:text-white">New</h3>
+                                <span class="material-symbols-outlined text-xs text-amber-500">new_releases</span>
+                            </div>
+                            <p class="text-xs text-charcoal/70 dark:text-gray-400 mb-3">
+                                Discover new exercises
+                            </p>
+                            <button class="w-full text-xs py-1.5 px-3 bg-amber-500/20 text-amber-500 rounded-full font-medium">
+                                Roll Dice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Display -->
+                <div class="glassmorphism rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-charcoal dark:text-white">Selected Activity</h3>
+                        <button id="roll-random" class="flex items-center gap-2 text-sm py-2 px-4 bg-gradient-to-r from-lavender to-teal text-white rounded-full font-medium hover:shadow-lg transition-shadow">
+                            <span class="material-symbols-outlined text-sm">casino</span>
+                            Random Roll
+                        </button>
+                    </div>
+                    
+                    <div id="activity-display" class="text-center py-8">
+                        <div class="text-5xl mb-4 animate-bounce-soft">🎲</div>
+                        <p class="text-charcoal/70 dark:text-gray-300">
+                            Click on any dice cube to select an activity
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <div class="glassmorphism rounded-xl p-4 text-center">
+                        <div class="text-2xl font-black text-lavender mb-1">6</div>
+                        <div class="text-xs text-charcoal/70 dark:text-gray-400">Dice Cubes</div>
+                    </div>
+                    <div class="glassmorphism rounded-xl p-4 text-center">
+                        <div class="text-2xl font-black text-teal mb-1">21</div>
+                        <div class="text-xs text-charcoal/70 dark:text-gray-400">Total Faces</div>
+                    </div>
+                    <div class="glassmorphism rounded-xl p-4 text-center">
+                        <div class="text-2xl font-black text-peach mb-1">∞</div>
+                        <div class="text-xs text-charcoal/70 dark:text-gray-400">Combinations</div>
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="text-center">
+                    <h4 class="text-sm font-bold text-charcoal/60 dark:text-gray-400 mb-2">How to Play</h4>
+                    <p class="text-xs text-charcoal/50 dark:text-gray-500 max-w-md mx-auto">
+                        Click on any dice cube to roll it and reveal an activity. Each cube represents a different mindfulness category with 6 unique exercises.
+                    </p>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="flex flex-col gap-6 py-8 text-center">
+                <div class="flex items-center justify-center gap-4">
+                    <a href="landing-page.html" class="text-sm text-charcoal/70 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
+                        Back to Home
+                    </a>
+                    <span class="text-charcoal/30 dark:text-gray-600">•</span>
+                    <a href="#" class="text-sm text-charcoal/70 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
+                        All Exercises
+                    </a>
+                </div>
+                <p class="text-xs text-charcoal/60 dark:text-gray-500">© 2024 WellnessAI • Dice Cube Interface</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Dark/Light Mode Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const lightIcon = document.getElementById('light-icon');
+        const darkIcon = document.getElementById('dark-icon');
+        const starsContainer = document.getElementById('stars-container');
+        
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Apply the saved theme on page load
+        if (currentTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.add('hidden');
+            darkIcon.classList.remove('hidden');
+            createStars();
+        } else {
+            document.documentElement.classList.remove('dark');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        }
+        
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+                clearStars();
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+                createStars();
+            }
+        });
+        
+        // Create stars for dark mode
+        function createStars() {
+            clearStars();
+            
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animation = `sparkle ${Math.random() * 2 + 2}s ease-in-out infinite`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Clear all stars
+        function clearStars() {
+            while (starsContainer.firstChild) {
+                starsContainer.removeChild(starsContainer.firstChild);
+            }
+        }
+        
+        // Dice rolling functionality
+        const activityDisplay = document.getElementById('activity-display');
+        const activities = {
+            memory: [
+                { name: "Memory Match Game", desc: "Match pairs of cards in under 2 minutes", time: "5 min", icon: "🧠", link: "card.html" },
+                { name: "Pattern Recognition", desc: "Identify repeating patterns", time: "3 min", icon: "🔍", link: "#" },
+                { name: "Sequence Recall", desc: "Remember and repeat sequences", time: "4 min", icon: "🎯", link: "#" },
+                { name: "Visual Memory Test", desc: "Memorize images and details", time: "6 min", icon: "👁️", link: "#" },
+                { name: "Audio Memory", desc: "Remember sounds and tones", time: "3 min", icon: "🔊", link: "#" },
+                { name: "Spatial Memory", desc: "Recall object locations", time: "5 min", icon: "🗺️", link: "#" }
+            ],
+            wellness: [
+                { name: "Find Nearby Parks", desc: "Locate green spaces for meditation", time: "Varies", icon: "🌳", link: "location.html" },
+                { name: "Meditation Centers", desc: "Discover local meditation spots", time: "Varies", icon: "🧘", link: "location.html" },
+                { name: "Wellness Cafés", desc: "Find quiet places to relax", time: "Varies", icon: "☕", link: "location.html" },
+                { name: "Outdoor Yoga Spots", desc: "Locate open spaces for yoga", time: "Varies", icon: "🧘‍♀️", link: "location.html" },
+                { name: "Walking Trails", desc: "Discover scenic walking paths", time: "Varies", icon: "🚶", link: "location.html" },
+                { name: "Community Centers", desc: "Find wellness events nearby", time: "Varies", icon: "🏛️", link: "location.html" }
+            ],
+            mood: [
+                { name: "Daily Mood Check", desc: "Track your emotional state", time: "2 min", icon: "😊", link: "mood-tracker.html" },
+                { name: "Emotion Journal", desc: "Write about your feelings", time: "5 min", icon: "📝", link: "mood-tracker.html" },
+                { name: "Mood Patterns", desc: "Analyze your emotional trends", time: "3 min", icon: "📈", link: "mood-tracker.html" },
+                { name: "Gratitude Log", desc: "List things you're grateful for", time: "4 min", icon: "🙏", link: "#" },
+                { name: "Stress Tracker", desc: "Monitor stress levels", time: "2 min", icon: "😰", link: "#" },
+                { name: "Energy Levels", desc: "Track your daily energy", time: "2 min", icon: "⚡", link: "#" }
+            ],
+            focus: [
+                { name: "Focus Dots Game", desc: "Track moving dots with your eyes", time: "3 min", icon: "🎯", link: "#" },
+                { name: "Breath Counting", desc: "Count breaths to improve focus", time: "4 min", icon: "🧘", link: "#" },
+                { name: "Object Meditation", desc: "Focus on a single object", time: "5 min", icon: "👁️", link: "#" },
+                { name: "Sound Focus", desc: "Concentrate on specific sounds", time: "3 min", icon: "🎵", link: "#" },
+                { name: "Mindful Reading", desc: "Read with full attention", time: "7 min", icon: "📖", link: "#" },
+                { name: "Task Concentration", desc: "Single-tasking practice", time: "6 min", icon: "✅", link: "#" }
+            ],
+            breathing: [
+                { name: "Breathing Bubble", desc: "Follow the expanding bubble", time: "4 min", icon: "🌀", link: "brain.html" },
+                { name: "4-7-8 Breathing", desc: "Calming breathing technique", time: "3 min", icon: "🌬️", link: "brain.html" },
+                { name: "Box Breathing", desc: "Equal inhale, hold, exhale", time: "5 min", icon: "⬜", link: "#" },
+                { name: "Alternate Nostril", desc: "Balance breathing exercise", time: "4 min", icon: "👃", link: "#" },
+                { name: "Ocean Breath", desc: "Ujjayi breathing technique", time: "3 min", icon: "🌊", link: "#" },
+                { name: "Heart Coherence", desc: "Sync breath with heartbeat", time: "6 min", icon: "💓", link: "#" }
+            ],
+            new: [
+                { name: "Coming Soon", desc: "New exercise launching next week", time: "?", icon: "🚀", link: "#" },
+                { name: "Beta Feature", desc: "Try our experimental exercise", time: "4 min", icon: "🧪", link: "#" },
+                { name: "Community Request", desc: "Exercise suggested by users", time: "5 min", icon: "👥", link: "#" },
+                { name: "Seasonal Activity", desc: "Special time-limited exercise", time: "6 min", icon: "🍂", link: "#" },
+                { name: "Collaboration", desc: "Exercise created with experts", time: "7 min", icon: "🤝", link: "#" },
+                { name: "Surprise Me", desc: "Random exercise selection", time: "?", icon: "🎁", link: "#" }
+            ]
+        };
+        
+        function rollDice(element, category) {
+            const diceCube = element.querySelector('.dice-cube');
+            const button = element.querySelector('button');
+            
+            // Add rolling animation
+            diceCube.style.animation = 'dice-roll 2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            button.textContent = 'Rolling...';
+            button.disabled = true;
+            
+            // Get random activity from category
+            const categoryActivities = activities[category];
+            const randomIndex = Math.floor(Math.random() * categoryActivities.length);
+            const activity = categoryActivities[randomIndex];
+            
+            // Create particle effects
+            createParticles(element);
+            
+            // Update button after animation
+            setTimeout(() => {
+                diceCube.style.animation = '';
+                button.textContent = 'Roll Again';
+                button.disabled = false;
+                
+                // Display selected activity
+                displayActivity(activity, category);
+            }, 2000);
+        }
+        
+        function displayActivity(activity, category) {
+            const colors = {
+                memory: 'bg-lavender/20 text-lavender',
+                wellness: 'bg-teal/20 text-teal',
+                mood: 'bg-peach/20 text-peach',
+                focus: 'bg-purple-500/20 text-purple-500',
+                breathing: 'bg-blue-500/20 text-blue-500',
+                new: 'bg-amber-500/20 text-amber-500'
+            };
+            
+            activityDisplay.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <div class="text-4xl mb-3 animate-bounce-soft">${activity.icon}</div>
+                    <div class="${colors[category]} text-xs font-medium px-3 py-1 rounded-full mb-3">
+                        ${category.charAt(0).toUpperCase() + category.slice(1)}
+                    </div>
+                    <h4 class="text-lg font-bold text-charcoal dark:text-white mb-2">${activity.name}</h4>
+                    <p class="text-sm text-charcoal/70 dark:text-gray-300 mb-3">${activity.desc}</p>
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-xs text-charcoal/60 dark:text-gray-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">schedule</span>
+                            ${activity.time}
+                        </span>
+                    </div>
+                    <a href="${activity.link}" class="flex items-center gap-2 text-sm py-2 px-4 bg-gradient-to-r from-lavender to-teal text-white rounded-full font-medium hover:shadow-lg transition-shadow">
+                        <span class="material-symbols-outlined text-sm">play_arrow</span>
+                        Start Activity
+                    </a>
+                </div>
+            `;
+        }
+        
+        function createParticles(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                particle.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                particle.style.animation = `sparkle 1s ease-out forwards`;
+                
+                document.body.appendChild(particle);
+                
+                // Animate particle outward
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                const targetX = centerX + Math.cos(angle) * distance;
+                const targetY = centerY + Math.sin(angle) * distance;
+                
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${targetX - centerX}px, ${targetY - centerY}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                });
+                
+                // Remove particle after animation
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+        
+        // Random roll button
+        document.getElementById('roll-random').addEventListener('click', () => {
+            const diceCubes = document.querySelectorAll('.mini-card');
+            const randomIndex = Math.floor(Math.random() * diceCubes.length);
+            const randomCube = diceCubes[randomIndex];
+            
+            const categories = ['memory', 'wellness', 'mood', 'focus', 'breathing', 'new'];
+            const category = categories[randomIndex];
+            
+            rollDice(randomCube, category);
+            
+            // Add visual highlight
+            randomCube.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                randomCube.style.transform = '';
+            }, 1000);
+        });
+        
+        // Initialize dice with hover effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const diceCubes = document.querySelectorAll('.dice-cube');
+            
+            diceCubes.forEach((cube, index) => {
+                cube.style.transform = `rotateX(${15 + index * 5}deg) rotateY(${15 + index * 5}deg)`;
+                
+                cube.addEventListener('mouseenter', () => {
+                    cube.style.transition = 'transform 0.3s ease';
+                });
+                
+                cube.addEventListener('mouseleave', () => {
+                    cube.style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    cube.style.transform = `rotateX(${15 + index * 5}deg) rotateY(${15 + index * 5}deg)`;
+                });
+            });
+            
+            // Create more floating particles
+            for (let i = 0; i < 6; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = `${Math.random() * 3 + 1}px`;
+                particle.style.height = particle.style.width;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.background = `rgba(${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 255, 0.3)`;
+                particle.style.animation = `float ${Math.random() * 10 + 5}s ease-in-out infinite`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                document.body.appendChild(particle);
+            }
+        });
+    </script>
+</body>
+</html>
