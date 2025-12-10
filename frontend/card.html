@@ -594,6 +594,19 @@
   </div>
 
 <script>
+  // 🚫 Block game access if user is not logged in
+// Require login before doing anything
+const token = localStorage.getItem("token");
+if (!token) {
+  alert("Please login to play the game.");
+  window.location.href = "login.html";
+  // stop further execution so script doesn't create the game board
+  throw new Error("User not logged in");
+}
+
+// safe to proceed — token exists
+
+
 const game = document.getElementById('game');
 const resetBtn = document.getElementById('reset');
 const recordsBtn = document.getElementById('recordsBtn');
@@ -690,19 +703,32 @@ function checkForMatch() {
 
 // Save record to localStorage
 async function saveRecord(points, time) {
-  const username = localStorage.getItem("loggedInUsername") || "Guest";
-  console.log("Saving record →", { username, points, time, moves });
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  if (!token || !userId) {
+    console.error("User not logged in — cannot save record.");
+    return;
+  }
 
   try {
     const res = await fetch("http://localhost:5000/api/game-records", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, points, time, moves }),
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token 
+      },
+      body: JSON.stringify({ points, time, moves })
     });
+
     const data = await res.json();
-    console.log("Save response:", data);
-  } catch (error) {
-    console.error("Error saving record:", error);
+    console.log("Save record response:", res.status, data);
+
+    if (!res.ok || !data.success) {
+      console.error("Failed to save record:", data);
+    }
+  } catch (err) {
+    console.error("Error saving record:", err);
   }
 }
 
