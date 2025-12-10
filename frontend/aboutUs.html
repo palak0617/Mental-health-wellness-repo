@@ -1,11 +1,810 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About-Us</title>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - WellnessAI | Our Story & Mission</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <script>
+    tailwind.config = {   
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+            "charcoal": "#2C3E50",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px",
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(-2px) rotate(-1deg)' },
+              '50%': { transform: 'translateY(2px) rotate(1deg)' },
+            },
+            sparkle: {
+              '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
+            },
+            gradientWave: {
+                '0%, 100%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(200, 182, 255, 0.5)' },
+              '50%': { boxShadow: '0 0 30px rgba(200, 182, 255, 0.8)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            sparkle: 'sparkle 2.5s ease-in-out infinite',
+            'gradient-wave': 'gradientWave 8s ease infinite',
+            'slide-down': 'slideDown 0.4s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+            'fade-in': 'fadeIn 0.6s ease-out',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glassmorphism {
+      background: rgba(30, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .gradient-text {
+      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
     
+    /* Enhanced Navbar Styles */
+    .navbar-container {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 50;
+    }
+    
+    .dark .navbar-container {
+      background: rgba(16, 16, 34, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #C8B6FF, #FFD8B1);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .nav-link.active::after {
+      width: 100%;
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+    
+    .mobile-menu.active {
+      max-height: 300px;
+      transition: max-height 0.5s ease-in;
+    }
+    
+    /* Stars container */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    .dark .stars-container {
+      opacity: 1;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    /* About Us Specific Styles */
+    .mission-card {
+      background: linear-gradient(135deg, rgba(200, 182, 255, 0.1), rgba(180, 228, 216, 0.1));
+      border: 1px solid rgba(200, 182, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .mission-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .mission-card {
+      background: linear-gradient(135deg, rgba(200, 182, 255, 0.1), rgba(180, 228, 216, 0.1));
+      border: 1px solid rgba(200, 182, 255, 0.1);
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #C8B6FF, #FFD8B1);
+    }
+    
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 1.5rem;
+      width: 2px;
+      height: calc(100% - 1rem);
+      background: linear-gradient(to bottom, #C8B6FF, #FFD8B1);
+    }
+    
+    .timeline-item:last-child::after {
+      display: none;
+    }
+    
+    .team-card {
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+    }
+    
+    .dark .team-card {
+      background: rgba(30, 30, 60, 0.7);
+    }
+    
+    .team-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .team-image {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #C8B6FF, #FFD8B1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      margin: 0 auto;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #f6f6f8, #e8e8f0);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .dark .stat-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+    
+    .stat-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .value-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(200, 182, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .dark .value-card {
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(200, 182, 255, 0.2);
+    }
+    
+    .value-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(200, 182, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-background-light antialiased transition-colors duration-300">
+  <!-- Stars Container for Dark Mode -->
+  <div id="stars-container" class="stars-container"></div>
+  
+  <div class="relative w-full flex flex-col items-center overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute top-[-20%] left-[-15%] w-[50vw] h-[50vw] bg-lavender/30 dark:bg-lavender/20 rounded-full filter blur-[150px] opacity-60"></div>
+    <div class="absolute bottom-[-25%] right-[-15%] w-[45vw] h-[45vw] bg-peach/30 dark:bg-peach/20 rounded-full filter blur-[150px] opacity-50"></div>
+    <div class="absolute top-[10%] right-[5%] w-[30vw] h-[30vw] bg-teal/30 dark:bg-teal/20 rounded-full filter blur-[120px] opacity-40"></div>
+    
+    <!-- Floating Emojis -->
+    <span class="absolute top-[15%] left-[45%] text-2xl opacity-80 animate-sparkle">✨</span>
+    <span class="absolute top-[80%] left-[10%] text-3xl opacity-70 animate-float" style="animation-delay: 1.5s;">💭</span>
+    <span class="absolute top-[30%] right-[10%] text-2xl opacity-80 animate-float" style="animation-delay: 0.5s;">❤️</span>
+    <span class="absolute bottom-[15%] right-[40%] text-3xl opacity-70 animate-sparkle" style="animation-delay: 1s;">🌍</span>
+    
+    <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Enhanced Header -->
+      <header class="navbar-container py-4 sticky top-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="size-10 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl text-white">neurology</span>
+            </div>
+            <h2 class="text-2xl font-black tracking-tight text-charcoal dark:text-white">WellnessAI</h2>
+          </div>
+          
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex items-center gap-8">
+            <a class="nav-link active text-primary dark:text-white text-sm font-medium transition-colors" href="aboutus.html">About</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
+            <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#">Resources</a>
+          </nav>
+          
+          <div class="flex items-center gap-4">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden flex items-center justify-center rounded-lg h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300">
+              <span id="menu-icon" class="material-symbols-outlined">menu</span>
+              <span id="close-icon" class="material-symbols-outlined hidden">close</span>
+            </button>
+            
+            <!-- Dark/Light Mode Toggle -->
+            <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-background-light dark:bg-background-dark/80 border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+              <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+            </button>
+            
+            <button class="hidden sm:flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+              <span class="truncate"><a href="login.html">Log In</a></span>
+            </button>
+            
+            <a href="signup.html" class="hidden sm:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold tracking-[0.015em] bg-gradient-to-r from-lavender via-peach to-teal text-charcoal shadow-md hover:shadow-lg transition-all hover:scale-105">
+              Sign Up
+            </a>
+            
+            <!-- Dashboard Button -->
+            <a href="userDashboard.html" class="hidden md:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold tracking-[0.015em] bg-gradient-to-r from-teal to-lavender text-background-light shadow-md hover:shadow-lg transition-all hover:scale-105">
+              <span class="material-symbols-outlined mr-2">dashboard</span>
+              Dashboard
+            </a>
+          </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden mt-4 bg-white dark:bg-background-dark/90 backdrop-blur-sm rounded-xl p-4 border border-gray-100 dark:border-gray-800">
+          <div class="flex flex-col gap-4">
+            <a class="text-primary dark:text-white text-sm font-medium py-2 px-4 rounded-lg bg-gray-100 dark:bg-gray-800" href="aboutus.html">About</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="l5.html">Features</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">Pricing</a>
+            <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" href="#">Resources</a>
+            
+            <div class="pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+              <button class="w-full flex items-center justify-center rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold hover:opacity-90 transition-opacity">
+                <a href="login.html" class="w-full text-center">Log In</a>
+              </button>
+              <a href="signup.html" class="w-full flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-gradient-to-r from-lavender via-peach to-teal text-charcoal shadow-md hover:shadow-lg transition-all">
+                Sign Up
+              </a>
+              <a href="userDashboard.html" class="w-full flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-gradient-to-r from-teal to-lavender text-background-light shadow-md hover:shadow-lg transition-all">
+                <span class="material-symbols-outlined mr-2">dashboard</span>
+                Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Hero Section -->
+      <main class="relative py-16 md:py-24">
+        <div class="flex flex-col items-center text-center max-w-4xl mx-auto animate-fade-in">
+          <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-tighter text-charcoal dark:text-white mb-6">
+            Our <span class="gradient-text">Mission</span> is Your Mental Wellness
+          </h1>
+          <p class="text-lg md:text-xl font-normal text-charcoal/80 dark:text-gray-300 mb-8 max-w-3xl">
+            At WellnessAI, we believe everyone deserves access to compassionate, 
+            personalized mental health support. We're building a future where AI 
+            enhances human connection, not replaces it.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="#our-story">
+              <button class="flex items-center justify-center rounded-full h-12 px-8 bg-gradient-to-r from-lavender via-peach to-teal text-charcoal text-base font-bold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                <span class="truncate">Our Story</span>
+              </button>
+            </a>
+            <a href="#meet-team">
+              <button class="flex items-center justify-center rounded-full h-12 px-8 bg-transparent border-2 border-lavender/50 text-charcoal dark:text-white text-base font-bold hover:bg-lavender/10 transition-all duration-300">
+                <span class="truncate">Meet Our Team</span>
+              </button>
+            </a>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Stats Section -->
+      <section class="py-16">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="stat-card text-center">
+            <div class="text-3xl md:text-4xl font-black text-primary dark:text-lavender mb-2">50K+</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-400">Users Supported</div>
+          </div>
+          <div class="stat-card text-center">
+            <div class="text-3xl md:text-4xl font-black text-primary dark:text-lavender mb-2">98%</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-400">Satisfaction Rate</div>
+          </div>
+          <div class="stat-card text-center">
+            <div class="text-3xl md:text-4xl font-black text-primary dark:text-lavender mb-2">24/7</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-400">Available Support</div>
+          </div>
+          <div class="stat-card text-center">
+            <div class="text-3xl md:text-4xl font-black text-primary dark:text-lavender mb-2">10+</div>
+            <div class="text-sm text-charcoal/70 dark:text-gray-400">Countries Served</div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Our Story Section -->
+      <section id="our-story" class="py-16 md:py-24">
+        <div class="flex flex-col lg:flex-row gap-12 items-center">
+          <div class="lg:w-1/2">
+            <div class="mission-card rounded-2xl p-8">
+              <h2 class="text-3xl font-black text-charcoal dark:text-white mb-6">Our Story</h2>
+              <p class="text-lg text-charcoal/80 dark:text-gray-300 mb-4">
+                WellnessAI was born from a simple observation: while technology connects us more than ever, 
+                feelings of isolation and mental health challenges continue to rise.
+              </p>
+              <p class="text-lg text-charcoal/80 dark:text-gray-300 mb-4">
+                Founded in 2022 by a team of psychologists, AI researchers, and developers, 
+                we set out to create a bridge between cutting-edge technology and genuine human care.
+              </p>
+              <p class="text-lg text-charcoal/80 dark:text-gray-300">
+                Today, we're proud to be at the forefront of ethical AI in mental health, 
+                creating tools that empower individuals to take control of their mental wellbeing.
+              </p>
+            </div>
+          </div>
+          
+          <div class="lg:w-1/2">
+            <h3 class="text-2xl font-black text-charcoal dark:text-white mb-8">Our Journey</h3>
+            <div class="space-y-8">
+              <div class="timeline-item">
+                <div class="bg-white dark:bg-background-dark/50 rounded-xl p-6">
+                  <div class="text-lg font-bold text-charcoal dark:text-white mb-2">2022 • Foundation</div>
+                  <p class="text-charcoal/70 dark:text-gray-400">Founded with a mission to make mental health support accessible to everyone, everywhere.</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-white dark:bg-background-dark/50 rounded-xl p-6">
+                  <div class="text-lg font-bold text-charcoal dark:text-white mb-2">2023 • First Milestone</div>
+                  <p class="text-charcoal/70 dark:text-gray-400">Launched our AI companion with 10,000 early users and 95% positive feedback.</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-white dark:bg-background-dark/50 rounded-xl p-6">
+                  <div class="text-lg font-bold text-charcoal dark:text-white mb-2">2024 • Global Expansion</div>
+                  <p class="text-charcoal/70 dark:text-gray-400">Expanded to 10+ countries with multilingual support and cultural adaptations.</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-white dark:bg-background-dark/50 rounded-xl p-6">
+                  <div class="text-lg font-bold text-charcoal dark:text-white mb-2">2025 • Future Vision</div>
+                  <p class="text-charcoal/70 dark:text-gray-400">Developing advanced personalization and partnering with mental health institutions.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Mission & Vision -->
+      <section class="py-16 md:py-24">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="mission-card rounded-2xl p-8">
+            <div class="text-primary dark:text-lavender mb-4">
+              <span class="material-symbols-outlined text-4xl">target</span>
+            </div>
+            <h3 class="text-2xl font-black text-charcoal dark:text-white mb-4">Our Mission</h3>
+            <p class="text-charcoal/80 dark:text-gray-300">
+              To provide accessible, compassionate, and personalized mental wellness support through 
+              ethical AI technology that complements professional care and empowers individuals on 
+              their journey to better mental health.
+            </p>
+          </div>
+          
+          <div class="mission-card rounded-2xl p-8">
+            <div class="text-primary dark:text-lavender mb-4">
+              <span class="material-symbols-outlined text-4xl">visibility</span>
+            </div>
+            <h3 class="text-2xl font-black text-charcoal dark:text-white mb-4">Our Vision</h3>
+            <p class="text-charcoal/80 dark:text-gray-300">
+              A world where everyone has access to the mental health support they need, when they need it. 
+              Where technology removes barriers to care and helps people build resilience, 
+              find community, and thrive in their mental wellness journey.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Our Values -->
+      <section class="py-16 md:py-24">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-black text-charcoal dark:text-white mb-4">Our Values</h2>
+          <p class="text-lg text-charcoal/80 dark:text-gray-300 max-w-2xl mx-auto">
+            These principles guide everything we do at WellnessAI
+          </p>
+        </div>
+        
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="value-card rounded-xl p-6">
+            <div class="text-lavender mb-4">
+              <span class="material-symbols-outlined text-3xl">psychology</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Empathy First</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              Every interaction is designed with compassion and understanding at its core.
+            </p>
+          </div>
+          
+          <div class="value-card rounded-xl p-6">
+            <div class="text-teal mb-4">
+              <span class="material-symbols-outlined text-3xl">lock</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Privacy & Trust</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              Your data is sacred. We use end-to-end encryption and never sell personal information.
+            </p>
+          </div>
+          
+          <div class="value-card rounded-xl p-6">
+            <div class="text-peach mb-4">
+              <span class="material-symbols-outlined text-3xl">diversity_3</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Inclusion</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              We design for all backgrounds, identities, and experiences. Everyone is welcome here.
+            </p>
+          </div>
+          
+          <div class="value-card rounded-xl p-6">
+            <div class="text-lavender mb-4">
+              <span class="material-symbols-outlined text-3xl">science</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Evidence-Based</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              Our methods are grounded in psychological research and clinical expertise.
+            </p>
+          </div>
+          
+          <div class="value-card rounded-xl p-6">
+            <div class="text-teal mb-4">
+              <span class="material-symbols-outlined text-3xl">auto_awesome</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Continuous Growth</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              We're always learning and improving based on user feedback and new research.
+            </p>
+          </div>
+          
+          <div class="value-card rounded-xl p-6">
+            <div class="text-peach mb-4">
+              <span class="material-symbols-outlined text-3xl">handshake</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-2">Collaboration</h4>
+            <p class="text-charcoal/70 dark:text-gray-400">
+              We partner with mental health professionals to ensure our tools complement clinical care.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Team Section -->
+      <section id="meet-team" class="py-16 md:py-24">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-black text-charcoal dark:text-white mb-4">Meet Our Team</h2>
+          <p class="text-lg text-charcoal/80 dark:text-gray-300 max-w-2xl mx-auto">
+            Passionate experts dedicated to revolutionizing mental health support
+          </p>
+        </div>
+        
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="team-card rounded-2xl p-6 text-center">
+            <div class="team-image mb-4">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-1">Dr. Sarah Chen</h4>
+            <p class="text-primary dark:text-lavender font-medium mb-3">Chief Psychologist</p>
+            <p class="text-sm text-charcoal/70 dark:text-gray-400">
+              15+ years in clinical psychology. Leads our therapeutic approach design.
+            </p>
+          </div>
+          
+          <div class="team-card rounded-2xl p-6 text-center">
+            <div class="team-image mb-4">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-1">Alex Johnson</h4>
+            <p class="text-primary dark:text-lavender font-medium mb-3">AI Research Lead</p>
+            <p class="text-sm text-charcoal/70 dark:text-gray-400">
+              PhD in Machine Learning. Focuses on ethical AI and natural language processing.
+            </p>
+          </div>
+          
+          <div class="team-card rounded-2xl p-6 text-center">
+            <div class="team-image mb-4">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-1">Maria Rodriguez</h4>
+            <p class="text-primary dark:text-lavender font-medium mb-3">Product Director</p>
+            <p class="text-sm text-charcoal/70 dark:text-gray-400">
+              User experience expert with background in healthcare technology.
+            </p>
+          </div>
+          
+          <div class="team-card rounded-2xl p-6 text-center">
+            <div class="team-image mb-4">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <h4 class="text-xl font-bold text-charcoal dark:text-white mb-1">David Kim</h4>
+            <p class="text-primary dark:text-lavender font-medium mb-3">Community Lead</p>
+            <p class="text-sm text-charcoal/70 dark:text-gray-400">
+              Builds and nurtures our supportive community of users and advocates.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Join Us CTA -->
+      <section class="py-16 md:py-24">
+        <div class="w-full bg-gradient-to-br from-lavender/80 via-peach/80 to-teal/80 dark:from-lavender/30 dark:via-peach/30 dark:to-teal/30 rounded-2xl p-10 md:p-16">
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div class="lg:w-2/3">
+              <h2 class="text-3xl md:text-4xl font-black tracking-tight text-charcoal dark:text-white mb-4">
+                Join Our Mission
+              </h2>
+              <p class="text-lg text-charcoal/80 dark:text-gray-200">
+                We're always looking for passionate individuals who want to make a difference in mental health.
+                Whether you're a developer, designer, psychologist, or advocate – there's a place for you here.
+              </p>
+            </div>
+            <div>
+              <button class="flex items-center justify-center rounded-full h-12 px-8 bg-primary text-background-light text-base font-bold shadow-lg hover:shadow-xl hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+                <span class="truncate">View Careers</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Footer -->
+      <footer class="flex flex-col gap-8 py-10 text-center">
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <a class="text-primary dark:text-white text-sm font-bold leading-normal" href="aboutus.html">About</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Pricing</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="ContactUs.html">Contact</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy Policy</a>
+          <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal leading-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Terms of Service</a>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-6">
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+          </a>
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 7a5 5 0 100 10 5 5 0 000-10zm0-2a7 7 0 110 14 7 7 0 010-14zm6.406-2.34a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill-rule="evenodd"></path></svg>
+          </a>
+          <a class="text-charcoal/60 dark:text-gray-500 hover:text-primary dark:hover:text-white transition-colors" href="#">
+            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+          </a>
+        </div>
+        
+        <p class="text-charcoal/60 dark:text-gray-500 text-sm font-normal leading-normal">© 2024 WellnessAI. All rights reserved.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Dark/Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('light-icon');
+    const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    
+    // Check for saved theme preference or default to light
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply the saved theme on page load
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      lightIcon.classList.add('hidden');
+      darkIcon.classList.remove('hidden');
+      createStars();
+    } else {
+      document.documentElement.classList.remove('dark');
+      lightIcon.classList.remove('hidden');
+      darkIcon.classList.add('hidden');
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+        clearStars();
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+        createStars();
+      }
+    });
+    
+    // Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    });
+    
+    // Create stars for dark mode
+    function createStars() {
+      // Clear any existing stars
+      clearStars();
+      
+      // Create twinkling stars
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // Random size between 1-3px
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation delay
+        const delay = Math.random() * 5;
+        star.style.animationDelay = `${delay}s`;
+        
+        // Add twinkle animation
+        star.classList.add('animate-twinkle');
+        
+        starsContainer.appendChild(star);
+      }
+    }
+    
+    // Clear all stars
+    function clearStars() {
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // Add animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in');
+        }
+      });
+    }, observerOptions);
+    
+    // Observe all mission cards and team cards
+    document.querySelectorAll('.mission-card, .team-card, .value-card, .stat-card').forEach(card => {
+      observer.observe(card);
+    });
+  </script>
 </body>
 </html>
