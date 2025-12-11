@@ -1,126 +1,611 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Free Wellness Map</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wellness Map</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101022",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+            "charcoal": "#2C3E50",
+          },
+          fontFamily: { "display": ["Spline Sans", "sans-serif"] },
+          borderRadius: { lg: "1.5rem", xl: "2rem", full: "9999px" },
+          boxShadow: {
+            'soft': '0 4px 12px rgba(0, 0, 0, 0.08)',
+            'medium': '0 8px 24px rgba(0, 0, 0, 0.12)',
+            'strong': '0 16px 40px rgba(0, 0, 0, 0.16)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --gradient-primary: linear-gradient(135deg, #C8B6FF 0%, #FFD8B1 50%, #B4E4D8 100%);
+      --gradient-secondary: linear-gradient(135deg, #C8B6FF 0%, #B4E4D8 100%);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.16);
+    }
+
+    body {
+      transition: all 0.3s ease;
+      min-height: 100vh;
+    }
+
+    .gradient-text {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 200% auto;
+      animation: gradient-shift 8s ease infinite;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .glass-box {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-box:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .dark .glass-box {
+      background: rgba(16, 16, 34, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-gradient {
+      background: var(--gradient-primary);
+      border-radius: 9999px;
+      font-weight: 700;
+      padding: 12px 28px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      color: #2C3E50;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      background-size: 150% auto;
+      background-position: right center;
+    }
+
+    .save-btn {
+      background: var(--gradient-secondary);
+      color: #2C3E50;
+      font-weight: 700;
+      border-radius: 9999px;
+      padding: 8px 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(200, 182, 255, 0.3);
+      background: linear-gradient(135deg, #FFD8B1, #C8B6FF);
+    }
+
+    .place-card {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .place-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+
+    select.glass-box {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232C3E50'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.5rem;
+      padding-right: 3rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+  .dark select.glass-box {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.5rem;
+  color: #ffffff;
+}
+
+
+    select.glass-box:focus {
+      outline: none;
+      border-color: #C8B6FF;
+      box-shadow: 0 0 0 3px rgba(200, 182, 255, 0.2);
+    }
+
+    #map {
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    #map:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .bg-blob {
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+      color: #2C3E50;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .dark .nav-link {
+      color: #f3f4f6;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .affirmation-btn, .help-button {
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      color: #2C3E50;
+      position: relative;
+    }
+
+    .affirmation-btn:hover, .help-button:hover {
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .affirmation-btn-label {
+      position: absolute;
+      right: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #2C3E50;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .affirmation-btn:hover .affirmation-btn-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .rating-stars {
+      color: #FFD8B1;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .glass-box {
+        border-radius: 1rem;
+      }
+
+      .btn-gradient {
+        padding: 10px 20px;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    button:focus, select:focus {
+      outline: 2px solid #C8B6FF;
+      outline-offset: 2px;
+    }
+
+    .place-card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .place-card p {
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+  </style>
 </head>
 
-<body class="bg-background-light p-6">
+<body class="font-display bg-background-light dark:bg-background-dark text-charcoal dark:text-gray-100 transition-colors duration-300">
 
-<h1 class="text-4xl font-black gradient-text">Wellness Near You</h1>
+  <!-- Background blobs -->
+  <div class="fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-lavender/30 dark:bg-lavender/20 rounded-full blur-[150px] opacity-60 -z-10 bg-blob"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-peach/30 dark:bg-peach/20 rounded-full blur-[150px] opacity-60 -z-10 bg-blob" style="animation-delay: -10s;"></div>
+  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[30vw] bg-teal/20 dark:bg-teal/10 rounded-full blur-[120px] opacity-40 -z-10 bg-blob" style="animation-delay: -5s;"></div>
 
-<div class="flex gap-4 mt-6">
-
-<select id="category" class="p-2 rounded">
-  <option value="park">Parks</option>
-  <option value="gym">Gyms</option>
-  <option value="cafe">Cafés</option>
-  <option value="meditation">Meditation</option>
-</select>
-
-<select id="radius" class="p-2 rounded">
-  <option value="1000">1 km</option>
-  <option value="3000">3 km</option>
-  <option value="5000">5 km</option>
-</select>
-
-<button onclick="fetchPlaces()" class="btn">Search</button>
-
-</div>
-
-<div id="map" class="h-[400px] mt-6 rounded-lg"></div>
-
-<div id="list" class="mt-6 grid md:grid-cols-2 gap-4"></div>
-
-<script>
-
-const BASE = "http://localhost:5000";
-const userId = localStorage.getItem("userId");
-let map;
-
-navigator.geolocation.getCurrentPosition(pos => {
-
-  const { latitude, longitude } = pos.coords;
-
-  map = L.map("map").setView([latitude, longitude], 13);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-    .addTo(map);
-
-  window.center = [latitude, longitude];
-  L.marker(window.center).addTo(map).bindPopup("You are here").openPopup();
-});
-if (!window.center) {
-  alert("Location not ready yet. Allow location access.");
-  return;
-}
-
-async function fetchPlaces() {
-
-  const category = document.getElementById("category").value;
-  const radius = document.getElementById("radius").value;
-
-  const res = await fetch(`${BASE}/open-places?lat=${center[0]}&lng=${center[1]}&category=${category}&radius=${radius}`);
-  const places = await res.json();
-
-  console.log("API Response:", places);
-
-  if (!Array.isArray(places)) {
-    alert("Backend Error! Check terminal.");
-    return;
-  }
-
-  document.getElementById("list").innerHTML = "";
-
-  places.forEach(p => {
-
-    const { name, address, rating, lat, lng } = p;
-
-    L.marker([lat, lng]).addTo(map).bindPopup(name);
-
-    document.getElementById("list").innerHTML += `
-      <div class="bg-white rounded-lg p-4">
-        <h3 class="font-bold">${name}</h3>
-        <p>${address}</p>
-        <p>⭐ ${rating}</p>
-        <button onclick='saveFav(${JSON.stringify(p)})'>❤️ Save</button>
+  <!-- NAVBAR (premium-style) -->
+  <header class="navbar-container py-4 sticky top-0 backdrop-blur-md bg-white/80 dark:bg-background-dark/50 border-b border-gray-200 dark:border-gray-700 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="size-10 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center shadow-medium">
+          <span class="material-symbols-outlined text-white text-2xl">neurology</span>
+        </div>
+        <h2 class="text-2xl font-black text-charcoal dark:text-white tracking-tight">WellnessAI</h2>
       </div>
-    `;
-  });
-}
+
+      <nav class="hidden md:flex gap-8 text-sm">
+        <a href="landing-page.html" class="nav-link">Home</a>
+        <a href="featuresPage.html" class="nav-link">Features</a>
+        <a href="#" class="nav-link">Resources</a>
+        <a href="ContactUs.html" class="nav-link">Contact</a>
+
+      </nav>
+      <button id="themeToggle" class="glass-box p-2 rounded-full hover:scale-110 transition-transform">
+  <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+  <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+</button>
 
 
+      <button class="md:hidden glass-box p-2 rounded-xl">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </header>
 
-async function saveFav(p) {
+  <!-- MAIN -->
+  <div class="max-w-7xl mx-auto px-6 py-12 md:py-16 relative">
 
-  await fetch(`${BASE}/favorite`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, ...p })
-  });
+    <!-- Hero -->
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black gradient-text leading-tight">
+        Wellness Map
+      </h1>
+      <p class="mt-4 text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-2xl">
+        Discover wellness-friendly locations near you. Find parks, gyms, cafés, and meditation spaces that support your wellbeing journey.
+      </p>
+    </div>
 
-  alert("Saved!");
-}
+    <!-- Controls -->
+    <div class="mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div>
+          <label class="block text-sm font-medium mb-2 text-charcoal dark:text-gray-300">Category</label>
+          <select id="category" class="glass-box p-4 rounded-xl w-full focus:ring-2 focus:ring-lavender/30">
+            <option value="park">🌳 Parks & Nature</option>
+            <option value="gym">💪 Gyms & Fitness</option>
+            <option value="cafe">☕ Cafés & Healthy Eats</option>
+            <option value="meditation">🧘 Meditation & Yoga</option>
+          </select>
+        </div>
 
-</script>
+        <div>
+          <label class="block text-sm font-medium mb-2 text-charcoal dark:text-gray-300">Search Radius</label>
+          <select id="radius" class="glass-box p-4 rounded-xl w-full focus:ring-2 focus:ring-lavender/30">
+            <option value="1000">📍 1 km around me</option>
+            <option value="3000">📍 3 km around me</option>
+            <option value="5000">📍 5 km around me</option>
+          </select>
+        </div>
 
-<style>
-.btn {
-  background: linear-gradient(to right,#C8B6FF,#FFD8B1,#B4E4D8);
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-weight: bold;
-}
-.gradient-text {
-  background: linear-gradient(to right,#C8B6FF,#FFD8B1,#B4E4D8);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-</style>
+        <div class="flex items-end">
+          <button id="searchBtn" class="btn-gradient h-[52px]">
+            <span class="material-symbols-outlined">search</span>
+            Search Locations
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div class="mb-16">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl md:text-3xl font-bold text-charcoal dark:text-white">Your Area</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">📍 Your current location</span>
+      </div>
+      <div id="map" class="rounded-2xl overflow-hidden glass-box h-[420px] transition-all duration-300"></div>
+    </div>
+
+    <!-- Results -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-charcoal dark:text-white">Nearby Places</h2>
+        <span id="resultsCount" class="text-sm glass-box px-3 py-1 rounded-full">0 locations found</span>
+      </div>
+
+      <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamic cards injected by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating buttons -->
+  <div class="affirmation-popup-btn fixed bottom-24 right-6 z-40">
+    <div class="affirmation-btn" id="affirmationPopupBtn">
+      <span class="material-symbols-outlined text-2xl">psychology</span>
+      <span class="affirmation-btn-label">DAILY AFFIRMATION</span>
+    </div>
+  </div>
+
+  <div class="floating-help fixed bottom-6 right-6 z-40">
+    <div class="help-button" id="helpButton">
+      <span class="material-symbols-outlined text-2xl">support_agent</span>
+    </div>
+  </div>
+
+  <!-- Theme Toggle
+  <button class="fixed bottom-6 left-6 glass-box p-3 rounded-full z-40 hover:scale-110 transition-transform" id="themeToggle">
+    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+    <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+  </button> -->
+
+  <script>
+    // --- Theme toggle ---
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // --- Map & API logic (your working logic, with nicer UI) ---
+    const BASE = "http://localhost:5000";
+    const userId = localStorage.getItem("userId");
+    let map;
+    let center = null;
+    let userMarker = null;
+    let placeMarkers = [];
+
+    // Initialize map with user's location
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        center = [latitude, longitude];
+
+        map = L.map("map").setView(center, 14);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        userMarker = L.marker(center)
+          .addTo(map)
+          .bindPopup("You are here")
+          .openPopup();
+      },
+      (err) => {
+        console.error("Geolocation error:", err);
+        alert("Unable to access location. Please allow location access and reload.");
+      }
+    );
+
+    function clearPlaceMarkers() {
+      placeMarkers.forEach(m => map.removeLayer(m));
+      placeMarkers = [];
+    }
+
+    async function fetchPlaces() {
+      if (!center) {
+        alert("Location not ready yet. Please allow location access.");
+        return;
+      }
+
+      const category = document.getElementById("category").value;
+      const radius = document.getElementById("radius").value;
+
+      let res;
+      try {
+        res = await fetch(
+          `${BASE}/open-places?lat=${center[0]}&lng=${center[1]}&category=${category}&radius=${radius}`
+        );
+      } catch (e) {
+        console.error(e);
+        alert("Network error while fetching places.");
+        return;
+      }
+
+      let places;
+      try {
+        places = await res.json();
+      } catch (e) {
+        console.error(e);
+        alert("Failed to parse response from server.");
+        return;
+      }
+
+      const listEl = document.getElementById("list");
+      const countEl = document.getElementById("resultsCount");
+      listEl.innerHTML = "";
+      clearPlaceMarkers();
+
+      if (!Array.isArray(places)) {
+        alert("Backend error. Check server logs.");
+        countEl.textContent = "0 locations found";
+        return;
+      }
+
+      if (places.length === 0) {
+        listEl.innerHTML = `
+          <p class="text-sm text-gray-500 dark:text-gray-400 col-span-full">
+            No places found in this area. Try increasing the radius or changing category.
+          </p>`;
+        countEl.textContent = "0 locations found";
+        return;
+      }
+
+      places.forEach((p, index) => {
+        const lat = p.lat;
+        const lng = p.lng;
+        const name = p.name || "Unnamed Place";
+        const address = p.address || "Address not available";
+        const ratingNum = p.rating || 4;
+        const stars = "★".repeat(ratingNum) + "☆".repeat(5 - ratingNum);
+
+        if (lat && lng) {
+          const marker = L.marker([lat, lng]).addTo(map).bindPopup(name);
+          placeMarkers.push(marker);
+        }
+
+        listEl.innerHTML += `
+          <div class="glass-box p-6 rounded-xl place-card">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-xl mb-1 text-charcoal dark:text-white">${name}</h3>
+                <p class="text-sm opacity-80 mb-1 text-gray-600 dark:text-gray-300">${address}</p>
+              </div>
+              <div class="rating-stars">${stars}</div>
+            </div>
+            <p class="text-sm mb-4 text-gray-600 dark:text-gray-300">
+              A wellness-friendly spot near you. Perfect for taking a mindful break and recharging.
+            </p>
+            <button class="save-btn mt-auto" data-index="${index}">
+              <span class="material-symbols-outlined align-middle text-sm">favorite</span>
+              Save for later
+            </button>
+          </div>
+        `;
+      });
+
+      // Attach save listeners
+      Array.from(listEl.querySelectorAll(".save-btn")).forEach((btn) => {
+        const idx = btn.getAttribute("data-index");
+        btn.addEventListener("click", () => saveFav(places[idx]));
+      });
+
+      countEl.textContent = `${places.length} location${places.length > 1 ? "s" : ""} found`;
+    }
+
+    async function saveFav(p) {
+      try {
+        await fetch(`${BASE}/favorite`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, ...p })
+        });
+        alert("Saved to favorites!");
+      } catch (e) {
+        console.error(e);
+        alert("Failed to save this place. Please try again.");
+      }
+    }
+
+    // Attach Search button listener (Option B)
+    document.getElementById("searchBtn").addEventListener("click", fetchPlaces);
+  </script>
 
 </body>
 </html>

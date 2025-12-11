@@ -142,6 +142,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     if (data.success && data.token) {
       // store token and user info (so other pages can use it)
       localStorage.setItem("token", data.token);
+      localStorage.setItem("loggedIn", "true"); 
       if (data.user && data.user._id) localStorage.setItem("userId", data.user._id);
       if (data.user && data.user.username) localStorage.setItem("username", data.user.username);
 

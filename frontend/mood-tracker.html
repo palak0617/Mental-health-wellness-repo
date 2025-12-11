@@ -61,14 +61,17 @@
           <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">WellnessAI</h2>
         </div>
         <div class="hidden md:flex flex-1 justify-center gap-9">
-          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="index.html">Home</a>
-          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="landing-page.html">Home</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary dark:hover:text-white transition-colors" href="featuresPage.html">Features</a>
           <a class="text-primary dark:text-lavender text-sm font-bold leading-normal" href="mood-tracker.html">Mood Tracker</a>
         </div>
         <div class="flex items-center gap-4">
-          <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary text-background-light text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-            <span class="truncate">Log In</span>
-          </button>
+         
+          <button id="themeToggle"
+    class="glassmorphism p-2 rounded-full hover:scale-110 transition-transform flex items-center justify-center">
+      <span class="material-symbols-outlined theme-icon-light dark:hidden text-2xl">dark_mode</span>
+      <span class="material-symbols-outlined theme-icon-dark hidden dark:inline text-2xl">light_mode</span>
+  </button>
         </div>
       </header>
 
@@ -506,6 +509,27 @@
         alert('Failed to delete mood. Please try again.');
       }
     }
+    // -----------------------------
+// DARK MODE TOGGLE (NAVBAR)
+// -----------------------------
+const themeToggleBtn = document.getElementById("themeToggle");
+const htmlEl = document.documentElement;
+
+// Load theme from localStorage
+if (localStorage.getItem("theme") === "dark") {
+  htmlEl.classList.add("dark");
+} else {
+  htmlEl.classList.remove("dark");
+}
+
+// Toggle theme on click
+themeToggleBtn.addEventListener("click", () => {
+  htmlEl.classList.toggle("dark");
+
+  const isDark = htmlEl.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+
   </script>
 </body>
 </html>
