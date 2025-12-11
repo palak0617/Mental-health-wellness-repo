@@ -40,26 +40,52 @@ router.get("/open-places", async (req, res) => {
       
     );
 
-    const results = response.data.elements.map(p => {
+   const results = await Promise.all(
+  response.data.elements.map(async (p) => {
+    const t = p.tags || {};
+    const lat = p.lat || p.center?.lat;
+    const lon = p.lon || p.center?.lon;
 
-  const t = p.tags || {};
+    // 1. Try traditional address tags first
+    let address =
+      t["addr:full"] ||
+      [
+        t["addr:housenumber"],
+        t["addr:street"],
+        t["addr:place"],
+        t["addr:neighbourhood"],
+        t["addr:suburb"],
+        t["addr:city"],
+        t["addr:postcode"]
+      ].filter(Boolean).join(", ") ||
+      t["loc_name"] ||
+      t["name:en"];
 
-  const address = [
-    t["addr:housenumber"],
-    t["addr:street"],
-    t["addr:suburb"],
-    t["addr:city"],
-    t["addr:postcode"]
-  ].filter(Boolean).join(", ") || "Address not available";
+    // 2. If still no address, use REVERSE GEOCODING
+    if (!address && lat && lon) {
+      try {
+        const geo = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+        );
 
-  return {
-    name: t.name || "Unnamed place",
-    address: address,
-    lat: p.lat || p.center?.lat,
-    lng: p.lon || p.center?.lon,
-    rating: Math.floor(Math.random() * 2) + 4
-  };
-});
+        address = geo.data.display_name || "Address unavailable";
+      } catch {
+        address = "Address unavailable";
+      }
+    }
+
+    return {
+      name: t.name || "Unnamed Place",
+      address,
+      lat,
+      lng: lon,
+      rating: Math.floor(Math.random() * 2) + 4
+    };
+  })
+);
+
+res.json(results);
+
 
   } catch (err) {
     console.error("OSM ERROR:", err.message);
