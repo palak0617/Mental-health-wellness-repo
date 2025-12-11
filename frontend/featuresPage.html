@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Mindful Exercises - WellnessAI</title>
+  <title>Features - WellnessAI</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -26,141 +26,303 @@
           fontFamily: {
             "display": ["Spline Sans", "sans-serif"]
           },
-          borderRadius: {
-            "DEFAULT": "1rem",
-            "lg": "2rem",
-            "xl": "3rem",
-            "full": "9999px",
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            twinkle: 'twinkle 3s ease-in-out infinite',
           },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0px)' },
               '50%': { transform: 'translateY(-15px)' },
             },
-            fadeOut: {
-              '0%': { opacity: '1', transform: 'translateY(0)' },
-              '100%': { opacity: '0', transform: 'translateY(-10px)' },
+            twinkle: {
+              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.2)' },
             },
-            fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(10px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
+            shootingStar: {
+              '0%': { transform: 'translateX(0) translateY(0) rotate(45deg)', opacity: '1' },
+              '100%': { transform: 'translateX(500px) translateY(500px) rotate(45deg)', opacity: '0' },
             },
-          },
-          animation: {
-            float: 'float 6s ease-in-out infinite',
-            fadeOut: 'fadeOut 0.3s ease forwards',
-            fadeIn: 'fadeIn 0.3s ease forwards',
-          },
+          }
         },
       },
     }
   </script>
   <style>
-    .cube-3d {
-      perspective: 1000px;
-      transform-style: preserve-3d;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      background: linear-gradient(145deg, 
-        rgba(255, 255, 255, 0.7) 0%, 
-        rgba(255, 255, 255, 0.5) 100%);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    /* --- 3D SCENE CSS --- */
+    :root {
+        /* Increased size as requested */
+        --cube-size: 140px; 
+        --cube-depth: 140px;
+        --gap: 25px;
+    }
+
+    /* Mobile Scaling */
+    @media (max-width: 768px) {
+        :root {
+            --cube-size: 80px;
+            --cube-depth: 80px;
+            --gap: 15px;
+        }
+    }
+
+    .scene-wrapper {
+        perspective: 2000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        /* Adjusted padding to prevent footer overlap */
+        padding-top: 2rem;
+        padding-bottom: 2rem; 
+        z-index: 10;
+        position: relative;
+    }
+
+    .scene {
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateX(-20deg) rotateY(-25deg);
+        transition: transform 0.1s ease-out;
+        
+        width: calc((var(--cube-size) * 4) + (var(--gap) * 3));
+        height: calc((var(--cube-size) * 2) + (var(--gap) * 1));
+        
+        transform-origin: center center;
+    }
+
+    .cube {
+        position: absolute;
+        width: var(--cube-size);
+        height: var(--cube-size);
+        transform-style: preserve-3d;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+    }
+
+    /* --- GLASS FACE STYLING --- */
+    .face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        backface-visibility: hidden; 
+        
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        
+        /* Triangular spaces removed (Perfect Cube) */
+        border-radius: 0px; 
+    }
+
+    /* Glossy Shine */
+    .face--front::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%);
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    /* Face Positioning */
+    .face--front  { transform: rotateY(  0deg) translateZ(calc(var(--cube-depth) / 2)); }
+    .face--back   { transform: rotateY(180deg) translateZ(calc(var(--cube-depth) / 2)); }
+    .face--right  { transform: rotateY( 90deg) translateZ(calc(var(--cube-size) / 2)); width: var(--cube-depth); }
+    .face--left   { transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2)); width: var(--cube-depth); }
+    .face--top    { transform: rotateX( 90deg) translateZ(calc(var(--cube-size) / 2)); height: var(--cube-depth); }
+    .face--bottom { transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2)); height: var(--cube-depth); box-shadow: 0 40px 60px rgba(0,0,0,0.3); }
+
+    /* --- CONTENT SWAPPING LOGIC --- */
+    
+    .default-content, .hover-content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 20;
+        padding: 8px;
+    }
+
+    /* Default State */
+    .default-content {
+        opacity: 1;
+        transform: scale(1);
     }
     
-    .dark .cube-3d {
-      background: linear-gradient(145deg, 
-        rgba(30, 30, 60, 0.7) 0%, 
-        rgba(30, 30, 60, 0.5) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    /* Hover State (Description) */
+    .hover-content {
+        opacity: 0;
+        transform: scale(0.8);
+        text-align: center;
+        /* Dark overlay for readability */
+        background: rgba(0, 0, 0, 0.4); 
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Hover Interaction */
+    .cube:hover .default-content {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    .cube:hover .hover-content {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Typography */
+    .cube-icon {
+        font-size: 42px; /* Increased for larger cubes */
+        margin-bottom: 4px;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
+        color: white;
+    }
+    .cube-label {
+        font-family: 'Spline Sans', sans-serif;
+        font-size: 14px; /* Increased for larger cubes */
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .hover-desc {
+        font-family: 'Spline Sans', sans-serif;
+        font-size: 11px; /* Increased readability */
+        font-weight: 600;
+        color: white;
+        line-height: 1.4;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        margin-bottom: 8px;
+        padding: 0 4px;
+    }
+    .hover-cta {
+        font-size: 10px;
+        background: rgba(255,255,255,0.9);
+        color: #333;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-weight: 700;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* --- VIBRANT COLORS --- */
+    
+    .cube.lavender .face {
+        background: linear-gradient(135deg, rgba(138, 43, 226, 0.85), rgba(186, 85, 211, 0.4));
+        border-color: rgba(216, 191, 216, 0.8);
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.4), inset 0 0 20px rgba(138, 43, 226, 0.2);
     }
     
-    .cube-3d:hover {
-      transform: translateY(-12px) rotateX(5deg) rotateY(5deg) scale(1.03);
-      box-shadow: 0 20px 60px rgba(200, 182, 255, 0.4),
-                  0 0 40px rgba(255, 216, 177, 0.3);
+    .cube.peach .face {
+        background: linear-gradient(135deg, rgba(255, 99, 71, 0.85), rgba(255, 160, 122, 0.4));
+        border-color: rgba(255, 218, 185, 0.8);
+        box-shadow: 0 0 15px rgba(255, 69, 0, 0.4), inset 0 0 20px rgba(255, 69, 0, 0.2);
     }
     
-    .dark .cube-3d:hover {
-      box-shadow: 0 20px 60px rgba(200, 182, 255, 0.3),
-                  0 0 40px rgba(255, 216, 177, 0.2);
+    .cube.teal .face {
+        background: linear-gradient(135deg, rgba(0, 139, 139, 0.85), rgba(64, 224, 208, 0.4));
+        border-color: rgba(175, 238, 238, 0.8);
+        box-shadow: 0 0 15px rgba(0, 139, 139, 0.4), inset 0 0 20px rgba(0, 139, 139, 0.2);
     }
     
-    .cube-3d::before {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      background: linear-gradient(135deg, 
-        rgba(200, 182, 255, 0.4), 
-        rgba(255, 216, 177, 0.4), 
-        rgba(180, 228, 216, 0.4));
-      border-radius: inherit;
-      z-index: -1;
+    .cube.primary .face {
+        background: linear-gradient(135deg, rgba(0, 0, 205, 0.85), rgba(65, 105, 225, 0.4));
+        border-color: rgba(135, 206, 250, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 255, 0.4), inset 0 0 20px rgba(0, 0, 255, 0.2);
+    }
+
+    /* --- INTERACTIONS --- */
+    
+    /* Hover Effect */
+    .cube:hover {
+        transform: translate3d(var(--x-pos), var(--y-pos), 60px) scale(1.4) !important;
+        z-index: 100;
+    }
+    
+    .cube:hover .face {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Link wrapper */
+    .cube-link {
+        width: 100%; height: 100%;
+        display: block;
+        text-decoration: none;
+        color: white;
+    }
+
+    /* --- STARS ANIMATION --- */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1; /* Behind scene */
       opacity: 0;
-      transition: opacity 0.4s ease;
-      filter: blur(15px);
+      transition: opacity 0.5s ease-in-out;
     }
     
-    .cube-3d:hover::before {
+    .dark .stars-container {
       opacity: 1;
     }
     
-    .cube-face {
-      width: 100%;
-      height: 100%;
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, white, transparent);
+      border-radius: 50%;
+      animation: shootingStar 2s linear forwards;
+    }
+    
+    .shooting-star::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      transform: rotate(45deg);
+      transform-origin: 0 0;
     }
-    
-    .cube-front {
-      opacity: 1;
-      z-index: 2;
+
+    /* Utilities */
+    .dark .navbar-container {
+      background: rgba(16, 16, 34, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
-    .cube-back {
-      opacity: 0;
-      z-index: 1;
-      pointer-events: none;
+    .navbar-container {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
-    
-    .cube-3d:hover .cube-front {
-      opacity: 0;
-      transform: translateY(-10px);
+    .gradient-text {
+      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    
-    .cube-3d:hover .cube-back {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
-    
-    .icon-wrapper {
-      width: 80px;
-      height: 80px;
-      border-radius: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, 
-        rgba(200, 182, 255, 0.3), 
-        rgba(255, 216, 177, 0.3));
-      transition: transform 0.3s ease;
-    }
-    
-    .cube-3d:hover .icon-wrapper {
-      transform: scale(0.9) rotateZ(5deg);
-    }
-    
     .floating-blob {
       position: absolute;
       border-radius: 50%;
@@ -168,307 +330,337 @@
       opacity: 0.3;
       animation: float 15s ease-in-out infinite;
       pointer-events: none;
-    }
-    
-    .gradient-text {
-      background-image: linear-gradient(to right, #C8B6FF, #FFD8B1, #B4E4D8);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    
-    .navbar-container {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .dark .navbar-container {
-      background: rgba(16, 16, 34, 0.8);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .nav-link {
-      position: relative;
-      padding: 0.5rem 0;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(to right, #C8B6FF, #FFD8B1);
-      transition: width 0.3s ease;
-    }
-    
-    .nav-link:hover::after {
-      width: 100%;
+      z-index: 0;
     }
   </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark transition-colors duration-300">
-  <!-- Floating Background Blobs -->
-  <div class="floating-blob w-[700px] h-[700px] bg-lavender/30 dark:bg-lavender/20 top-[-10%] left-[-5%]" style="animation-delay: 0s;"></div>
-  <div class="floating-blob w-[600px] h-[600px] bg-peach/30 dark:bg-peach/20 bottom-[-15%] right-[-10%]" style="animation-delay: 2s;"></div>
-  <div class="floating-blob w-[500px] h-[500px] bg-teal/30 dark:bg-teal/20 top-[40%] right-[5%]" style="animation-delay: 4s;"></div>
+<body class="font-display bg-background-light dark:bg-background-dark transition-colors duration-300 flex flex-col min-h-screen relative">
+
+  <div id="stars-container" class="stars-container"></div>
+
+  <div class="floating-blob w-[600px] h-[600px] bg-lavender/40 dark:bg-lavender/20 top-[-10%] left-[-5%]" style="animation-delay: 0s;"></div>
+  <div class="floating-blob w-[500px] h-[500px] bg-peach/40 dark:bg-peach/20 bottom-[-15%] right-[-10%]" style="animation-delay: 2s;"></div>
   
-  <div class="relative flex min-h-screen w-full flex-col overflow-hidden">
-    <div class="layout-container flex h-full grow flex-col">
-      <!-- Header -->
-      <header class="navbar-container py-4 sticky top-0 z-50">
-        <div class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="size-10 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl text-white">neurology</span>
-              </div>
-              <h2 class="text-2xl font-black tracking-tight text-charcoal dark:text-white">WellnessAI</h2>
-            </div>
-            
-            <nav class="hidden md:flex items-center gap-8">
-              <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white" href="aboutUs.html">About</a>
-              <!-- <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white" href="featuresPage.html">Features</a> -->
-              <a class="nav-link text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white" href="#">Resources</a>
-            </nav>
-            
-            <div class="flex items-center gap-4">
-              <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-white/50 dark:bg-white/10 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <span id="light-icon" class="material-symbols-outlined">light_mode</span>
-                <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
-              </button>
-              
-              <a href="landing-page.html" class="hidden sm:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-primary text-background-light hover:opacity-90 transition-opacity">
-                Back to Home
-              </a>
-            </div>
+  <header class="navbar-container py-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="size-10 bg-gradient-to-r from-lavender to-teal rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl text-white">neurology</span>
           </div>
+          <h2 class="text-2xl font-black tracking-tight text-charcoal dark:text-white">WellnessAI</h2>
         </div>
-      </header>
-      
-      <!-- Main Content -->
-      <main class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 flex flex-1 justify-center py-10 sm:py-16 md:py-20">
-        <div class="layout-content-container flex flex-col max-w-[1400px] flex-1">
-          <!-- Hero Section -->
-          <div class="text-center mb-12 md:mb-16">
-            <h1 class="text-slate-900 dark:text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight px-4 pb-4 pt-5">
-              Mindful <span class="gradient-text">Exercises</span>
-            </h1>
-            <p class="text-slate-600 dark:text-slate-400 text-lg md:text-xl font-normal leading-normal pb-8 pt-2 px-4 max-w-3xl mx-auto">
-              Hover over each cube to discover powerful tools for your mental wellness journey.
-            </p>
-          </div>
+        
+        <nav class="hidden md:flex items-center gap-8">
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="aboutUs.html">About</a>
+          <a class="text-primary dark:text-white text-sm font-bold" href="featuresPage.html">Features</a>
+          <a class="text-charcoal dark:text-gray-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#">Resources</a>
+        </nav>
+        
+        <div class="flex items-center gap-4">
+          <button id="theme-toggle" class="flex items-center justify-center rounded-full h-10 w-10 bg-white/50 dark:bg-white/10 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-charcoal dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span id="light-icon" class="material-symbols-outlined">light_mode</span>
+            <span id="dark-icon" class="material-symbols-outlined hidden">dark_mode</span>
+          </button>
           
-          <!-- 3D Cubes Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 relative z-10">
-            
-            <!-- Memory Match Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float">
-              <!-- Front Face (Icon + Title) -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-lavender">extension</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">Memory Match</h3>
-              </div>
-              
-              <!-- Back Face (Description) -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-lavender">extension</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  Boost your short-term memory and concentration with engaging card matching challenges.
-                </p>
-                <a href="card.html" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-lavender/30 to-peach/30 text-primary dark:text-lavender font-semibold hover:from-lavender/50 hover:to-peach/50 transition-all">
-                 Play Now <span class="material-symbols-outlined text-base">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Wellness Near You Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float" style="animation-delay: 0.5s;">
-              <!-- Front Face -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-teal">location_on</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">Wellness Near You</h3>
-              </div>
-              
-              <!-- Back Face -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-teal">location_on</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  Find nearby parks, gyms, meditation centers, quiet cafés and wellness spaces using geo-location.
-                </p>
-                <a href="location.html" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-teal/30 to-lavender/30 text-primary dark:text-teal font-semibold hover:from-teal/50 hover:to-lavender/50 transition-all">
-                  Explore <span class="material-symbols-outlined text-base">location_on</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Mood Tracker Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float" style="animation-delay: 1s;">
-              <!-- Front Face -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-peach">mood</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">Mood Tracker</h3>
-              </div>
-              
-              <!-- Back Face -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-peach">mood</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  Track your emotional patterns and gain valuable insights into your mental wellness journey.
-                </p>
-                <a href="mood-tracker.html" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-peach/30 to-teal/30 text-primary dark:text-peach font-semibold hover:from-peach/50 hover:to-teal/50 transition-all">
-                  Track Now <span class="material-symbols-outlined text-base">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Focus Dots Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float" style="animation-delay: 1.5s;">
-              <!-- Front Face -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-lavender">visibility</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">Focus Dots</h3>
-              </div>
-              
-              <!-- Back Face -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-lavender">visibility</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  Train your attention span and reduce distractions with visual concentration exercises.
-                </p>
-                <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-lavender/30 to-teal/30 text-primary dark:text-lavender font-semibold hover:from-lavender/50 hover:to-teal/50 transition-all">
-                  Start <span class="material-symbols-outlined text-base">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Breathing Bubble Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float" style="animation-delay: 2s;">
-              <!-- Front Face -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-teal">air</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">Breathing Bubble</h3>
-              </div>
-              
-              <!-- Back Face -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-teal">air</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  Find your calm with a guided breathing visualization that promotes relaxation and mindfulness.
-                </p>
-                <a href="brain.html" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-teal/30 to-peach/30 text-primary dark:text-teal font-semibold hover:from-teal/50 hover:to-peach/50 transition-all">
-                  Try Now <span class="material-symbols-outlined text-base">arrow_forward</span>
-                </a>
-              </div>
-            </div>
-            
-            <!-- Coming Soon Cube -->
-            <div class="cube-3d rounded-3xl min-h-[320px] animate-float" style="animation-delay: 2.5s;">
-              <!-- Front Face -->
-              <div class="cube-face cube-front">
-                <div class="icon-wrapper">
-                  <span class="material-symbols-outlined text-5xl text-primary dark:text-peach">psychology</span>
-                </div>
-                <h3 class="text-2xl font-bold text-charcoal dark:text-white text-center">More Features</h3>
-              </div>
-              
-              <!-- Back Face -->
-              <div class="cube-face cube-back">
-                <div class="icon-wrapper opacity-50">
-                  <span class="material-symbols-outlined text-4xl text-primary dark:text-peach">psychology</span>
-                </div>
-                <p class="text-base text-charcoal/90 dark:text-gray-200 text-center leading-relaxed mb-4">
-                  More mindful exercises and wellness tools are being developed. Stay tuned for exciting updates!
-                </p>
-                <span class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-peach/30 to-lavender/30 text-primary dark:text-peach font-semibold">
-                  Coming Soon <span class="material-symbols-outlined text-base">rocket_launch</span>
-                </span>
-              </div>
-            </div>
-            
-          </div>
-          
-          <!-- CTA Section -->
-          <div class="mt-16 md:mt-24 text-center p-8 md:p-12 bg-gradient-to-br from-lavender/20 via-peach/20 to-teal/20 dark:from-lavender/10 dark:via-peach/10 dark:to-teal/10 rounded-3xl backdrop-blur-xl border border-white/20">
-            <h2 class="text-3xl md:text-4xl font-black text-charcoal dark:text-white mb-4">
-              Ready to Start Your Wellness Journey?
-            </h2>
-            <p class="text-lg text-charcoal/80 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands who are improving their mental wellness with our guided exercises and mindful activities.
-            </p>
-            <a href="landing-page.html" class="inline-flex items-center justify-center rounded-full h-12 px-8 bg-gradient-to-r from-lavender via-peach to-teal text-charcoal text-base font-bold shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1 hover:scale-105">
-              Get Started Free
-            </a>
-          </div>
+          <a href="landing-page.html" class="hidden sm:flex items-center justify-center rounded-full h-10 px-6 text-sm font-bold bg-primary text-background-light hover:opacity-90 transition-opacity">
+            Back to Home
+          </a>
         </div>
-      </main>
-      
-      <!-- Footer -->
-      <footer class="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 py-10">
-        <div class="flex flex-col gap-6 text-center">
-          <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-            <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
-            <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal hover:text-primary dark:hover:text-white transition-colors" href="l5.html">Features</a>
-            <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Contact</a>
-            <a class="text-charcoal/70 dark:text-gray-400 text-sm font-normal hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy</a>
-          </div>
-          <p class="text-charcoal/60 dark:text-gray-500 text-sm">© 2024 WellnessAI. All rights reserved.</p>
-        </div>
-      </footer>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center justify-center relative z-10 overflow-hidden pt-10 pb-32 max-w-7xl mx-auto w-full">
+    
+    <div class="text-center mb-16 px-4 z-20">
+      <h1 class="text-4xl md:text-6xl font-black text-charcoal dark:text-white mb-4">
+        Discover <span class="gradient-text">Mindful Tools</span>
+      </h1>
+      <p class="text-charcoal/70 dark:text-gray-400 max-w-lg mx-auto">
+        Hover over the cubes to reveal details. Interact to begin your journey.
+      </p>
+    </div>
+
+    <div class="scene-wrapper">
+        <div class="scene" id="scene">
+            
+            <div class="cube peach" data-x="0" data-y="0">
+                <div class="face face--front">
+                    <a href="card.html" class="cube-link">
+                        <div class="default-content">
+                            <span class="material-symbols-outlined cube-icon">extension</span>
+                            <span class="cube-label">Memory</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Boost focus with fun card matching games.</p>
+                            <span class="hover-cta">Play Now</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+            <div class="cube primary" data-x="calc(var(--cube-size) + var(--gap))" data-y="0">
+                <div class="face face--front">
+                    <a href="mood-tracker.html" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">mood</span>
+                             <span class="cube-label">Mood</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Track emotions and visualize your patterns.</p>
+                            <span class="hover-cta">Track</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+            <div class="cube lavender" data-x="calc((var(--cube-size) + var(--gap)) * 2)" data-y="0">
+                <div class="face face--front">
+                    <a href="#" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">visibility</span>
+                             <span class="cube-label">Focus</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Visual exercises to improve attention span.</p>
+                            <span class="hover-cta">Start</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+             <div class="cube teal" data-x="calc((var(--cube-size) + var(--gap)) * 3)" data-y="0">
+                <div class="face face--front">
+                    <a href="brain.html" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">air</span>
+                             <span class="cube-label">Breathe</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Calm your mind with guided breathing.</p>
+                            <span class="hover-cta">Relax</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+            <div class="cube primary" data-x="0" data-y="calc(var(--cube-size) + var(--gap))">
+                <div class="face face--front">
+                    <a href="location.html" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">location_on</span>
+                             <span class="cube-label">Near Me</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Find wellness centers and parks nearby.</p>
+                            <span class="hover-cta">Map</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+            <div class="cube lavender" data-x="calc(var(--cube-size) + var(--gap))" data-y="calc(var(--cube-size) + var(--gap))">
+                <div class="face face--front">
+                    <a href="#" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">edit_note</span>
+                             <span class="cube-label">Journal</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Write down your daily thoughts safely.</p>
+                            <span class="hover-cta">Write</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+            <div class="cube teal" data-x="calc((var(--cube-size) + var(--gap)) * 2)" data-y="calc(var(--cube-size) + var(--gap))">
+                <div class="face face--front">
+                    <a href="index.html" class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">forum</span>
+                             <span class="cube-label">AI Chat</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">Talk openly with your AI companion.</p>
+                            <span class="hover-cta">Chat</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+            
+            <div class="cube peach" data-x="calc((var(--cube-size) + var(--gap)) * 3)" data-y="calc(var(--cube-size) + var(--gap))">
+                <div class="face face--front">
+                    <div class="cube-link">
+                        <div class="default-content">
+                             <span class="material-symbols-outlined cube-icon">add</span>
+                             <span class="cube-label">More</span>
+                        </div>
+                        <div class="hover-content">
+                            <p class="hover-desc">More features are coming soon!</p>
+                            <span class="hover-cta">Wait</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="face face--back"></div>
+                <div class="face face--right"></div>
+                <div class="face face--left"></div>
+                <div class="face face--top"></div>
+                <div class="face face--bottom"></div>
+            </div>
+
+        </div>
+    </div>
+  </main>
+
+  <footer class="bg-white/50 dark:bg-black/20 backdrop-blur-md px-4 py-8 border-t border-gray-100 dark:border-gray-800 z-50 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col gap-6 text-center">
+      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <a class="text-charcoal/70 dark:text-gray-400 text-sm hover:text-primary dark:hover:text-white transition-colors" href="#">About</a>
+        <a class="text-charcoal/70 dark:text-gray-400 text-sm hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy</a>
+        <a class="text-charcoal/70 dark:text-gray-400 text-sm hover:text-primary dark:hover:text-white transition-colors" href="#">Terms</a>
+      </div>
+      <p class="text-charcoal/60 dark:text-gray-500 text-sm">© 2024 WellnessAI. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script>
-    // Dark/Light Mode Toggle
+    /* --- 3D INTERACTION LOGIC --- */
+    const cubes = document.querySelectorAll('.cube');
+    const scene = document.getElementById('scene');
+    
+    // Set up initial positions for hover return
+    cubes.forEach(cube => {
+        const x = cube.getAttribute('data-x');
+        const y = cube.getAttribute('data-y');
+        // Set styles directly to translate to grid position
+        cube.style.transform = `translate3d(${x}, ${y}, 0)`;
+        
+        // Save for hover effect in CSS variables
+        cube.style.setProperty('--x-pos', x);
+        cube.style.setProperty('--y-pos', y);
+    });
+
+    // Mouse movement parallax
+    document.addEventListener('mousemove', (e) => {
+        const x = (window.innerWidth / 2 - e.pageX) / 50;
+        const y = (window.innerHeight / 2 - e.pageY) / 50;
+        const rotateX = -20 + y; 
+        const rotateY = -25 - x;
+        scene.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    /* --- THEME & STARS LOGIC --- */
     const themeToggle = document.getElementById('theme-toggle');
     const lightIcon = document.getElementById('light-icon');
     const darkIcon = document.getElementById('dark-icon');
+    const starsContainer = document.getElementById('stars-container');
+    let shootingStarInterval;
     
+    // Check initial theme
     const currentTheme = localStorage.getItem('theme') || 'light';
-    
     if (currentTheme === 'dark') {
       document.documentElement.classList.add('dark');
       lightIcon.classList.add('hidden');
       darkIcon.classList.remove('hidden');
+      createStars();
     }
     
     themeToggle.addEventListener('click', () => {
       if (document.documentElement.classList.contains('dark')) {
+        // Switch to Light
         document.documentElement.classList.remove('dark');
         localStorage.setItem('theme', 'light');
         lightIcon.classList.remove('hidden');
         darkIcon.classList.add('hidden');
+        clearStars();
       } else {
+        // Switch to Dark
         document.documentElement.classList.add('dark');
         localStorage.setItem('theme', 'dark');
         lightIcon.classList.add('hidden');
         darkIcon.classList.remove('hidden');
+        createStars();
       }
     });
+
+    // Star Logic (from landing page)
+    function createStars() {
+      clearStars();
+      // Twinkling stars
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const size = Math.random() * 2 + 1;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        star.classList.add('animate-twinkle');
+        starsContainer.appendChild(star);
+      }
+      // Shooting stars loop
+      shootingStarInterval = setInterval(() => {
+        if (Math.random() > 0.6) createShootingStar();
+      }, 3000);
+    }
+    
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.classList.add('shooting-star');
+      shootingStar.style.left = `${Math.random() * 50}%`;
+      shootingStar.style.top = `${Math.random() * 40}%`;
+      const duration = Math.random() * 1 + 1.5;
+      shootingStar.style.animationDuration = `${duration}s`;
+      starsContainer.appendChild(shootingStar);
+      setTimeout(() => {
+        if (shootingStar.parentNode) shootingStar.parentNode.removeChild(shootingStar);
+      }, duration * 1000);
+    }
+    
+    function clearStars() {
+      if (shootingStarInterval) clearInterval(shootingStarInterval);
+      while (starsContainer.firstChild) {
+        starsContainer.removeChild(starsContainer.firstChild);
+      }
+    }
   </script>
 </body>
 </html>
