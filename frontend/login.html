@@ -4,166 +4,179 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | WellnessAI</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1313ec",
+            "light-bg": "#f6f6f8",
+            "lavender": "#C8B6FF",
+            "peach": "#FFD8B1",
+            "teal": "#B4E4D8",
+          },
+          fontFamily: {
+            "sans": ["Spline Sans", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #f5f8ff, #fafaff, #f1f5ff);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+    body { margin: 0; overflow: hidden; }
+    .btn-gradient {
+      background-size: 200% auto;
+      transition: 0.5s;
     }
-
-    .card {
-      width: 380px;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(18px);
-      padding: 40px 35px;
-      border-radius: 25px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-      text-align: center;
+    .btn-gradient:hover {
+      background-position: right center;
     }
-
-    h2 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1b1b1b;
-      margin-bottom: 25px;
+    /* Gentle floating animation for elements */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      font-size: 15px;
-      background: #ffffffcc;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-      transition: all 0.25s ease;
-    }
-
-    input:focus {
-      box-shadow: 0 0 0 3px rgba(120, 140, 255, 0.35);
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 20px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 15px;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s ease;
-      background: linear-gradient(90deg, #a4c8ff, #c6b6ff, #ffbfbf);
-      color: white;
-      box-shadow: 0 6px 18px rgba(120, 120, 255, 0.2);
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(120,120,255,0.25);
-    }
-
-    .footer {
-      margin-top: 18px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .footer a {
-      color: #5b6cff;
-      text-decoration: none;
-      font-weight: 500;
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
     }
   </style>
 </head>
 
-<body>
+<body class="flex h-screen w-full bg-light-bg font-sans">
 
-  <div class="card">
-    <h2>Welcome Back</h2>
+  <!-- LEFT SIDE: Illustration -->
+  <div class="hidden lg:block w-1/2 h-full relative overflow-hidden bg-gray-900 shadow-2xl">
+    
+    <!-- SVG SCENE: Calm Sunrise -->
+    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#101022;stop-opacity:1" /> <!-- Dark Top -->
+          <stop offset="60%" style="stop-color:#4b4b8f;stop-opacity:1" /> <!-- Purple Mid -->
+          <stop offset="100%" style="stop-color:#FFD8B1;stop-opacity:1" /> <!-- Peach Bottom -->
+        </linearGradient>
+      </defs>
+      
+      <!-- Sky Background -->
+      <rect width="100%" height="100%" fill="url(#skyGradient)" />
 
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
+      <!-- Sun -->
+      <circle cx="200" cy="250" r="60" fill="#FFD8B1" opacity="0.8" class="animate-float" />
+      <circle cx="200" cy="250" r="45" fill="#ffffff" opacity="0.6" class="animate-float" />
 
-      <button type="submit">Log In</button>
-    </form>
+      <!-- Hills / Waves Layer 1 (Back) -->
+      <path d="M0 450 C 100 400, 300 400, 400 450 V 600 H 0 V 450 Z" fill="#C8B6FF" opacity="0.6" />
+      
+      <!-- Hills / Waves Layer 2 (Middle) -->
+      <path d="M0 500 C 150 450, 250 550, 400 500 V 600 H 0 V 500 Z" fill="#B4E4D8" opacity="0.8" />
+      
+      <!-- Hills / Waves Layer 3 (Front) -->
+      <path d="M0 550 C 100 520, 300 520, 400 550 V 600 H 0 V 550 Z" fill="#1313ec" opacity="0.9" />
+    </svg>
 
-    <div class="footer">
-      Don’t have an account? <a href="signup.html">Sign up</a>
+    <!-- Overlay Text -->
+    <div class="absolute bottom-12 left-12 z-20 text-white max-w-md select-none">
+      <h2 class="text-4xl font-bold mb-3 tracking-tight drop-shadow-lg">Find Your Balance</h2>
+      <p class="text-white/90 text-lg leading-relaxed drop-shadow-md">
+        "Peace comes from within. <br>Start your journey to mental clarity today."
+      </p>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE: Login Form -->
+  <div class="w-full lg:w-1/2 h-full flex items-center justify-center p-8 bg-white relative">
+    
+    <!-- Mobile Background Blob -->
+    <div class="lg:hidden absolute bottom-0 left-0 w-64 h-64 bg-lavender/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-[400px] z-10">
+      
+      <!-- Logo Header -->
+      <div class="mb-10 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-4xl text-primary">neurology</span>
+          <span class="text-2xl font-bold text-gray-800">WellnessAI</span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mt-2">Log In</h1>
+        <p class="text-gray-500 mt-1">Please enter your details.</p>
+      </div>
+
+      <form id="loginForm" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1 ml-1">Email</label>
+          <input type="email" id="email" required placeholder="designer@example.com"
+            class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-gray-400 text-gray-800">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1 ml-1">Password</label>
+          <input type="password" id="password" required placeholder="••••••••"
+            class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-gray-400 text-gray-800">
+        </div>
+
+        <button type="submit" 
+          class="w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-primary/30 btn-gradient bg-gradient-to-r from-primary via-[#6366f1] to-[#8b5cf6] hover:scale-[1.02] active:scale-95 transition-transform">
+          Log In
+        </button>
+      </form>
+
+      <div class="mt-8 text-center text-sm text-gray-500">
+        Don't have an account? 
+        <a href="signup.html" class="font-bold text-primary hover:text-indigo-600 transition-colors">Sign up</a>
+      </div>
     </div>
   </div>
 
   <script>
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerText;
+      btn.innerText = 'Logging in...';
+      btn.disabled = true;
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+      try {
+        const res = await fetch("http://localhost:5000/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        
+        let data;
+        try { data = await res.json(); } catch (err) { data = null; }
 
-  try {
-    const res = await fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+        if (!res.ok) {
+          alert((data && data.message) || `Login failed (status ${res.status})`);
+          return;
+        }
+
+        if (data && data.success && data.token) {
+          // Store auth data
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("loggedIn", "true"); 
+          if (data.user && data.user._id) localStorage.setItem("userId", data.user._id);
+          if (data.user && data.user.username) localStorage.setItem("username", data.user.username);
+          
+          window.location.href = "landing-page.html";
+          return;
+        }
+        alert("Login failed: " + (data.message || "Unknown error"));
+      } catch (err) {
+        console.error("Login error:", err);
+        alert("Network error. Is the backend running?");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
     });
-
-    // handle non-JSON or non-2xx gracefully
-    let data;
-    try { data = await res.json(); } catch (err) { data = null; }
-
-    console.log("Login response:", res.status, data);
-
-    if (!res.ok) {
-      // non-2xx HTTP code
-      const msg = (data && data.message) || `Login failed (status ${res.status})`;
-      alert(msg);
-      return;
-    }
-
-    // now res.ok
-    // Expectation: data should contain { success: true, token: "...", user: {...}, message: "..." }
-    if (!data) {
-      alert("Login failed: server returned invalid response.");
-      return;
-    }
-
-    if (data.success && data.token) {
-      // store token and user info (so other pages can use it)
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("loggedIn", "true"); 
-      if (data.user && data.user._id) localStorage.setItem("userId", data.user._id);
-      if (data.user && data.user.username) localStorage.setItem("username", data.user.username);
-
-      console.log("Saved token length:", (data.token || "").length);
-      // redirect only after token is saved
-      window.location.href = "landing-page.html";
-      return;
-    }
-
-    // fallback error messages
-    const fallback = (data.message) || (data.error) || "Login failed — check credentials";
-    alert(fallback);
-
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Network error during login. Is the backend running?");
-  }
-});
-</script>
-
-
-
+  </script>
 </body>
 </html>
