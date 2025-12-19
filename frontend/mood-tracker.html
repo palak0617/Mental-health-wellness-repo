@@ -354,33 +354,47 @@
     }
 
     async function submitMood(event) {
-      event.preventDefault();
-      
-      try {
-        const data = {
-          userId: USER_ID,
-          mood: selectedMood,
-          intensity: parseInt(document.getElementById('intensitySlider').value),
-          note: document.getElementById('moodNote').value,
-          activities: selectedActivities
-        };
+  event.preventDefault();
 
-        await axios.post(`${API_URL}/mood`, data);
-        
-        hideMoodForm();
-        fetchMoods();
-        fetchStats();
-        
-        alert('Mood logged successfully!');
-      } catch (error) {
-        console.error('Error submitting mood:', error);
-        alert('Failed to log mood. Please try again.');
+  const token = localStorage.getItem("token");
+  // console.log("TOKEN BEING SENT:", token);
+
+  if (!token) {
+    alert("No token found. Please login again.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+    await axios.post(
+      "http://localhost:5000/api/mood",
+      {
+        mood: selectedMood,
+        intensity: Number(document.getElementById("intensitySlider").value),
+        note: document.getElementById("moodNote").value,
+        activities: selectedActivities
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    }
+    );
+    await fetchMoods();   // refresh history
+    await fetchStats();   // refresh stats
+    hideMoodForm(); 
+
+    alert("Mood saved successfully");
+  } catch (err) {
+    console.error("FULL ERROR OBJECT:", err);
+    alert("Unauthorized – token rejected");
+  }
+}
+
 
     async function fetchMoods() {
       try {
-        const response = await axios.get(`${API_URL}/mood/${USER_ID}`);
+        const response = await axios.get(`${API_URL}/api/mood/${USER_ID}`);
         displayMoodHistory(response.data);
       } catch (error) {
         console.error('Error fetching moods:', error);
@@ -390,7 +404,9 @@
     async function fetchStats() {
       try {
         const timeframe = document.getElementById('timeframeSelect').value;
-        const response = await axios.get(`${API_URL}/mood/${USER_ID}/stats?timeframe=${timeframe}`);
+        const response = await axios.get(
+  `${API_URL}/api/mood/${USER_ID}/stats?timeframe=${timeframe}`
+);
         displayStats(response.data);
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -501,7 +517,7 @@
       if (!confirm('Are you sure you want to delete this mood entry?')) return;
       
       try {
-        await axios.delete(`${API_URL}/mood/${id}`);
+        await axios.delete(`${API_URL}/api/mood/${id}`);
         fetchMoods();
         fetchStats();
       } catch (error) {

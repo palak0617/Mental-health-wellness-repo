@@ -20,11 +20,17 @@ const app = express();
 // CORS: Allow all origins for now
 // app.use(cors({ origin: '*' }));
 app.use(cors({
-  origin: "http://127.0.0.1:5501",
+  origin: [
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501",
+    "http://localhost:5500",
+    "http://localhost:5501"
+  ],
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
 
 
 app.use(express.json());
