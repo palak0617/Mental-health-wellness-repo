@@ -21,4 +21,4 @@ const favoriteSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("FavoritePlace", favoriteSchema);
+module.exports = mongoose.models.FavoritePlace || mongoose.model("FavoritePlace", favoriteSchema);

@@ -177,6 +177,61 @@
         btn.disabled = false;
       }
     });
+<<<<<<< Updated upstream
   </script>
+=======
+
+    // handle non-JSON or non-2xx gracefully
+    let data;
+    try { data = await res.json(); } catch (err) { data = null; }
+
+    console.log("Login response:", res.status, data);
+
+    if (!res.ok) {
+      // non-2xx HTTP code
+      const msg = (data && data.message) || `Login failed (status ${res.status})`;
+      alert(msg);
+      return;
+    }
+
+    // now res.ok
+    // Expectation: data should contain { success: true, token: "...", user: {...}, message: "..." }
+    if (!data) {
+      alert("Login failed: server returned invalid response.");
+      return;
+    }
+
+    if (data.success && data.token) {
+
+  // ⭐ SAVE TOKEN — Required for authenticated routes
+  localStorage.setItem("token", data.token);
+
+  // Optional but useful
+  localStorage.setItem("loggedIn", "true");
+  if (data.user && data.user._id) localStorage.setItem("userId", data.user._id);
+  if (data.user && data.user.username) localStorage.setItem("username", data.user.username);
+
+  console.log("Saved token length:", (data.token || "").length);
+
+  // redirect
+  window.location.href = "landing-page.html";
+  return;
+}
+
+
+    // fallback error messages
+    const fallback = (data.message) || (data.error) || "Login failed — check credentials";
+    alert(fallback);
+
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Network error during login. Is the backend running?");
+  }
+});
+</script>
+
+
+
+>>>>>>> Stashed changes
 </body>
 </html>

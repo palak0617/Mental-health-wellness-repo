@@ -19,4 +19,4 @@ const placeSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("NearbyPlace", placeSchema);
+module.exports = mongoose.models.NearbyPlace || mongoose.model("NearbyPlace", placeSchema);

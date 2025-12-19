@@ -6,4 +6,5 @@ const journalEntrySchema = new mongoose.Schema({
   timestamp: Date
 });
 
-module.exports = mongoose.model('JournalEntry', journalEntrySchema);
+// module.exports = mongoose.model('JournalEntry', journalEntrySchema);
+module.exports = mongoose.models.JournalEntry || mongoose.model("JournalEntry", journalEntrySchema);

@@ -15,4 +15,4 @@ const GameRecordSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("GameRecord", GameRecordSchema);
+module.exports = mongoose.models.GameRecord || mongoose.model("GameRecord", GameRecordSchema);

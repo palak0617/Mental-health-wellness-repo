@@ -39,4 +39,4 @@ const moodSchema = new mongoose.Schema({
 // Index for efficient queries
 moodSchema.index({ userId: 1, date: -1 });
 
-module.exports = mongoose.model('Mood', moodSchema);
+module.exports =mongoose.models.Mood ||  mongoose.model('Mood', moodSchema);

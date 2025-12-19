@@ -9,6 +9,8 @@ const authRoutes = require('./routes/authRoutes');
 const gameRecordRoutes = require('./routes/gameRecordRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const moodRoutes = require('./routes/moodRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const goalRoutes = require('./routes/goalRoutes');
 console.log("✅ moodRoutes loaded:", typeof moodRoutes);
 
 
@@ -16,20 +18,27 @@ console.log("✅ moodRoutes loaded:", typeof moodRoutes);
 const app = express();
 
 // CORS: Allow all origins for now
-app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
+app.use(cors({
+  origin: "http://127.0.0.1:5501",
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+
 app.use(express.json());
 
 // Routes
-app.use("/api/journal", journalRoutes);
-app.use("/api/gemini", geminiRoutes);
 app.use("/auth", authRoutes);
-// <<<<<<< Updated upstream
-app.use(gameRecordRoutes);
-app.use("/", locationRoutes);
-app.use("/", moodRoutes);  
-// =======
-app.use("/api", gameRecordRoutes);
-app.use("/api/game-records", require("./routes/gameRecordRoutes"));
+app.use("/api/mood", moodRoutes);
+app.use("/api/game-records", gameRecordRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/location", locationRoutes);
+app.use("/api/goals", goalRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/gemini", geminiRoutes);
+
 
 
 // >>>>>>> Stashed changes

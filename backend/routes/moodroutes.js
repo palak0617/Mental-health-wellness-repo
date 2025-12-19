@@ -4,7 +4,7 @@ const router = express.Router();
 const Mood = require('../models/Mood');
 
 // Get all moods for a user
-router.get('/mood/:userId', async (req, res) => {
+router.get('/:userId', async (req, res) => {
   try {
     const { limit = 30 } = req.query;
     const moods = await Mood.find({ userId: req.params.userId })
@@ -97,10 +97,14 @@ router.get('/mood/:userId/stats', async (req, res) => {
 });
 
 // Create a new mood entry
-router.post('/mood', async (req, res) => {
+// at top
+const auth = require('../middleware/auth');
+
+// replace router.post('/mood', ...) with:
+router.post('/mood', auth, async (req, res) => {
   try {
     const mood = new Mood({
-      userId: req.body.userId,
+      userId: req.user.id,
       mood: req.body.mood,
       intensity: req.body.intensity || 5,
       note: req.body.note,
@@ -108,13 +112,13 @@ router.post('/mood', async (req, res) => {
       triggers: req.body.triggers || [],
       timestamp: req.body.timestamp || new Date()
     });
-
     const newMood = await mood.save();
     res.status(201).json(newMood);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
+
 
 // Update a mood entry
 router.patch('/mood/:id', async (req, res) => {
