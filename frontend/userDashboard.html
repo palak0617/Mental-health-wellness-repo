@@ -861,18 +861,25 @@
   
   <!-- Report Modal -->
   <div id="report-modal" class="report-modal">
-    <div class="report-content">
+    <div class="report-content" id="report-content">
       <div class="report-header">
         <div>
           <h2 class="text-2xl font-bold">WellnessAI Personal Report</h2>
           <p class="text-sm opacity-90" id="report-date">Generated on: Loading...</p>
         </div>
-        <button id="close-report" class="material-symbols-outlined text-2xl hover:scale-110 transition-transform">close</button>
+        <!-- <button id="close-report" class="material-symbols-outlined text-2xl hover:scale-110 transition-transform">close</button> -->
+         <button id="close-report"
+  class="flex items-center justify-center w-10 h-10 rounded-full
+         bg-black/10 dark:bg-white/10
+         hover:bg-black/20 dark:hover:bg-white/20
+         transition-all hover:scale-110">
+  <span class="material-symbols-outlined text-2xl">close</span>
+</button>
+
       </div>
       
 
-      <div class="report-body">
-
+      <div class="report-body"  id="report-body">
   <!-- WELLNESS METRICS -->
   <h3 class="text-xl font-bold mb-4">Wellness Metrics</h3>
 
@@ -953,16 +960,6 @@
   </div>
 
   <script>
-    document
-  .getElementById("generate-report-btn")
-  .addEventListener("click", generateAndShowReport);
-
-document
-  .getElementById("report-nav-link")
-  .addEventListener("click", e => {
-    e.preventDefault();
-    generateAndShowReport();
-  });
 
     // ... (previous JavaScript code remains the same until the new additions) ...
     
@@ -1005,70 +1002,7 @@ document
         createStars();
       }
     });
-    
-    // Mood tracker functionality
-    // const moodOptions = document.querySelectorAll('.mood-option-3d');
-    // let currentMood = 'okay'; // Default mood
-    
-    // moodOptions.forEach(option => {
-    //   option.addEventListener('click', () => {
-    //     moodOptions.forEach(opt => opt.classList.remove('active'));
-    //     option.classList.add('active');
-    //     currentMood = option.dataset.mood;
-    //     console.log(`Mood set to: ${currentMood}`);
-        
-    //     // Add a subtle animation feedback
-    //     option.style.transform = 'translateY(-8px) translateZ(15px) scale(1.05)';
-    //     setTimeout(() => {
-    //       option.style.transform = 'translateY(-8px) translateZ(15px)';
-    //     }, 300);
-    //   });
-    // });
-    
-    // Goal completion functionality
-    // const goalCheckboxes = document.querySelectorAll('.goal-checkbox-3d');
-    // goalCheckboxes.forEach(checkbox => {
-    //   checkbox.addEventListener('click', () => {
-    //     const isChecked = checkbox.classList.contains('checked');
-    //     const goalText = checkbox.nextElementSibling;
-        
-    //     if (isChecked) {
-    //       checkbox.classList.remove('checked');
-    //       goalText.classList.remove('line-through', 'opacity-70');
-    //     } else {
-    //       checkbox.classList.add('checked');
-    //       goalText.classList.add('line-through', 'opacity-70');
-    //     }
-        
-    //     // Update progress bar
-    //     updateGoalProgress();
-        
-    //     // Animation feedback
-    //     checkbox.style.transform = 'translateZ(15px) scale(1.2)';
-    //     setTimeout(() => {
-    //       checkbox.style.transform = checkbox.classList.contains('checked') 
-    //         ? 'translateZ(10px)' 
-    //         : '';
-    //     }, 300);
-    //   });
-    // });
-    
-    // function updateGoalProgress() {
-    //   const totalGoals = document.querySelectorAll('.goal-checkbox-3d').length;
-    //   const completedGoals = document.querySelectorAll('.goal-checkbox-3d.checked').length;
-    //   const progress = (completedGoals / totalGoals) * 100;
-      
-    //   const progressBar = document.querySelector('.goal-checkbox-3d + .flex-1 + .mt-6 .progress-fill-3d');
-    //   const progressText = document.querySelector('.goal-checkbox-3d + .flex-1 + .mt-6 .gradient-text');
-      
-    //   if (progressBar) {
-    //     progressBar.style.width = `${progress}%`;
-    //   }
-      
-    //   if (progressText) {
-    //     progressText.textContent = `${completedGoals} of ${totalGoals} completed`;
-    //   }
-    // }
+  
     
     // Create stars for dark mode
     function createStars() {
@@ -1216,7 +1150,298 @@ document
       generateReportContent();
     }
     
-    
+    function generateReportContent() {
+      // Collect data from dashboard
+      const mentalWellnessScore = 78;
+      const totalSessions = 12;
+      const dayStreak = 5;
+      const completedGoals = document.querySelectorAll('.goal-checkbox-3d.checked').length;
+      const totalGoals = document.querySelectorAll('.goal-checkbox-3d').length;
+      const goalProgress = Math.round((completedGoals / totalGoals) * 100);
+      
+      // Get mood
+      const moodEmoji = {
+        'excellent': '😄',
+        'good': '😊',
+        'okay': '😐',
+        'poor': '😔'
+      }[currentMood];
+      
+      const moodText = {
+        'excellent': 'Excellent',
+        'good': 'Good',
+        'okay': 'Okay',
+        'poor': 'Needs Attention'
+      }[currentMood];
+      
+      // Create report HTML
+      reportContent.innerHTML = `
+        <div class="report-print">
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">WellnessAI Personal Report</h1>
+            <p class="text-lg opacity-80">Comprehensive Wellness Analysis for Alex Johnson</p>
+            <div class="flex items-center justify-center gap-4 mt-4">
+              <div class="size-16 rounded-full bg-gradient-to-r from-lavender via-peach to-teal flex items-center justify-center text-xl font-black text-white">
+                AJ
+              </div>
+              <div class="text-left">
+                <p class="font-bold">Alex Johnson</p>
+                <p class="text-sm opacity-70">Member since: March 2024</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Executive Summary -->
+          <div class="glassmorphism rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 gradient-text">Executive Summary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="mb-4">Your overall wellness score is <span class="font-bold gradient-text">${mentalWellnessScore}%</span>, indicating good progress in your mental wellness journey. You've maintained a <span class="font-bold">${dayStreak}-day streak</span> and completed <span class="font-bold">${totalSessions} sessions</span> this month.</p>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">${moodEmoji}</span>
+                  <div>
+                    <p class="font-bold">Current Mood: ${moodText}</p>
+                    <p class="text-sm opacity-70">Tracked daily for emotional awareness</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-gradient-to-br from-lavender/20 to-teal/20 rounded-xl p-4">
+                <h3 class="font-bold mb-2">Key Achievements</h3>
+                <ul class="space-y-2">
+                  <li class="flex items-center gap-2">✓ 5-day meditation streak achieved</li>
+                  <li class="flex items-center gap-2">✓ Memory game high score: 85</li>
+                  <li class="flex items-center gap-2">✓ Consistent weekly activity pattern</li>
+                  <li class="flex items-center gap-2">✓ Sleep quality improved by 15%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Detailed Metrics -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Wellness Metrics</h2>
+            <div class="report-stats-grid">
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Mental Wellness</h3>
+                <div class="progress-bar-3d mb-2">
+                  <div class="progress-fill-3d bg-gradient-to-r from-lavender to-teal" style="width: ${mentalWellnessScore}%"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span>Overall Score</span>
+                  <span class="font-bold">${mentalWellnessScore}%</span>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Goal Completion</h3>
+                <div class="progress-bar-3d mb-2">
+                  <div class="progress-fill-3d bg-gradient-to-r from-peach to-lavender" style="width: ${goalProgress}%"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span>Daily Goals</span>
+                  <span class="font-bold">${completedGoals}/${totalGoals} (${goalProgress}%)</span>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Consistency</h3>
+                <div class="text-center">
+                  <div class="text-3xl font-bold gradient-text mb-2">${dayStreak} days</div>
+                  <p class="text-sm opacity-70">Current streak</p>
+                </div>
+              </div>
+              
+              <div class="report-stat-card">
+                <h3 class="font-bold mb-3">Engagement</h3>
+                <div class="text-center">
+                  <div class="text-3xl font-bold gradient-text mb-2">${totalSessions}</div>
+                  <p class="text-sm opacity-70">Total sessions this month</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Breakdown -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Progress Breakdown</h2>
+            <div class="space-y-5">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Stress Management</span>
+                  <span class="font-bold gradient-text">65%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-purple-500 to-pink-500" style="width: 65%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Focus & Concentration</span>
+                  <span class="font-bold gradient-text">72%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-blue-500 to-cyan-500" style="width: 72%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Emotional Balance</span>
+                  <span class="font-bold gradient-text">58%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-green-500 to-emerald-500" style="width: 58%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">Sleep Quality</span>
+                  <span class="font-bold gradient-text">81%</span>
+                </div>
+                <div class="progress-bar-3d">
+                  <div class="progress-fill-3d bg-gradient-to-r from-amber-500 to-orange-500" style="width: 81%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Activity Timeline -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Recent Activity Timeline</h2>
+            <div class="report-timeline">
+              <div class="timeline-item">
+                <h4 class="font-bold">Completed Breathing Exercise</h4>
+                <p class="text-sm opacity-70">Today • 10:30 AM • 15 minutes</p>
+                <p class="mt-1">Deep breathing session focused on stress reduction</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Played Memory Card Game</h4>
+                <p class="text-sm opacity-70">Yesterday • Score: 85</p>
+                <p class="mt-1">Cognitive training session to improve memory retention</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Completed Mindfulness Lesson</h4>
+                <p class="text-sm opacity-70">2 days ago • 20 minutes</p>
+                <p class="mt-1">Guided meditation for emotional regulation</p>
+              </div>
+              
+              <div class="timeline-item">
+                <h4 class="font-bold">Mental Health Check-in</h4>
+                <p class="text-sm opacity-70">3 days ago • Score: 8/10</p>
+                <p class="mt-1">Weekly assessment showing positive trend</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recommendations -->
+          <div class="glassmorphism rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4 gradient-text">Personalized Recommendations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="font-bold mb-3 text-lavender">Based on Your Progress</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-teal">check_circle</span>
+                    <div>
+                      <p class="font-medium">Continue daily meditation practice</p>
+                      <p class="text-sm opacity-70">Your consistency is showing positive results</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-peach">lightbulb</span>
+                    <div>
+                      <p class="font-medium">Try advanced breathing techniques</p>
+                      <p class="text-sm opacity-70">You're ready for 4-7-8 breathing exercises</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-lavender">trending_up</span>
+                    <div>
+                      <p class="font-medium">Focus on emotional balance exercises</p>
+                      <p class="text-sm opacity-70">This area shows the most room for improvement</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="font-bold mb-3 text-teal">Next Week's Goals</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-peach">target</span>
+                    <div>
+                      <p class="font-medium">Achieve 7-day meditation streak</p>
+                      <p class="text-sm opacity-70">Just 2 more days to go!</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-lavender">fitness_center</span>
+                    <div>
+                      <p class="font-medium">Complete 3 memory game sessions</p>
+                      <p class="text-sm opacity-70">Aim for a score above 90</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-teal">bedtime</span>
+                    <div>
+                      <p class="font-medium">Improve sleep quality to 85%</p>
+                      <p class="text-sm opacity-70">Try evening mindfulness exercises</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Weekly Activity Chart -->
+          <div class="mt-8">
+            <h3 class="text-xl font-bold mb-4">Weekly Activity Pattern</h3>
+            <div class="flex items-end justify-between h-32 mb-6 bg-gradient-to-b from-transparent to-lavender/10 rounded-lg p-4">
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 40px;"></div>
+                <span class="text-xs mt-2">Mon</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 60px;"></div>
+                <span class="text-xs mt-2">Tue</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 30px;"></div>
+                <span class="text-xs mt-2">Wed</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 70px;"></div>
+                <span class="text-xs mt-2">Thu</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 50px;"></div>
+                <span class="text-xs mt-2">Fri</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 65px;"></div>
+                <span class="text-xs mt-2">Sat</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 45px;"></div>
+                <span class="text-xs mt-2">Sun</span>
+              </div>
+            </div>
+            <p class="text-center text-sm opacity-70">Peak activity observed on Thursdays. Consider scheduling important wellness sessions on this day.</p>
+          </div>
+          
+          <!-- Footer Note -->
+          <div class="text-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm opacity-70">This report is generated based on your activity data in WellnessAI. For personalized guidance, consult with a wellness professional.</p>
+            <p class="text-xs opacity-50 mt-2">Report ID: WA-${Date.now().toString().slice(-8)} • Version 1.0</p>
+          </div>
+        </div>
+      `;
+    }
+
     async function downloadReportAsPDF() {
       const downloadBtn = downloadPdfBtn;
       const originalText = downloadBtn.innerHTML;

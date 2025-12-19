@@ -177,11 +177,12 @@
         btn.disabled = false;
       }
     });
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
   </script>
-=======
+<!-- ======= -->
 
-    // handle non-JSON or non-2xx gracefully
+    <!-- // handle non-JSON or non-2xx gracefully -->
+     <script>
     let data;
     try { data = await res.json(); } catch (err) { data = null; }
 
@@ -220,18 +221,18 @@
 
 
     // fallback error messages
-    const fallback = (data.message) || (data.error) || "Login failed — check credentials";
-    alert(fallback);
+//     const fallback = (data.message) || (data.error) || "Login failed — check credentials";
+//     alert(fallback);
 
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Network error during login. Is the backend running?");
-  }
-});
+//   } catch (err) {
+//     console.error("Login error:", err);
+//     alert("Network error during login. Is the backend running?");
+//   }
+// });
 </script>
 
 
 
->>>>>>> Stashed changes
+<!-- >>>>>>> Stashed changes -->
 </body>
 </html>
