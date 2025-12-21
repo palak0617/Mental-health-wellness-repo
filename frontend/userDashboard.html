@@ -393,7 +393,7 @@
       height: 90vh;
       background: white;
       border-radius: 1.5rem;
-      overflow: hidden;
+      /* overflow: hidden; */
       display: flex;
       flex-direction: column;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
@@ -1100,7 +1100,8 @@
     const closeReportBtn = document.getElementById('close-report');
     const printReportBtn = document.getElementById('print-report');
     const downloadPdfBtn = document.getElementById('download-pdf');
-    const reportContent = document.getElementById('report-content');
+    //const reportContent = document.getElementById('report-content');
+    const reportBody = document.getElementById('report-body');
     const reportDate = document.getElementById('report-date');
     const reportNavLink = document.getElementById('report-nav-link');
     
@@ -1152,9 +1153,12 @@
     
     function generateReportContent() {
       // Collect data from dashboard
-      const mentalWellnessScore = 78;
-      const totalSessions = 12;
-      const dayStreak = 5;
+      const reportData = getPersonalizedReportData();
+
+const mentalWellnessScore = reportData.wellnessScore;
+const totalSessions = reportData.sessions;
+const dayStreak = reportData.streak;
+
       const completedGoals = document.querySelectorAll('.goal-checkbox-3d.checked').length;
       const totalGoals = document.querySelectorAll('.goal-checkbox-3d').length;
       const goalProgress = Math.round((completedGoals / totalGoals) * 100);
@@ -1175,18 +1179,22 @@
       }[currentMood];
       
       // Create report HTML
-      reportContent.innerHTML = `
+      // reportContent.innerHTML = `
+      reportBody.innerHTML = `
         <div class="report-print">
           <!-- Header -->
           <div class="text-center mb-8">
             <h1 class="text-3xl font-bold mb-2">WellnessAI Personal Report</h1>
-            <p class="text-lg opacity-80">Comprehensive Wellness Analysis for Alex Johnson</p>
+            <p class="text-lg opacity-80">
+  Comprehensive Wellness Analysis for ${reportData.username}
+</p>
+
             <div class="flex items-center justify-center gap-4 mt-4">
               <div class="size-16 rounded-full bg-gradient-to-r from-lavender via-peach to-teal flex items-center justify-center text-xl font-black text-white">
                 AJ
               </div>
               <div class="text-left">
-                <p class="font-bold">Alex Johnson</p>
+                <p class="font-bold">${reportData.username}</p>
                 <p class="text-sm opacity-70">Member since: March 2024</p>
               </div>
             </div>
@@ -1209,11 +1217,12 @@
               <div class="bg-gradient-to-br from-lavender/20 to-teal/20 rounded-xl p-4">
                 <h3 class="font-bold mb-2">Key Achievements</h3>
                 <ul class="space-y-2">
-                  <li class="flex items-center gap-2">✓ 5-day meditation streak achieved</li>
-                  <li class="flex items-center gap-2">✓ Memory game high score: 85</li>
-                  <li class="flex items-center gap-2">✓ Consistent weekly activity pattern</li>
-                  <li class="flex items-center gap-2">✓ Sleep quality improved by 15%</li>
-                </ul>
+  <li>✓ Wellness score reached ${mentalWellnessScore}%</li>
+  <li>✓ ${reportData.goalCompletionText} goals completed</li>
+  <li>✓ ${dayStreak}-day consistency streak</li>
+  <li>✓ ${totalSessions} wellness sessions completed</li>
+</ul>
+
               </div>
             </div>
           </div>
@@ -1236,7 +1245,9 @@
               <div class="report-stat-card">
                 <h3 class="font-bold mb-3">Goal Completion</h3>
                 <div class="progress-bar-3d mb-2">
-                  <div class="progress-fill-3d bg-gradient-to-r from-peach to-lavender" style="width: ${goalProgress}%"></div>
+                  <div class="progress-fill-3d bg-gradient-to-r from-peach to-lavender" style="width: ${reportData.goalCompletionPercent}%"
+>${reportData.goalCompletionText}
+</div>
                 </div>
                 <div class="flex justify-between text-sm">
                   <span>Daily Goals</span>
@@ -1312,29 +1323,13 @@
           <div class="mb-8">
             <h2 class="text-2xl font-bold mb-6 gradient-text">Recent Activity Timeline</h2>
             <div class="report-timeline">
-              <div class="timeline-item">
-                <h4 class="font-bold">Completed Breathing Exercise</h4>
-                <p class="text-sm opacity-70">Today • 10:30 AM • 15 minutes</p>
-                <p class="mt-1">Deep breathing session focused on stress reduction</p>
-              </div>
               
-              <div class="timeline-item">
-                <h4 class="font-bold">Played Memory Card Game</h4>
-                <p class="text-sm opacity-70">Yesterday • Score: 85</p>
-                <p class="mt-1">Cognitive training session to improve memory retention</p>
-              </div>
-              
-              <div class="timeline-item">
-                <h4 class="font-bold">Completed Mindfulness Lesson</h4>
-                <p class="text-sm opacity-70">2 days ago • 20 minutes</p>
-                <p class="mt-1">Guided meditation for emotional regulation</p>
-              </div>
-              
-              <div class="timeline-item">
-                <h4 class="font-bold">Mental Health Check-in</h4>
-                <p class="text-sm opacity-70">3 days ago • Score: 8/10</p>
-                <p class="mt-1">Weekly assessment showing positive trend</p>
-              </div>
+              ${reportData.recentActivities.map(act => `
+  <div class="timeline-item">
+    <p>${act}</p>
+  </div>
+`).join("")}
+
             </div>
           </div>
           
@@ -1345,53 +1340,22 @@
               <div>
                 <h3 class="font-bold mb-3 text-lavender">Based on Your Progress</h3>
                 <ul class="space-y-3">
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-teal">check_circle</span>
-                    <div>
-                      <p class="font-medium">Continue daily meditation practice</p>
-                      <p class="text-sm opacity-70">Your consistency is showing positive results</p>
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-peach">lightbulb</span>
-                    <div>
-                      <p class="font-medium">Try advanced breathing techniques</p>
-                      <p class="text-sm opacity-70">You're ready for 4-7-8 breathing exercises</p>
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-lavender">trending_up</span>
-                    <div>
-                      <p class="font-medium">Focus on emotional balance exercises</p>
-                      <p class="text-sm opacity-70">This area shows the most room for improvement</p>
-                    </div>
-                  </li>
-                </ul>
+  <li>• Maintain consistency to extend your ${dayStreak}-day streak</li>
+  <li>• Aim to improve wellness score beyond ${mentalWellnessScore}%</li>
+  <li>• Complete remaining goals for full completion</li>
+  <li>• Schedule sessions on high-energy days based on weekly trend</li>
+</ul>
+
               </div>
               <div>
                 <h3 class="font-bold mb-3 text-teal">Next Week's Goals</h3>
                 <ul class="space-y-3">
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-peach">target</span>
-                    <div>
-                      <p class="font-medium">Achieve 7-day meditation streak</p>
-                      <p class="text-sm opacity-70">Just 2 more days to go!</p>
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-lavender">fitness_center</span>
-                    <div>
-                      <p class="font-medium">Complete 3 memory game sessions</p>
-                      <p class="text-sm opacity-70">Aim for a score above 90</p>
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="material-symbols-outlined text-teal">bedtime</span>
-                    <div>
-                      <p class="font-medium">Improve sleep quality to 85%</p>
-                      <p class="text-sm opacity-70">Try evening mindfulness exercises</p>
-                    </div>
-                  </li>
+                  <ul class="space-y-3 mt-4">
+  <li>🎯 Reach a 7-day streak</li>
+  <li>🧠 Complete at least 3 wellness sessions</li>
+  <li>📈 Improve goal completion percentage</li>
+</ul>
+
                 </ul>
               </div>
             </div>
