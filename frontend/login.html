@@ -37,55 +37,173 @@
     .btn-gradient:hover {
       background-position: right center;
     }
-    /* Gentle floating animation for elements */
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
+    @keyframes gentle-wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes cloud-drift {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(10px); }
+    }
+    @keyframes leaf-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33% { transform: translateY(-3px) rotate(1deg); }
+      66% { transform: translateY(-1px) rotate(-1deg); }
+    }
+    @keyframes bird-fly {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      33% { transform: translateX(5px) translateY(-2px); }
+      66% { transform: translateX(10px) translateY(0); }
+    }
     .animate-float {
-      animation: float 6s ease-in-out infinite;
+      animation: float 7s ease-in-out infinite;
+    }
+    .animate-wave {
+      animation: gentle-wave 4s ease-in-out infinite;
+    }
+    .animate-cloud {
+      animation: cloud-drift 20s ease-in-out infinite alternate;
+    }
+    .animate-leaf {
+      animation: leaf-float 5s ease-in-out infinite;
+    }
+    .animate-bird {
+      animation: bird-fly 8s ease-in-out infinite;
+    }
+    .animate-pulse-slow {
+      animation: pulse 4s ease-in-out infinite;
     }
   </style>
 </head>
 
 <body class="flex h-screen w-full bg-light-bg font-sans">
 
-  <!-- LEFT SIDE: Illustration -->
-  <div class="hidden lg:block w-1/2 h-full relative overflow-hidden bg-gray-900 shadow-2xl">
+  <!-- LEFT SIDE: Tranquil Morning Forest -->
+  <div class="hidden lg:block w-1/2 h-full relative overflow-hidden bg-gradient-to-br from-slate-900 to-emerald-950 shadow-2xl">
     
-    <!-- SVG SCENE: Calm Sunrise -->
+    <!-- SVG SCENE: Serene Morning Forest -->
     <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
       <defs>
+        <!-- Sky Gradient - Morning colors -->
         <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:#101022;stop-opacity:1" /> <!-- Dark Top -->
-          <stop offset="60%" style="stop-color:#4b4b8f;stop-opacity:1" /> <!-- Purple Mid -->
-          <stop offset="100%" style="stop-color:#FFD8B1;stop-opacity:1" /> <!-- Peach Bottom -->
+          <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" /> <!-- Deep morning blue -->
+          <stop offset="30%" style="stop-color:#3b82f6;stop-opacity:1" /> <!-- Bright blue -->
+          <stop offset="60%" style="stop-color:#60a5fa;stop-opacity:0.9" /> <!-- Light blue -->
+          <stop offset="100%" style="stop-color:#a5f3fc;stop-opacity:0.7" /> <!-- Morning light -->
+        </linearGradient>
+        
+        <!-- Water Gradient -->
+        <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#7dd3fc;stop-opacity:0.4" />
+          <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:0.7" />
+        </linearGradient>
+        
+        <!-- Sun Glow -->
+        <radialGradient id="sunGlow">
+          <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:0.9" />
+          <stop offset="70%" style="stop-color:#fbbf24;stop-opacity:0.5" />
+          <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0" />
+        </radialGradient>
+        
+        <!-- Morning Mist Gradient -->
+        <linearGradient id="mistGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0" />
+          <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.1" />
+          <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
         </linearGradient>
       </defs>
       
-      <!-- Sky Background -->
+      <!-- Sky -->
       <rect width="100%" height="100%" fill="url(#skyGradient)" />
-
-      <!-- Sun -->
-      <circle cx="200" cy="250" r="60" fill="#FFD8B1" opacity="0.8" class="animate-float" />
-      <circle cx="200" cy="250" r="45" fill="#ffffff" opacity="0.6" class="animate-float" />
-
-      <!-- Hills / Waves Layer 1 (Back) -->
-      <path d="M0 450 C 100 400, 300 400, 400 450 V 600 H 0 V 450 Z" fill="#C8B6FF" opacity="0.6" />
       
-      <!-- Hills / Waves Layer 2 (Middle) -->
-      <path d="M0 500 C 150 450, 250 550, 400 500 V 600 H 0 V 500 Z" fill="#B4E4D8" opacity="0.8" />
+      <!-- Distant Mountains -->
+      <path d="M0 280 L80 200 L160 260 L240 180 L320 240 L400 220 L400 600 L0 600 Z" 
+            fill="#475569" opacity="0.6" />
       
-      <!-- Hills / Waves Layer 3 (Front) -->
-      <path d="M0 550 C 100 520, 300 520, 400 550 V 600 H 0 V 550 Z" fill="#1313ec" opacity="0.9" />
+      <!-- Closer Mountains -->
+      <path d="M0 320 L60 240 L140 300 L220 220 L300 280 L400 260 L400 600 L0 600 Z" 
+            fill="#334155" opacity="0.8" />
+      
+      <!-- Morning Sun with Glow -->
+      <circle cx="350" cy="150" r="35" fill="url(#sunGlow)" class="animate-float" />
+      <circle cx="350" cy="150" r="22" fill="#fef3c7" class="animate-float" />
+      
+      <!-- Sun Rays -->
+      <line x1="350" y1="150" x2="400" y2="150" stroke="#fef3c7" stroke-width="2" opacity="0.3" />
+      <line x1="350" y1="150" x2="350" y2="100" stroke="#fef3c7" stroke-width="2" opacity="0.3" />
+      <line x1="350" y1="150" x2="300" y2="150" stroke="#fef3c7" stroke-width="2" opacity="0.3" />
+      <line x1="350" y1="150" x2="350" y2="200" stroke="#fef3c7" stroke-width="2" opacity="0.3" />
+      
+      <!-- Gentle Morning Clouds -->
+      <ellipse cx="100" cy="120" rx="45" ry="18" fill="white" opacity="0.2" class="animate-cloud" />
+      <ellipse cx="220" cy="90" rx="40" ry="16" fill="white" opacity="0.15" class="animate-cloud" />
+      <ellipse cx="50" cy="150" rx="35" ry="14" fill="white" opacity="0.18" class="animate-cloud" style="animation-delay: -5s;" />
+      
+      <!-- Forest Layer -->
+      <path d="M0 420 Q60 400, 120 410 T240 390 T360 420 L400 420 L400 600 L0 600 Z" 
+            fill="#14532d" opacity="0.85" />
+      
+      <!-- Individual Pine Trees -->
+      <path d="M60 420 L65 360 L70 420 Z" fill="#166534" opacity="0.9" class="animate-leaf" />
+      <path d="M120 410 L125 350 L130 410 Z" fill="#166534" opacity="0.9" class="animate-leaf" style="animation-delay: -1s;" />
+      <path d="M180 415 L185 355 L190 415 Z" fill="#166534" opacity="0.9" class="animate-leaf" style="animation-delay: -2s;" />
+      <path d="M240 405 L245 345 L250 405 Z" fill="#166534" opacity="0.9" class="animate-leaf" style="animation-delay: -3s;" />
+      <path d="M300 420 L305 360 L310 420 Z" fill="#166534" opacity="0.9" class="animate-leaf" style="animation-delay: -4s;" />
+      
+      <!-- Lake Surface -->
+      <path d="M0 450 Q80 430, 160 440 T320 435 T400 450 L400 600 L0 600 Z" 
+            fill="url(#waterGradient)" class="animate-wave" />
+      
+      <!-- Water Reflection with Sun Glow -->
+      <ellipse cx="350" cy="480" rx="100" ry="25" fill="#fef3c7" opacity="0.15" />
+      
+      <!-- Ripples -->
+      <circle cx="200" cy="490" r="8" fill="#7dd3fc" opacity="0.4" class="animate-float" style="animation-delay: -1s;" />
+      <circle cx="280" cy="520" r="6" fill="#7dd3fc" opacity="0.4" class="animate-float" style="animation-delay: -3s;" />
+      
+      <!-- Lily Pads -->
+      <circle cx="120" cy="530" r="14" fill="#10b981" opacity="0.8" class="animate-leaf" />
+      <circle cx="220" cy="510" r="16" fill="#10b981" opacity="0.8" class="animate-leaf" style="animation-delay: -2s;" />
+      <circle cx="340" cy="540" r="12" fill="#10b981" opacity="0.8" class="animate-leaf" style="animation-delay: -4s;" />
+      
+      <!-- Birds Flying -->
+      <path d="M80 180 Q85 175, 90 180" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7" class="animate-bird" />
+      <path d="M100 200 Q105 195, 110 200" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7" class="animate-bird" style="animation-delay: -2s;" />
+      <path d="M60 220 Q65 215, 70 220" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7" class="animate-bird" style="animation-delay: -4s;" />
+      
+      <!-- Morning Mist -->
+      <rect x="0" y="300" width="400" height="150" fill="url(#mistGradient)" />
+      
+      <!-- Dew Drops on Leaves (sparkles) -->
+      <circle cx="140" cy="400" r="1.5" fill="#ffffff" opacity="0.8" class="animate-float" style="animation-delay: -2s;" />
+      <circle cx="260" cy="395" r="1.5" fill="#ffffff" opacity="0.8" class="animate-float" style="animation-delay: -3s;" />
+      <circle cx="320" cy="410" r="1.5" fill="#ffffff" opacity="0.8" class="animate-float" style="animation-delay: -4s;" />
+      
     </svg>
 
     <!-- Overlay Text -->
     <div class="absolute bottom-12 left-12 z-20 text-white max-w-md select-none">
-      <h2 class="text-4xl font-bold mb-3 tracking-tight drop-shadow-lg">Find Your Balance</h2>
-      <p class="text-white/90 text-lg leading-relaxed drop-shadow-md">
-        "Peace comes from within. <br>Start your journey to mental clarity today."
-      </p>
+      <div class="backdrop-blur-sm bg-white/5 rounded-2xl p-6 border border-white/10">
+        <h2 class="text-4xl font-bold mb-3 tracking-tight drop-shadow-lg bg-gradient-to-r from-white to-cyan-100 bg-clip-text text-transparent">Welcome Back</h2>
+        <p class="text-white/90 text-lg leading-relaxed drop-shadow-md mb-4">
+          "Return to your sanctuary. Breathe deeply, find your center, and continue your journey to inner peace."
+        </p>
+        <div class="flex items-center gap-2 text-cyan-200">
+          <span class="material-symbols-outlined animate-pulse-slow">self_improvement</span>
+          <span class="text-sm">Your Journey Continues</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Subtle floating morning dew particles -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute w-1 h-1 bg-cyan-300/30 rounded-full top-1/3 left-1/4 animate-float" style="animation-delay: -1s;"></div>
+      <div class="absolute w-1 h-1 bg-white/20 rounded-full top-1/2 right-1/3 animate-float" style="animation-delay: -2s;"></div>
+      <div class="absolute w-1 h-1 bg-emerald-300/30 rounded-full top-2/3 left-1/3 animate-float" style="animation-delay: -3s;"></div>
     </div>
   </div>
 
@@ -93,18 +211,18 @@
   <div class="w-full lg:w-1/2 h-full flex items-center justify-center p-8 bg-white relative">
     
     <!-- Mobile Background Blob -->
-    <div class="lg:hidden absolute bottom-0 left-0 w-64 h-64 bg-lavender/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="lg:hidden absolute bottom-0 left-0 w-64 h-64 bg-teal/30 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="w-full max-w-[400px] z-10">
       
       <!-- Logo Header -->
       <div class="mb-10 text-center lg:text-left">
         <div class="inline-flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-4xl text-primary">neurology</span>
+          <span class="material-symbols-outlined text-4xl text-primary">spa</span>
           <span class="text-2xl font-bold text-gray-800">WellnessAI</span>
         </div>
         <h1 class="text-3xl font-bold text-gray-900 mt-2">Log In</h1>
-        <p class="text-gray-500 mt-1">Please enter your details.</p>
+        <p class="text-gray-500 mt-1">Welcome back to your peaceful space.</p>
       </div>
 
       <form id="loginForm" class="space-y-6">
@@ -151,7 +269,11 @@
         });
         
         let data;
-        try { data = await res.json(); } catch (err) { data = null; }
+        try { 
+          data = await res.json(); 
+        } catch (err) { 
+          data = null; 
+        }
 
         if (!res.ok) {
           alert((data && data.message) || `Login failed (status ${res.status})`);
@@ -177,62 +299,6 @@
         btn.disabled = false;
       }
     });
-// <<<<<<< Updated upstream
   </script>
-<!-- ======= -->
-
-    <!-- // handle non-JSON or non-2xx gracefully -->
-     <script>
-    let data;
-    try { data = await res.json(); } catch (err) { data = null; }
-
-    console.log("Login response:", res.status, data);
-
-    if (!res.ok) {
-      // non-2xx HTTP code
-      const msg = (data && data.message) || `Login failed (status ${res.status})`;
-      alert(msg);
-      return;
-    }
-
-    // now res.ok
-    // Expectation: data should contain { success: true, token: "...", user: {...}, message: "..." }
-    if (!data) {
-      alert("Login failed: server returned invalid response.");
-      return;
-    }
-
-    if (data.success && data.token) {
-
-  // ⭐ SAVE TOKEN — Required for authenticated routes
-  localStorage.setItem("token", data.token);
-
-  // Optional but useful
-  localStorage.setItem("loggedIn", "true");
-  if (data.user && data.user._id) localStorage.setItem("userId", data.user._id);
-  if (data.user && data.user.username) localStorage.setItem("username", data.user.username);
-
-  console.log("Saved token length:", (data.token || "").length);
-
-  // redirect
-  window.location.href = "landing-page.html";
-  return;
-}
-
-
-    // fallback error messages
-//     const fallback = (data.message) || (data.error) || "Login failed — check credentials";
-//     alert(fallback);
-
-//   } catch (err) {
-//     console.error("Login error:", err);
-//     alert("Network error during login. Is the backend running?");
-//   }
-// });
-</script>
-
-
-
-<!-- >>>>>>> Stashed changes -->
 </body>
 </html>
