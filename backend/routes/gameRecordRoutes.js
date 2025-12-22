@@ -32,8 +32,9 @@ router.get("/", async (req, res) => {
 
     res.json({ success: true, records });
   } catch (err) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 module.exports = router;

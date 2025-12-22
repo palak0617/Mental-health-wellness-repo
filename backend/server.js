@@ -3,6 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// ======================
+// ROUTE IMPORTS
+// ======================
+const helpRoutes = require('./routes/helpRoutes'); // 🔴 IMPORTANT: keep this on top
+
 const journalRoutes = require('./routes/journalRoutes');
 const geminiRoutes = require('./routes/geminiRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -11,11 +16,9 @@ const locationRoutes = require('./routes/locationRoutes');
 const moodRoutes = require('./routes/moodRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const goalRoutes = require('./routes/goalRoutes');
-console.log("✅ moodRoutes loaded:", typeof moodRoutes);
-
-
 
 const app = express();
+
 
 // CORS: Allow all origins for now
 // app.use(cors({ origin: '*' }));
@@ -33,9 +36,20 @@ app.use(cors({
 
 
 
+// ======================
+// MIDDLEWARE
+// ======================
+app.use(cors()); // ✅ safest for development (prevents Contact Us CORS issues)
 app.use(express.json());
 
-// Routes
+// ======================
+// ROUTES (ORDER MATTERS)
+// ======================
+
+// 🔴 Contact / Help route FIRST
+app.use("/api/help", helpRoutes);
+
+// Other routes
 app.use("/auth", authRoutes);
 app.use("/api/mood", moodRoutes);
 app.use("/api/game-records", gameRecordRoutes);
@@ -45,29 +59,25 @@ app.use("/api/goals", goalRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/gemini", geminiRoutes);
 
+// ======================
+// BASE ROUTE
+// ======================
+app.get('/', (req, res) => {
+  res.send('MindEase backend running.');
+});
 
-
-// >>>>>>> Stashed changes
-
-
-// Base route
-app.get('/', (req, res) => res.send('MindEase backend running.'));
-
-// MongoDB Connection
+// ======================
+// DATABASE + SERVER
+// ======================
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ MongoDB Connected Successfully");
 
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch(err => {
     console.error("❌ MongoDB connection error:", err);
   });
-// console.log("journalRoutes:", typeof journalRoutes);
-// console.log("geminiRoutes:", typeof geminiRoutes);
-// console.log("authRoutes:", typeof authRoutes);
-// console.log("gameRecordRoutes:", typeof gameRecordRoutes);
-// console.log("locationRoutes:", typeof locationRoutes);
-

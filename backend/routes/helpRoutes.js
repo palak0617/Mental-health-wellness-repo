@@ -2,21 +2,22 @@ const express = require("express");
 const router = express.Router();
 const Help = require("../models/Help");
 
-console.log("📩 helpRoutes loaded");
-
-// IMPORTANT: Route MUST start exactly like this:
 router.post("/", async (req, res) => {
-    try {
-        const { name, email, phone, message } = req.body;
+  console.log("🔥 HELP ROUTE HIT");
+  console.log("📦 req.body:", req.body);
 
-        const newHelp = new Help({ name, email, phone, message });
-        await newHelp.save();
+  try {
+    const { name, email, phone, message } = req.body;
 
-        res.status(201).json({ success: true, message: "Help request saved" });
-    } catch (error) {
-        console.error("Error saving help request:", error);
-        res.status(500).json({ success: false, error: "Server error" });
-    }
+    const newHelp = new Help({ name, email, phone, message });
+    await newHelp.save();
+
+    console.log("✅ Saved to DB");
+    res.status(201).json({ success: true });
+  } catch (err) {
+    console.error("❌ Error saving help:", err);
+    res.status(500).json({ success: false });
+  }
 });
 
 module.exports = router;
