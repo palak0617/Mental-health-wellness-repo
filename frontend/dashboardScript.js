@@ -13,10 +13,11 @@ const API = {
 };
 
 const moodScoreMap = {
-  excellent: 5,
+  great: 5,
   good: 4,
   okay: 3,
-  poor: 2
+  bad: 2,
+  terrible: 1
 };
 
 // ------------------ LOAD USER ------------------
@@ -56,30 +57,58 @@ async function loadUser() {
 
 // ------------------ LOAD DASHBOARD ------------------
 
+// async function loadDashboard() {
+//   const user = await loadUser();
+//   if (!user) {
+//     console.error("Dashboard failed: user not loaded.");
+//     return;
+//   }
+
+//   console.log("Dashboard loading for:", user.username);
+//   // Fetch moods to calculate streak
+// const moods = await GET(`${BASE_URL}/api/mood/${user._id}`);
+
+// const activityDates = moods.map(m => m.createdAt);
+
+// const dayStreak = calculateDayStreak(activityDates);
+
+// document.getElementById("streak-count").textContent = dayStreak;
+// window.CURRENT_DAY_STREAK = dayStreak;
+
+
+//   await loadWeeklyChart();
+
+
+
+//   // You can load:
+//   // - goals
+//   // - moods
+//   // - recent activities
+//   // - game scores
+//   // - journal entries
+//   // etc.
+// }
+
 async function loadDashboard() {
   const user = await loadUser();
-  if (!user) {
-    console.error("Dashboard failed: user not loaded.");
-    return;
-  }
+  if (!user) return;
 
   console.log("Dashboard loading for:", user.username);
-  const activityDates = userActivities.map(a => a.date);
 
-const dayStreak = calculateDayStreak(activityDates);
+  const moods = await GET(`${BASE_URL}/api/mood/${user._id}`);
+  const activityDates = moods.map(m => m.createdAt);
 
-document.getElementById("streak-count").textContent = dayStreak;
-window.CURRENT_DAY_STREAK = dayStreak;
+  const dayStreak = calculateDayStreak(activityDates);
+  window.CURRENT_DAY_STREAK = dayStreak;
 
+  document.getElementById("streak-count").textContent = dayStreak;
 
-  // You can load:
-  // - goals
-  // - moods
-  // - recent activities
-  // - game scores
-  // - journal entries
-  // etc.
+  await loadWeeklyChart();
+  await loadPersonalizedWellness();
+  await loadGoals();
+  await loadRecentActivity();
 }
+
 
 function calculateDayStreak(activityDates) {
   if (!activityDates || activityDates.length === 0) return 0;
@@ -392,70 +421,82 @@ async function loadRecentActivity() {
   }
 }
 
-
-
 function getLast7Days() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const days = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
+    const d = new Date(today); // 🔥 CLONE, not reuse
+    d.setDate(today.getDate() - i);
     days.push(d);
   }
   return days;
 }
 
+
+
+let weeklyChartInstance = null;
+
 async function loadWeeklyChart() {
-  const ctx = document.getElementById("weeklyChart");
+  const canvas = document.getElementById("weeklyChart");
   const insightText = document.getElementById("weekly-insight-text");
 
-  if (!ctx || !insightText) return;
+  if (!canvas) return;
 
-  const moods = await GET(`${BASE_URL}/api/mood/${CURRENT_USER._id}?limit=7`);
+  const moods = await GET(`${BASE_URL}/api/mood/${CURRENT_USER._id}`);
 
+  // ✅ SAME mood names as Mood Tracker
   const moodScoreMap = {
-    excellent: 5,
+    great: 5,
     good: 4,
     okay: 3,
-    poor: 2
+    bad: 2,
+    terrible: 1
   };
 
-  const last7Days = getLast7Days();
+  // ---- last 7 days (including today) ----
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
 
   const labels = [];
   const data = [];
 
-  last7Days.forEach(day => {
-    const dayStr = day.toDateString();
-
-    const moodEntry = moods.find(
-      m => new Date(m.createdAt).toDateString() === dayStr
-    );
-
+  days.forEach(day => {
     labels.push(
       day.toLocaleDateString("en-US", { weekday: "short" })
     );
 
-    data.push(
-      moodEntry ? moodScoreMap[moodEntry.mood] : 3   // default = neutral
-    );
+    const dayMoods = moods.filter(m => {
+      const d = new Date(m.createdAt);
+      return (
+        d.getDate() === day.getDate() &&
+        d.getMonth() === day.getMonth() &&
+        d.getFullYear() === day.getFullYear()
+      );
+    });
+
+    if (dayMoods.length === 0) {
+      data.push(null); // ❗ breaks line correctly
+    } else {
+      const avg =
+        dayMoods.reduce((sum, m) => sum + moodScoreMap[m.mood], 0) /
+        dayMoods.length;
+      data.push(Number(avg.toFixed(2)));
+    }
   });
 
-  // ---- Average mood ----
-  const avgMood = data.reduce((a, b) => a + b, 0) / data.length;
-
-  // ---- Insight text ----
-  if (avgMood >= 4.2) {
-    insightText.textContent = "Your mood stayed positive most days 🌟";
-  } else if (avgMood >= 3.4) {
-    insightText.textContent = "Your week was balanced — consistency helps 👍";
-  } else if (avgMood >= 2.6) {
-    insightText.textContent = "This week had ups and downs — gentle routines can help 💛";
-  } else {
-    insightText.textContent = "This week felt heavy — be kind to yourself 💙";
+  // ---- destroy old chart ----
+  if (weeklyChartInstance) {
+    weeklyChartInstance.destroy();
   }
 
-  // ---- Chart ----
-  new Chart(ctx, {
+  weeklyChartInstance = new Chart(canvas, {
     type: "line",
     data: {
       labels,
@@ -465,7 +506,10 @@ async function loadWeeklyChart() {
         borderColor: "#C8B6FF",
         backgroundColor: "rgba(200,182,255,0.25)",
         tension: 0.4,
-        fill: true
+        fill: true,
+        spanGaps: false,
+        pointRadius: 5,
+        pointHoverRadius: 7
       }]
     },
     options: {
@@ -476,13 +520,124 @@ async function loadWeeklyChart() {
           max: 5,
           ticks: {
             stepSize: 1,
-            callback: v => ["😔","😐","😊","😄","🤩"][v - 1]
+            callback: v =>
+              ({1:"😢",2:"😟",3:"😐",4:"🙂",5:"😄"}[v])
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+
+  // ---- insight text ----
+  if (insightText) {
+    const valid = data.filter(v => v !== null);
+    const avg =
+      valid.reduce((a, b) => a + b, 0) / (valid.length || 1);
+
+    insightText.textContent =
+      avg >= 4 ? "Your mood has been mostly positive 🌟"
+      : avg >= 3 ? "Your week looks balanced 👍"
+      : avg >= 2 ? "Some ups and downs — take care 💛"
+      : "It’s been a tough week — be kind to yourself 🤍";
+  }
+}
+
+
+let reportWeeklyChart = null;
+
+async function loadReportWeeklyActivityPattern() {
+  const canvas = document.getElementById("weeklyActivityChart");
+  if (!canvas) return;
+
+  const moods = await GET(`${BASE_URL}/api/mood/${CURRENT_USER._id}`);
+
+  const moodScoreMap = {
+    great: 5,
+    good: 4,
+    okay: 3,
+    bad: 2,
+    terrible: 1
+  };
+
+  // --- last 7 days including today ---
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    days.push(d);
+  }
+
+  const labels = [];
+  const data = [];
+
+  days.forEach(day => {
+    labels.push(
+      day.toLocaleDateString("en-US", { weekday: "short" })
+    );
+
+    const dayMoods = moods.filter(m => {
+      const d = new Date(m.createdAt);
+      return (
+        d.getDate() === day.getDate() &&
+        d.getMonth() === day.getMonth() &&
+        d.getFullYear() === day.getFullYear()
+      );
+    });
+
+    if (dayMoods.length === 0) {
+      data.push(null);
+    } else {
+      const avg =
+        dayMoods.reduce((s, m) => s + moodScoreMap[m.mood], 0) /
+        dayMoods.length;
+      data.push(Number(avg.toFixed(2)));
+    }
+  });
+
+  if (reportWeeklyChart) {
+    reportWeeklyChart.destroy();
+  }
+
+  reportWeeklyChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: "#C8B6FF",
+        backgroundColor: "rgba(200,182,255,0.25)",
+        tension: 0.4,
+        fill: true,
+        spanGaps: false,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          min: 1,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            callback: v =>
+              ({1:"😢",2:"😟",3:"😐",4:"🙂",5:"😄"}[v])
           }
         }
       }
     }
   });
 }
+
 
 
 
@@ -571,8 +726,144 @@ function getPersonalizedReportData() {
 
     weeklyInsight:
       document.getElementById("weekly-insight-text")?.textContent || ""
+      
   };
 }
+
+let dashboardMoodChart = null;
+
+async function loadDashboardMoodGraph() {
+  try {
+    const timeframe = 7; // same as weekly mood tracker
+    const res = await GET(
+      `${BASE_URL}/api/mood/${CURRENT_USER._id}/stats?timeframe=${timeframe}`
+    );
+
+    const ctx = document
+      .getElementById("dashboardMoodChart")
+      ?.getContext("2d");
+
+    if (!ctx) return;
+
+    // Destroy old chart (important)
+    if (dashboardMoodChart) {
+      dashboardMoodChart.destroy();
+    }
+
+    dashboardMoodChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: res.moodTrend.map(d =>
+          new Date(d.date).toLocaleDateString("en-US", {
+            weekday: "short"
+          })
+        ),
+        datasets: [
+          {
+            label: "Mood Trend",
+            data: res.moodTrend.map(d => d.avgMood),
+            borderColor: "#C8B6FF",
+            backgroundColor: "rgba(200,182,255,0.2)",
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            min: 1,
+            max: 5,
+            ticks: {
+              stepSize: 1,
+              callback: value =>
+                ({ 5: "😄", 4: "🙂", 3: "😐", 2: "😟", 1: "😢" }[value] || "")
+            }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error("Dashboard mood graph error:", err);
+  }
+}
+
+
+async function updateReportWeeklyActivityPattern() {
+  const userId = localStorage.getItem("userId");
+  if (!userId) return;
+
+  const res = await fetch(`http://localhost:5000/api/mood/${userId}`);
+  const moods = await res.json();
+
+  const moodScore = {
+    great: 5,
+    good: 4,
+    okay: 3,
+    bad: 2,
+    terrible: 1
+  };
+
+  // last 7 days (including today)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    days.push(d);
+  }
+
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const activity = {};
+
+  days.forEach(day => {
+    const name = dayNames[day.getDay()];
+    const dayMoods = moods.filter(m => {
+      const d = new Date(m.createdAt);
+      return d.toDateString() === day.toDateString();
+    });
+
+    if (dayMoods.length === 0) {
+      activity[name] = 0;
+    } else {
+      activity[name] =
+        dayMoods.reduce((s, m) => s + moodScore[m.mood], 0) /
+        dayMoods.length;
+    }
+  });
+
+  // update bars
+  document.querySelectorAll(".weekly-bar").forEach(bar => {
+    const day = bar.dataset.day;
+    const value = activity[day] || 0;
+
+    // scale: keep UI same, only height changes
+    const height = value === 0 ? 20 : 20 + value * 16;
+    bar.style.height = `${height}%`;
+  });
+
+  // update insight text
+  const peakDay = Object.keys(activity).reduce((a, b) =>
+    activity[a] > activity[b] ? a : b
+  );
+
+  const insight = document.getElementById("weekly-activity-insight");
+  if (insight) {
+    insight.textContent =
+      activity[peakDay] === 0
+        ? "No sufficient activity data available for this week."
+        : `Peak activity observed on ${peakDay}. Consider scheduling important wellness sessions on this day.`;
+  }
+}
+
+
 
 
 
@@ -584,4 +875,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadRecentActivity();
   await loadWeeklyChart();
   await loadPersonalizedWellness();
+  await loadDashboardMoodGraph();
+});
+
+window.addEventListener("storage", (event) => {
+  if (event.key === "dashboardMoodUpdated") {
+    loadDashboardMoodGraph();
+  }
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "dashboardMoodUpdated") {
+    loadWeeklyChart();
+  }
+});
+
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "moodUpdatedAt") {
+    loadWeeklyChart();
+  }
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadReportWeeklyActivityPattern();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateReportWeeklyActivityPattern();
 });

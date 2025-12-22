@@ -852,6 +852,10 @@
   </p>
 
   <canvas id="weeklyChart" height="180"></canvas>
+   <div class="bg-white dark:bg-background-dark/50 rounded-xl p-4 mt-4">
+  <!-- <canvas id="dashboardMoodChart" height="120"></canvas> -->
+</div>
+
 
   <p class="text-sm text-charcoal/70 dark:text-gray-300 mt-3 text-center">
     Keep up the great work! 🎉
@@ -1151,6 +1155,7 @@
       
       // Generate report content
       generateReportContent();
+       loadReportWeeklyActivityPattern();
     }
     
     function generateReportContent() {
@@ -1160,6 +1165,7 @@
 const mentalWellnessScore = reportData.wellnessScore;
 const totalSessions = reportData.sessions;
 // const dayStreak = reportData.streak;
+
 const dayStreak = window.CURRENT_DAY_STREAK || 0;
 document.getElementById("report-streak").textContent =
   `${dayStreak} day${dayStreak === 1 ? "" : "s"}`;
@@ -1372,40 +1378,17 @@ document.getElementById("report-streak-label").textContent =
           </div>
           
           <!-- Weekly Activity Chart -->
-          <div class="mt-8">
-            <h3 class="text-xl font-bold mb-4">Weekly Activity Pattern</h3>
-            <div class="flex items-end justify-between h-32 mb-6 bg-gradient-to-b from-transparent to-lavender/10 rounded-lg p-4">
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 40px;"></div>
-                <span class="text-xs mt-2">Mon</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 60px;"></div>
-                <span class="text-xs mt-2">Tue</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 30px;"></div>
-                <span class="text-xs mt-2">Wed</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 70px;"></div>
-                <span class="text-xs mt-2">Thu</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-teal/70 to-teal rounded-t-lg" style="height: 50px;"></div>
-                <span class="text-xs mt-2">Fri</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-peach/70 to-peach rounded-t-lg" style="height: 65px;"></div>
-                <span class="text-xs mt-2">Sat</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="w-8 bg-gradient-to-t from-lavender/70 to-lavender rounded-t-lg" style="height: 45px;"></div>
-                <span class="text-xs mt-2">Sun</span>
-              </div>
-            </div>
-            <p class="text-center text-sm opacity-70">Peak activity observed on Thursdays. Consider scheduling important wellness sessions on this day.</p>
-          </div>
+          <!-- Weekly Activity Pattern (Report) -->
+<div class="mt-10">
+  <h3 class="text-xl font-bold mb-4 gradient-text">
+    Weekly Activity Pattern
+  </h3>
+
+  <div class="glassmorphism rounded-xl p-4">
+    <canvas id="weeklyActivityChart" height="90"></canvas>
+  </div>
+</div>
+
           
           <!-- Footer Note -->
           <div class="text-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">

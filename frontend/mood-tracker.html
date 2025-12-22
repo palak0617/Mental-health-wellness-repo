@@ -265,6 +265,7 @@
       initializeActivities();
       fetchMoods();
       fetchStats();
+      renderMoodTrackerChart();
       
       document.getElementById('timeframeSelect').addEventListener('change', fetchStats);
       document.getElementById('moodNote').addEventListener('input', (e) => {
@@ -380,15 +381,26 @@
         }
       }
     );
-    await fetchMoods();   // refresh history
-    await fetchStats();   // refresh stats
-    hideMoodForm(); 
+    await fetchMoods();
+     fetchStats();
+    await renderMoodTrackerChart();
+
+
+// small delay so backend aggregation catches up
+setTimeout(() => {
+  fetchStats();
+}, 300);
+
+hideMoodForm();
+
 
     alert("Mood saved successfully");
   } catch (err) {
     console.error("FULL ERROR OBJECT:", err);
     alert("Unauthorized – token rejected");
   }
+  localStorage.setItem("moodUpdatedAt", Date.now());
+
 }
 
 
@@ -413,64 +425,177 @@
       }
     }
 
-    function displayStats(stats) {
-      if (stats.total === 0) {
-        document.getElementById('statsSection').classList.add('hidden');
-        return;
-      }
+  function displayStats(stats) {
+  if (!stats || stats.total === 0) {
+    document.getElementById("statsSection").classList.add("hidden");
+    return;
+  }
 
-      document.getElementById('statsSection').classList.remove('hidden');
-      document.getElementById('greatCount').textContent = stats.moodCounts.great;
-      document.getElementById('goodCount').textContent = stats.moodCounts.good;
-      document.getElementById('okayCount').textContent = stats.moodCounts.okay;
-      document.getElementById('badCount').textContent = stats.moodCounts.bad;
-      document.getElementById('terribleCount').textContent = stats.moodCounts.terrible;
-      document.getElementById('totalCount').textContent = stats.total;
-      document.getElementById('avgIntensity').textContent = stats.avgIntensity;
+  document.getElementById("statsSection").classList.remove("hidden");
 
-      // Update chart
-      if (moodChart) {
-        moodChart.destroy();
-      }
+  // ----- COUNTS -----
+  document.getElementById("greatCount").textContent = stats.moodCounts.great || 0;
+  document.getElementById("goodCount").textContent = stats.moodCounts.good || 0;
+  document.getElementById("okayCount").textContent = stats.moodCounts.okay || 0;
+  document.getElementById("badCount").textContent = stats.moodCounts.bad || 0;
+  document.getElementById("terribleCount").textContent = stats.moodCounts.terrible || 0;
 
-      const ctx = document.getElementById('moodChart').getContext('2d');
-      moodChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: stats.moodTrend.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-          datasets: [{
-            label: 'Mood Trend',
-            data: stats.moodTrend.map(d => d.avgMood),
-            borderColor: '#C8B6FF',
-            backgroundColor: 'rgba(200, 182, 255, 0.1)',
-            tension: 0.4,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: {
-              display: false
-            }
-          },
-          scales: {
-            y: {
-              min: 1,
-              max: 5,
-              ticks: {
-                stepSize: 1,
-                callback: function(value) {
-                  const labels = { 5: '😄', 4: '🙂', 3: '😐', 2: '😟', 1: '😢' };
-                  return labels[value] || '';
-                }
-              }
-            }
+  document.getElementById("totalCount").textContent = stats.total || 0;
+  document.getElementById("avgIntensity").textContent = stats.avgIntensity || 0;
+
+  // ----- DESTROY OLD CHART -----
+  if (moodChart) {
+    moodChart.destroy();
+  }
+
+  // ----- PREPARE CHART DATA SAFELY -----
+  const labels = [];
+  const dataPoints = [];
+
+  stats.moodTrend.forEach(d => {
+    // Label
+    labels.push(
+      new Date(d.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+      })
+    );
+
+    // Data (prevent NaN / undefined)
+    if (typeof d.avgMood === "number") {
+      dataPoints.push(Number(d.avgMood.toFixed(2)));
+    } else {
+      dataPoints.push(null);
+    }
+  });
+
+  // ----- CREATE CHART -----
+  const ctx = document.getElementById("moodChart").getContext("2d");
+
+  moodChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Mood Trend",
+          data: dataPoints,
+          borderColor: "#C8B6FF",
+          backgroundColor: "rgba(200,182,255,0.2)",
+          tension: 0.4,
+          fill: true,
+          spanGaps: false,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          min: 1,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            callback: value =>
+              ({ 1: "😢", 2: "😟", 3: "😐", 4: "🙂", 5: "😄" }[value] || "")
           }
         }
-      });
+      }
     }
+  });
+}
+
+async function renderMoodTrackerChart() {
+  const moods = await axios.get(`${API_URL}/api/mood/${USER_ID}`);
+  const moodData = moods.data;
+
+  const moodScoreMap = {
+    great: 5,
+    good: 4,
+    okay: 3,
+    bad: 2,
+    terrible: 1
+  };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    days.push(d);
+  }
+
+  const labels = [];
+  const data = [];
+
+  days.forEach(day => {
+    labels.push(
+      day.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    );
+
+    const dayMoods = moodData.filter(m => {
+      const d = new Date(m.createdAt);
+      return (
+        d.getDate() === day.getDate() &&
+        d.getMonth() === day.getMonth() &&
+        d.getFullYear() === day.getFullYear()
+      );
+    });
+
+    if (dayMoods.length === 0) {
+      data.push(null);
+    } else {
+      const avg =
+        dayMoods.reduce((s, m) => s + moodScoreMap[m.mood], 0) /
+        dayMoods.length;
+      data.push(Number(avg.toFixed(2)));
+    }
+  });
+
+  if (moodChart) moodChart.destroy();
+
+  const ctx = document.getElementById("moodChart").getContext("2d");
+
+  moodChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: "#C8B6FF",
+        backgroundColor: "rgba(200,182,255,0.2)",
+        tension: 0.4,
+        fill: true,
+        spanGaps: false,
+        pointRadius: 5
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          min: 1,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            callback: v =>
+              ({1:"😢",2:"😟",3:"😐",4:"🙂",5:"😄"}[v])
+          }
+        }
+      }
+    }
+  });
+}
+
+
 
     function displayMoodHistory(moods) {
       const container = document.getElementById('moodHistory');
@@ -545,6 +670,8 @@ themeToggleBtn.addEventListener("click", () => {
   const isDark = htmlEl.classList.contains("dark");
   localStorage.setItem("theme", isDark ? "dark" : "light");
 });
+
+
 
   </script>
 </body>
