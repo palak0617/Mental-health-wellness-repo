@@ -135,7 +135,7 @@ function showHelp() {
 
 async function sendEmpatheticReply(userMessage) {
     try {
-        const res = await fetch(`${BASE_URL}/generate/empathetic-reply`, {
+        const res = await fetch("http://localhost:5000/api/gemini/generate/empathetic-reply", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userMessage })

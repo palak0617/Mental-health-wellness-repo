@@ -39,7 +39,7 @@ app.use(cors({
 // ======================
 // MIDDLEWARE
 // ======================
-app.use(cors()); // ✅ safest for development (prevents Contact Us CORS issues)
+// app.use(cors());  ✅ safest for development (prevents Contact Us CORS issues)
 app.use(express.json());
 
 // ======================

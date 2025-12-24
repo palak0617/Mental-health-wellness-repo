@@ -6,6 +6,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 
+
 // --- Modular Gemini API call with retry and fallback ---
 async function callGeminiWithRetry(promptText, fallback, extractFn) {
   const makeCall = async () => {
@@ -49,6 +50,22 @@ async function callGeminiWithRetry(promptText, fallback, extractFn) {
       return fallback;
     }
   }
+  // for (let i = 0; i < 3; i++) {
+  // try {
+  //   return await makeCall();
+  // } catch (err) {
+  //   const isRateLimit = err.response && err.response.status === 429;
+  //   const waitTime = isRateLimit ? (i + 1) * 5000 : 2000; // Wait 5s, 10s, 15s for rate limits
+    
+  //   if (i < 2) {
+  //     console.log(`Retrying in ${waitTime/1000}s...`);
+  //     await new Promise(res => setTimeout(res, waitTime));
+  //   } else {
+  //     console.error('⚠️ Gemini API failed after retries. Using fallback.');
+  //     return fallback;
+  //   }
+  // }
+// }
 }
 
 // --- Extraction helpers ---
