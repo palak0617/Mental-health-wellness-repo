@@ -13,7 +13,7 @@ const geminiRoutes = require('./routes/geminiRoutes');
 const authRoutes = require('./routes/authRoutes');
 const gameRecordRoutes = require('./routes/gameRecordRoutes');
 const locationRoutes = require('./routes/locationRoutes');
-const moodRoutes = require('./routes/moodroutes');
+const moodroutes = require('./routes/moodroutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 
@@ -51,7 +51,7 @@ app.use("/api/help", helpRoutes);
 
 // Other routes
 app.use("/auth", authRoutes);
-app.use("/api/mood", moodRoutes);
+app.use("/api/mood", moodroutes);
 app.use("/api/game-records", gameRecordRoutes);
 app.use("/api/journal", journalRoutes);
 app.use("/api/location", locationRoutes);
