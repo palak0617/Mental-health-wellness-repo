@@ -13,7 +13,7 @@ const geminiRoutes = require('./routes/geminiRoutes');
 const authRoutes = require('./routes/authRoutes');
 const gameRecordRoutes = require('./routes/gameRecordRoutes');
 const locationRoutes = require('./routes/locationRoutes');
-const moodroutes = require('./routes/moodroutes');
+const moodRoutes = require('./routes/moodRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 
@@ -21,7 +21,7 @@ const app = express();
 
 
 // CORS: Allow all origins for now
-// app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*' }));
 app.use(cors({
   origin: [
     "http://127.0.0.1:5500",
@@ -51,7 +51,7 @@ app.use("/api/help", helpRoutes);
 
 // Other routes
 app.use("/auth", authRoutes);
-app.use("/api/mood", moodroutes);
+app.use("/api/mood", moodRoutes);
 app.use("/api/game-records", gameRecordRoutes);
 app.use("/api/journal", journalRoutes);
 app.use("/api/location", locationRoutes);
