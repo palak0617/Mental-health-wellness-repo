@@ -1,5 +1,7 @@
 /* ------------------ API ENDPOINTS ------------------ */
-const BASE_URL = "http://localhost:5000";  // <-- your backend port
+const BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5000'
+  : 'https://mental-health-wellness-repo.onrender.com';
 
 const API = {
   user: BASE_URL + "/auth/user",
@@ -24,7 +26,7 @@ const moodScoreMap = {
 
 async function loadUser() {
   try {
-    const data = await GET("http://localhost:5000/auth/user");
+    const data = await GET(`${BASE_URL}/auth/user`);
 
     if (!data || !data.user) {
       console.error("User object missing:", data);
@@ -798,7 +800,7 @@ async function updateReportWeeklyActivityPattern() {
   const userId = localStorage.getItem("userId");
   if (!userId) return;
 
-  const res = await fetch(`http://localhost:5000/api/mood/${userId}`);
+  const res = await fetch(`${BASE_URL}/api/mood/${userId}`);
   const moods = await res.json();
 
   const moodScore = {
