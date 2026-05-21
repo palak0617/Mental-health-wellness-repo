@@ -712,7 +712,7 @@ async function saveRecord(points, time) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/api/game-records", {
+    const res = await fetch("https://mental-health-wellness-repo.onrender.com/api/game-records", {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -737,7 +737,7 @@ async function saveRecord(points, time) {
 // Show leaderboard
 recordsBtn.addEventListener('click', async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/game-records");
+    const res = await fetch("https://mental-health-wellness-repo.onrender.com/api/game-records");
     const data = await res.json();
 
     if (!data.success || data.records.length === 0) {

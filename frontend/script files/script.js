@@ -22,7 +22,7 @@ let currentQuote = null;
 // Use deployed backend by default, but allow localhost override for local dev
 const BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000'
-  : 'https://mindease-27ua.onrender.com';
+  : 'https://mental-health-wellness-repo.onrender.com';
 
 // --- Markdown rendering for bot messages ---
 function renderMarkdownSafe(text) {
@@ -135,7 +135,7 @@ function showHelp() {
 
 async function sendEmpatheticReply(userMessage) {
     try {
-        const res = await fetch("http://localhost:5000/api/gemini/generate/empathetic-reply", {
+        const res = await fetch(`${BASE_URL}/api/gemini/generate/empathetic-reply`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userMessage })

@@ -160,7 +160,7 @@
   </div>
 
   <script>
-    const BASE_URL = 'http://localhost:5000';
+    const BASE_URL = 'https://mental-health-wellness-repo.onrender.com';
     // Enhanced journal fetching with animations
     async function fetchJournal() {
       const list = document.getElementById('journalList');
@@ -172,9 +172,17 @@
       `;
       
       try {
-        const res = await fetch(`${BASE_URL}/journal`);
-        const data = await res.json();
-        
+        // const res = await fetch(`${BASE_URL}/api/journal`);
+        // const data = await res.json();
+        const res = await fetch(`${BASE_URL}/api/journal`);
+
+if (!res.ok) {
+  throw new Error(`HTTP error! Status: ${res.status}`);
+}
+
+const data = await res.json();
+console.log("DATA:", data);
+
         if (!Array.isArray(data)) throw new Error('Invalid data');
         
         if (data.length === 0) {

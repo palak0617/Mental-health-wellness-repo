@@ -228,7 +228,7 @@
 
   <script>
     // Configuration
-    const API_URL = 'http://localhost:5000';
+    const API_URL = 'https://mental-health-wellness-repo.onrender.com';
     const USER_ID = localStorage.getItem("userId");
  // Replace with actual user ID from authentication
     
@@ -368,7 +368,7 @@
 
   try {
     await axios.post(
-      "http://localhost:5000/api/mood",
+      "https://mental-health-wellness-repo.onrender.com/api/mood",
       {
         mood: selectedMood,
         intensity: Number(document.getElementById("intensitySlider").value),
