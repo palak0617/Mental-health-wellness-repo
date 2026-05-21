@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const JournalEntry = require('../models/journalEntry');
 
-router.post('/journal', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { prompt, response, timestamp } = req.body;
     const entry = new JournalEntry({ prompt, response, timestamp });
@@ -13,7 +13,7 @@ router.post('/journal', async (req, res) => {
   }
 });
 
-router.get('/journal', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const entries = await JournalEntry.find().sort({ timestamp: -1 });
     res.json(entries);
